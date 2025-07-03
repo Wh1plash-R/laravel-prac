@@ -1,12 +1,23 @@
 <?php
 
-use App\Http\Controllers\LearnerController;
-use App\Http\Controllers\RouinController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RouinController;
+use App\Http\Controllers\LearnerController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
 Route::get('/rouin', [RouinController::class, 'rouin'])->name('rouin');
 
@@ -18,3 +29,5 @@ Route::get('/learners/{learner}',  [LearnerController::class, 'show'])->name('le
 Route::post('/learners', [LearnerController::class, 'store'])->name('learners.store');
 Route::delete('/learners/{learner}', [LearnerController::class, 'destroy'])->name('learners.destroy');
 //important to use destroy instead of delete to match the RESTful convention
+
+require __DIR__.'/auth.php';
