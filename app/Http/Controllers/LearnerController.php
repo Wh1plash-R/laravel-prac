@@ -26,7 +26,6 @@ class LearnerController extends Controller
 
     public function add()
     {
-
         $courses = Course::all();
         return view('learners.add', ['courses' => $courses]);
     }
