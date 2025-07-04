@@ -5,12 +5,16 @@
         Welcome to ヨルシカ Page
       </h1>
       <p class="text-lg text-gray-600">
-        Explore learners, add new entries, and manage your roster effortlessly.
+        Learn new things.
       </p>
       <div class="flex justify-center space-x-4">
-        <a href="{{ route('learners.index') }}"
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors border border-blue-700 shadow">
-          View All Learners
+        <a href="{{ route('login') }}"
+           class="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors border border-green-700 shadow">
+          Login
+        </a>
+        <a href="{{ route('register') }}"
+           class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors border border-purple-700 shadow">
+          Register
         </a>
       </div>
     </div>

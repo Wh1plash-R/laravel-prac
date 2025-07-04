@@ -13,8 +13,8 @@
                         {{-- the colon before the highlight makes the attribute or prop a dynamic value instead of a string--}}
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900">Name: {{ $learner->name }} </h3>
-                            <p class="text-gray-600">Skill: {{ $learner->skill }}</p>
-                            <p class="text-gray-600">Course: {{ $learner->course->title}}</p>
+                            <p class="text-gray-600">Skill: {{ $learner->skill? $learner->skill: 'None' }}</p>
+                            <p class="text-gray-600">Course: {{ $learner->course? $learner->course->title:'None'}}</p>
                         </div>
                     </x-card>
                 </li>

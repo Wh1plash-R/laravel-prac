@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('learners', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('skill');
-            $table->text('bio');
+            $table->string('skill')->nullable();
+            $table->text('bio')->nullable();
             $table->timestamps();
             $table->foreignId('course_id')
+                ->nullable()
                 ->constrained('courses')
                 ->onDelete('cascade'); // Ensures that if a course is deleted, the related learners are also deleted
         });
