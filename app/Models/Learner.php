@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Learner extends Model
 {
-    protected $fillable = ['name', 'skill', 'bio', 'course_id'];
+    protected $fillable = ['name', 'skill', 'bio', 'course_id', 'user_id'];
 
     /** @use HasFactory<\Database\Factories\LearnerFactory> */
     use HasFactory;
@@ -15,5 +15,10 @@ class Learner extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LearnerController;
+use App\Models\Learner;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -41,6 +43,12 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'role_id' => 2,
         ]);
+
+        $learner = Learner::create([
+            'name' => $user->name,
+            'user_id' => $user->id, // Associate the learner with the user
+        ]);
+
 
         event(new Registered($user));
 

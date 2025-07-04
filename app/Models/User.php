@@ -47,6 +47,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function learner()
+    {
+        return $this->hasOne(Learner::class);
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class);

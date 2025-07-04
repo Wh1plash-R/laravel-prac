@@ -34,9 +34,9 @@ class LearnerController extends Controller
     {
         $validated_data = $request->validate([
             'name' => 'required|string|max:255',
-            'skill' => 'required|string|max:255',
+            'skill' => 'nullable|string|max:255',
             'bio' => 'nullable|string|max:1000',
-            'course_id' => 'required|exists:courses,id',
+            'course_id' => 'nullable|exists:courses,id',
         ]);
 
         Learner::create($validated_data);
@@ -44,8 +44,19 @@ class LearnerController extends Controller
         return redirect()->route('learners.index')->with('success', 'Learner added successfully!');
     }
 
+    public function update(Request $request, Learner $learner)
+    {
+        $learner->update($request->all());
+        return;
+    }
+
     public function destroy(Learner $learner){
+        // have to delete the user to avoid unexpected things?
+        if ($learner->user) {
+            $learner->user()->delete();
+        }
         $learner->delete();
         return redirect()->route('learners.index')->with('success', 'Learner deleted successfully!');
     }
+
 }

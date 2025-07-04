@@ -20,8 +20,7 @@ class LearnerFactory extends Factory
             'name'=> fake('en_JP')->name(),
             'skill'=> fake()->word(),
             'bio'=> fake()->realText(30),
-            'course_id' => Course::inRandomOrder()->first()->id, // Assuming you have a Course model and courses seeded
-            // fake()->numberBetween(1, 5), // Assuming you have 5 courses seeded
+            'course_id' => Course::inRandomOrder()->first()->id,
         ];
     }
 }
