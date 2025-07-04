@@ -13,14 +13,15 @@
         </div>
     </div>
 
+
     <script>
         setTimeout(function () {
             const flash = document.getElementById('flash');
             if (flash) {
                 flash.classList.add('opacity-0');
-                setTimeout(() => flash.remove(), 500); // match transition duration
+                setTimeout(() => flash.remove(), 500);
             }
-        }, 2000); // show for 2 seconds
+        }, 2000); // To make the flash message disappear
     </script>
     @endif
     <div class="py-12 min-h-screen bg-gray-50 flex flex-col items-center justify-center">
@@ -54,7 +55,6 @@
                         </form>
                     </div>
 
-                    </div>
                     @else
                         <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow flex flex-col">
                         <span class="font-semibold text-lg text-blue-700">You are not yet enrolled</span>
@@ -152,6 +152,7 @@
         </ul>
       </div>
     @endif
+
     {{-- Success Message --}}
     @if (session('success'))
       <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mt-6">
@@ -203,7 +204,7 @@
                 myCoursesSection.classList.add('hidden');
                 enrollSection.classList.add('hidden');
             });
-            //delete this part later
+
         });
     </script>
 </x-app-layout>

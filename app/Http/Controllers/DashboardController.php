@@ -33,6 +33,9 @@ class DashboardController extends Controller
         }
 
         if($request->input('course_id')) {
+            if($learner->course_id){
+            return redirect()->route('dashboard')->with('error', 'You are already enrolled in a course.');
+            }
             $request->validate([
                 'course_id' => 'required|exists:courses,id',
             ]);
