@@ -9,30 +9,37 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-
     public function index()
     {
         $user = auth()->user();
-        if($user->isAdmin()) {
+
+        if($user->isAdmin())
+        {
             return redirect()->route('learners.index');
         }
-        $learner = Learner::with('course')->where('user_id', auth()->id())->first();
-        $course = $learner ? $learner->course : null;
-        return view('dashboard', ['courses' => Course::all(),'course' => $course, 'user' => auth()->user(), 'learner' => $learner]);
+
+        $learner = Learner::with('course')->firstWhere('user_id', $user->id); // firstWhere() = where()->first()
+        $courses = Course::all();
+        $course = $learner ?->course; // This is called "null safe" operator just like "$learner? learner -> course: null"
+
+        return view('dashboard', compact('user', 'learner', 'courses', 'course'));
+        // Compact() = $user => the current value of user etc.
     }
 
     public function update(Request $request, User $user)
     {
         $learner = Learner::where('user_id', $user->id)->first();
 
-        if($request->input('unenroll')) {
+        if($request->input('unenroll'))
+        {
             $learner->update([
                 'course_id' => null,
             ]);
             return redirect()->route('dashboard')->with('success', 'Successfully unenrolled from course.');
         }
 
-        if($request->input('course_id')) {
+        if($request->input('course_id'))
+        {
             if($learner->course_id){
             return redirect()->route('dashboard')->with('error', 'You are already enrolled in a course.');
             }

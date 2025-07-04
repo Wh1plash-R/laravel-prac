@@ -16,8 +16,6 @@ class RouinController extends Controller
     public function rouin()
     {
         $mentor = Learner::where('name', 'Rouin')->first();
-        return view('rouin', [
-            'mentor' => $mentor,
-        ]);
+        return view('rouin', ['mentor' => $mentor] );
     }
 }

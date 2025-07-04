@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script>
-        window.apiBase = "{{ url('api') }}";
-    </script>
     <title>Rouin</title>
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -27,9 +24,9 @@
             const flash = document.getElementById('flash');
             if (flash) {
                 flash.classList.add('opacity-0');
-                setTimeout(() => flash.remove(), 500); // match transition duration
+                setTimeout(() => flash.remove(), 500);
             }
-        }, 2000); // show for 2 seconds
+        }, 2000); // To make the flash message disappear
     </script>
     @endif
 

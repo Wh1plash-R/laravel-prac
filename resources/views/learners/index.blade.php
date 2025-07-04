@@ -5,12 +5,12 @@
         <ul class="space-y-4">
             @foreach ($learners as $learner)
                 <li>
-                    <x-card href="{{ route('learners.show', $learner->id) }}" :highlight="$learner->skill == 'PHP' ||
+                    <x-card href="{{ route('learners.show', $learner->id) }}"
+                        :highlight="$learner->skill == 'PHP' ||
                         $learner->skill == 'C'">
                         {{-- the : before highlight means that we are passing a dynamic value --}}
                         {{-- if we pass a string, we don't need the colon --}}
-                        {{-- the highlight prop is set to true if the skill is PHP --}}
-                        {{-- the colon before the highlight makes the attribute or prop a dynamic value instead of a string--}}
+                        {{-- the highlight prop is set to true if the skill is PHP or C --}}
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900">Name: {{ $learner->name }} </h3>
                             <p class="text-gray-600">Skill: {{ $learner->skill? $learner->skill: 'None' }}</p>

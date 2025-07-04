@@ -19,8 +19,10 @@ class LearnerController extends Controller
     public function show(Learner $learner)
     {
         /* There is this thing called Route model binding that automatically resolves the learner by ID
-        and passes it to the method as a parameter */
-        $learner->load('course'); // This one "eager loads" the course relationship, meaning nilo-load na lahat
+        and passes it to the method as a parameter
+        Naming Convention (never forget)
+        */
+        $learner->with('course');
         return view('learners.show', ['learner' => $learner]);
     }
 
