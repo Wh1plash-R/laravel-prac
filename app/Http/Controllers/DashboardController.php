@@ -24,6 +24,14 @@ class DashboardController extends Controller
     public function update(Request $request, User $user)
     {
         $learner = Learner::where('user_id', $user->id)->first();
+
+        if($request->input('unenroll')) {
+            $learner->update([
+                'course_id' => null,
+            ]);
+            return redirect()->route('dashboard')->with('success', 'Successfully unenrolled from course.');
+        }
+
         if($request->input('course_id')) {
             $request->validate([
                 'course_id' => 'required|exists:courses,id',
@@ -33,6 +41,7 @@ class DashboardController extends Controller
             ]);
             return redirect()->route('dashboard')->with('success', 'Course updated successfully.');
         }
+
         else {
             $request->validate([
                 'skill' => 'required|string|max:255',
@@ -41,6 +50,6 @@ class DashboardController extends Controller
             $learner->update($request->all());
             return redirect()->route('dashboard')->with('success', 'Profile updated successfully.');
         }
-
     }
+
 }

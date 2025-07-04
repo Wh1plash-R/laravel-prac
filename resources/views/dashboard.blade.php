@@ -32,12 +32,28 @@
             </div>
             <div id="my-courses-section">
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">My Course</h3>
-                <div class="space-y-4">
+                                <div class="space-y-4">
                     @if ($course)
-                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow flex flex-col">
-                        <span class="font-semibold text-lg text-blue-700">{{$course->title}}</span>
-                        <span class="text-gray-600">Description: {{$course->description}}</span>
-                        <span class="text-gray-600">Department: {{$course->department}}</span>
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <span class="font-semibold text-lg text-blue-700">{{$course->title}}</span>
+                            <span class="block text-gray-600">{{$course->description}}</span>
+                            <span class="text-gray-600">Department: {{$course->department}}</span>
+                        </div>
+                        <form method="POST"
+                              action="{{ route('dashboard.update',$user->id) }}"
+                              class="mt-4 sm:mt-0"
+                              onsubmit="return confirm('Are you sure you want to unenroll from this course?')">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="unenroll" value="1">
+                            <button type="submit"
+                                    class="mt-2 sm:mt-0 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors border border-red-700 shadow">
+                                Unenroll
+                            </button>
+                        </form>
+                    </div>
+
                     </div>
                     @else
                         <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg shadow flex flex-col">
