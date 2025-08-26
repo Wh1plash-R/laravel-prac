@@ -11,14 +11,16 @@ class LearnerController extends Controller
     public function index()
     {
         return view('learners.index', [
-            "mentor" => 'suis',
+            "mentor" => 'Rouin',
             "learners" => Learner::with('course')->orderBy('created_at', 'desc')->paginate(10),
         ]);
     }
 
     public function show(Learner $learner)
     {
-        /* There is this thing called Route model binding that automatically resolves the learner by ID
+        /* There is this thing in Laravel
+         called Route model binding that automatically
+         resolves the learner by ID
         and passes it to the method as a parameter
         Naming Convention (never forget)
         */
