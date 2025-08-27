@@ -178,6 +178,15 @@
     @endif
   </div>
 
+    <x-confirm-dialog
+        :title="'Confirm logout'"
+        :message="'Are you sure you want to log out?'"
+        :confirmText="'Log out'"
+        :cancelText="'Cancel'"
+        :formId="'logout-form'"
+        :event="'open-logout-confirm'"
+    />
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabMyCourses = document.getElementById('tab-my-courses');

@@ -30,10 +30,9 @@
                             <x-dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
+                            <form method="POST" action="{{ route('logout') }}" id="logout-form" class="inline">
                                 @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault(); this.closest('form').submit();">
+                                <x-dropdown-link href="#" onclick="event.preventDefault(); window.dispatchEvent(new CustomEvent('open-logout-confirm'))">
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </form>

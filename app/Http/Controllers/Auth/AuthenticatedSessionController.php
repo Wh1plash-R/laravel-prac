@@ -38,12 +38,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // just remove this if you don't want to display the name when logging out
+        $userName = Auth::user()->name ?? 'User';
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        // just remove the userName
+        return redirect('/')
+            ->with('success', 'You have been logged out, ' . $userName . '.');
     }
 }
