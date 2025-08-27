@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/dashboard/{user}', [DashboardController::class, 'update'])->name('dashboard.update');
 });
 
-Route::middleware('auth', 'role:admin')->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/learners', [LearnerController::class, 'index'])->name('learners.index');
     Route::get('/learners/add', [LearnerController::class, 'add'])->name('learners.add');
     // don't use /add in the future anymore, and use create instead dahil 'yun ang RESTful convention

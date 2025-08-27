@@ -44,14 +44,23 @@
                         <form method="POST"
                               action="{{ route('dashboard.update',$user->id) }}"
                               class="mt-4 sm:mt-0"
-                              onsubmit="return confirm('Are you sure you want to unenroll from this course?')">
+                        >
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="unenroll" value="1">
-                            <button type="submit"
-                                    class="mt-2 sm:mt-0 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors border border-red-700 shadow">
-                                Unenroll
-                            </button>
+                            <x-confirm-dialog
+                                :title="'Please confirm'"
+                                :message="'Are you sure you want to unenroll ' . ($course->title ?? 'from this course') . '?'"
+                                :confirmText="'Unenroll'"
+                                :cancelText="'Cancel'"
+                            >
+                                <x-slot name="trigger">
+                                    <button type="button"
+                                            class="mt-2 sm:mt-0 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors border border-red-700 shadow">
+                                        Unenroll
+                                    </button>
+                                </x-slot>
+                            </x-confirm-dialog>
                         </form>
                     </div>
 
@@ -74,8 +83,7 @@
                         </div>
                         <form method="POST"
                         action="{{ route('dashboard.update',$user->id) }}"
-                        class="mt-4 sm:mt-0"
-                        onsubmit="return confirm('Are you sure you want to enroll in this course?')" >
+                        class="mt-4 sm:mt-0">
 
                             @csrf
                             @method('PATCH')
@@ -83,9 +91,18 @@
                         {{-- Hidden input para ma-include ang course_id --}}
                         <input type="hidden" name="course_id" value="{{ $course->id }}">
 
-                        <button type="submit"
-                        class="mt-2 sm:mt-0 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors border border-green-700 shadow"
-                        >Enroll</button>
+                        <x-confirm-dialog
+                            :title="'Please confirm'"
+                            :message="'Are you sure you want to enroll in ' . $course->title . '?'"
+                            :confirmText="'Enroll'"
+                            :cancelText="'Cancel'"
+                        >
+                            <x-slot name="trigger">
+                                <button type="button"
+                                class="mt-2 sm:mt-0 bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors border border-green-700 shadow"
+                                >Enroll</button>
+                            </x-slot>
+                        </x-confirm-dialog>
                         </form>
                         </div>
                     @endforeach

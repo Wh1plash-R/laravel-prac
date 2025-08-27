@@ -15,7 +15,11 @@ class DashboardController extends Controller
 
         if($user->isAdmin())
         {
-            return redirect()->route('learners.index');
+            $redirect = redirect()->route('learners.index');
+            if (session()->has('success')) {
+                $redirect = $redirect->with('success', session('success'));
+            }
+            return $redirect;
         }
 
         $learner = Learner::with('course')->firstWhere('user_id', $user->id); // firstWhere() = where()->first()
