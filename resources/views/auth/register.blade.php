@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout :title="'Register'" :header="false">
     <h1></h1>
     <div class="h-auto max-w-5xl flex">
         <!-- Left Panel - Register Form -->
