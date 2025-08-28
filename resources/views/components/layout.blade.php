@@ -1,3 +1,4 @@
+@props(['title' => '', 'header' => true])
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +31,9 @@
     </script>
     @endif
 
-    <!-- <x-header :title="$title ?? ''" /> -->
+    @if($header)
+        <x-header :title="$title ?? ''" />
+    @endif
 
     <main class="w-full h-screen p-10 flex justify-center align-center">
         <div class="rounded-2xl m-auto overflow-hidden">
