@@ -9,7 +9,7 @@
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-50 min-h-screen font-[Inter,sans-serif] text-gray-800">
+<body class="bg-gray-50 w-full min-h-screen font-[Inter,sans-serif] text-gray-800">
 
     @if (session('success'))
     <div class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
@@ -30,13 +30,14 @@
     </script>
     @endif
 
-    <x-header :title="$title ?? ''" />
+    <!-- <x-header :title="$title ?? ''" /> -->
 
-    <main class="container mx-auto px-4 py-10 max-w-3xl">
-        <div class="bg-white rounded-2xl shadow-lg p-8 min-h-[60vh] border border-gray-200">
+    <main class="w-full h-screen p-10 flex justify-center align-center">
+        <div class="rounded-2xl m-auto overflow-hidden">
             {{ $slot }}
         </div>
     </main>
+
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
         @keyframes fade-in {

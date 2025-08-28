@@ -4,6 +4,7 @@
     'confirmText' => 'OK',
     'cancelText' => 'Cancel',
     'formId' => null,
+    'event' => null,
 ])
 
 <div x-data="{
@@ -14,10 +15,12 @@
             if (form) form.submit();
             this.open = false;
         }
-    }" class="inline">
-    <div @click="open = true">
-        {{ $trigger }}
-    </div>
+    }" x-init="() => { if (@js($event)) { window.addEventListener(@js($event), () => { open = true }) } }" class="inline">
+    @isset($trigger)
+        <div @click="open = true; $dispatch('close')">
+            {{ $trigger }}
+        </div>
+    @endisset
 
     <div x-cloak x-show="open" class="fixed inset-0 z-50 flex items-center justify-center px-4" style="display: none;">
         <div class="absolute inset-0 bg-gray-900/60" @click="open = false"></div>
@@ -38,5 +41,4 @@
     .animate-fade-in { animation: fade-in .15s ease-out; }
     .bg-gray-900\/60 { background-color: rgba(17, 24, 39, 0.6); }
 </style>
-
 
