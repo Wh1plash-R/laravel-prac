@@ -12,9 +12,9 @@
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
         }
-       
-       
-       
+
+
+
     </style>
 
     @if (session('success'))
@@ -87,75 +87,83 @@
                     <h3 class="text-3xl font-bold mb-2">My Courses</h3>
                     <p class="text-white/90">Manage and track your enrolled courses</p>
                 </div>
-                
+
                 <div class="p-8">
-                    @if ($course)
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
-                            <div class="p-6">
-                                <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                    </svg>
-                                </div>
-                                
-                                <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
-                                <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
-                                
-                                <!-- tags -->
-                                <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
-                                    tags
-                                </div>
-                                
-                                <!-- Progress Bar (hindi pa ito sure) -->
-                                <div class="mb-4">
-                                    <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                        <span>Progress</span>
-                                        <span>25%</span>
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <div class="lg:col-span-3">
+                            @if ($course)
+                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
+                                    <div class="p-6">
+                                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                            </svg>
+                                        </div>
+
+                                        <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
+                                        <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
+
+                                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
+                                            tags
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                                <span>Progress</span>
+                                                <span>25%</span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="gradient-bg h-2 rounded-full" style="width: 25%"></div>
+                                            </div>
+                                        </div>
+
+                                        <form method="POST"
+                                              action="{{ route('dashboard.update',$user->id) }}"
+                                              id="unenroll-form">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="unenroll" value="1">
+                                            <x-confirm-dialog
+                                                title="Please confirm"
+                                                message="Are you sure you want to unenroll {{ $course->title }}?"
+                                                confirmText="Unenroll"
+                                                cancelText="Cancel"
+                                                :formId="'unenroll-form'">
+                                                <x-slot:trigger>
+                                                    <button type="button"
+                                                            class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
+                                                        Unenroll
+                                                    </button>
+                                                </x-slot:trigger>
+                                            </x-confirm-dialog>
+                                        </form>
                                     </div>
-                                    <div class="w-full bg-gray-200 rounded-full h-2">
-                                        <div class="gradient-bg h-2 rounded-full" style="width: 25%"></div>
-                                    </div>
                                 </div>
-                                
-                                <!-- Action Button -->
-                                <form method="POST"
-                                      action="{{ route('dashboard.update',$user->id) }}"
-                                      id="unenroll-form">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="unenroll" value="1">
-                                    <x-confirm-dialog
-                                        title="Please confirm"
-                                        message="Are you sure you want to unenroll {{ $course->title }}?"
-                                        confirmText="Unenroll"
-                                        cancelText="Cancel"
-                                        :formId="'unenroll-form'">
-                                        <x-slot:trigger>
-                                            <button type="button"
-                                                    class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
-                                                Unenroll
-                                            </button>
-                                        </x-slot:trigger>
-                                    </x-confirm-dialog>
-                                </form>
                             </div>
+                            @else
+                            <div class="flex items-center justify-center h-96">
+                                <div class="text-center">
+                                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                        </svg>
+                                    </div>
+                                    <h4 class="text-xl font-semibold text-gray-900 mb-2">No courses enrolled</h4>
+                                    <p class="text-gray-500 mb-6">Start your learning journey by enrolling in a course</p>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+
+                        <div class="lg:col-span-1 space-y-6">
+                            <x-user-profile-card :user="$user ?? auth()->user()" />
+                            <x-calendar-card />
+                            @if ($course) 
+                                <x-pending-assignments-card />
+                            @endif
                         </div>
                     </div>
-                    @else
-                    <!-- Empty State -->
-                    <div class="flex items-center justify-center h-96">
-                        <div class="text-center">
-                            <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
-                            </div>
-                            <h4 class="text-xl font-semibold text-gray-900 mb-2">No courses enrolled</h4>
-                            <p class="text-gray-500 mb-6">Start your learning journey by enrolling in a course</p>
-                        </div>
-                    </div>
-                    @endif
                 </div>
             </div>
 
@@ -164,7 +172,7 @@
                     <h3 class="text-3xl font-bold mb-2">Available Courses</h3>
                     <p class="text-white/90">Discover and enroll in new courses</p>
                 </div>
-                
+
                 <div class="p-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         @foreach ($courses as $course )
@@ -175,15 +183,15 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                                     </svg>
                                 </div>
-                                
+
                                 <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
                                 <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{$course->description}}</p>
-                                
+
                                 <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
                                     <span>12 Weeks</span>
                                     <span>⭐ 4.8</span>
                                 </div>
-                                
+
                                 <!-- Action Button -->
                                 <form method="POST"
                                 action="{{ route('dashboard.update',$user->id) }}"
@@ -192,7 +200,7 @@
                                     @csrf
                                     @method('PATCH')
 
-                                {{-- Hidden input para ma-include ang course_id --}}    
+                                {{-- Hidden input para ma-include ang course_id --}}
                                 <input type="hidden" name="course_id" value="{{ $course->id }}">
 
                                 <x-confirm-dialog
@@ -221,7 +229,7 @@
                     <h3 class="text-3xl font-bold mb-2">My Profile</h3>
                     <p class="text-white/90">Manage your account and preferences</p>
                 </div>
-                
+
                 <div class="p-8">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
                         <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
@@ -234,7 +242,7 @@
                                     <p class="text-gray-500">iba pa info</p>
                                 </div>
                             </div>
-                            
+
                             <div class="mb-6">
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -247,7 +255,7 @@
                                     {{isset($learner->skill) ? $learner->skill : 'None';}}</span>
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -267,7 +275,7 @@
                             </button>
                         </div>
                     </div>
-                        
+
                         <div id="update-profile-card" class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle hidden">
                             <h4 class="text-xl font-bold text-gray-900 mb-6">Update Profile</h4>
                             <form id="profile-form"
@@ -306,7 +314,7 @@
                             </form>
                         </div>
                     </div>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 max-w-6xl">
                         <div class="bg-blue-50 rounded-xl p-6 text-center hover-subtle">
                             <div class="text-3xl font-bold text-blue-600 mb-2">{{ isset($course) ? '1' : '0' }}</div>
@@ -337,23 +345,7 @@
       </div>
     @endif
 
-    {{-- Success Message --}}
-   @if (session('success'))
-    <div id="bottom-flash"
-        class="fixed bottom-6 right-6 z-50 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg shadow-lg animate-fade-in transition-opacity duration-500">
-        {{ session('success') }}
-    </div>
 
-    <script>
-        setTimeout(function () {
-            const bottomFlash = document.getElementById('bottom-flash');
-            if (bottomFlash) {
-                bottomFlash.classList.add('opacity-0');
-                setTimeout(() => bottomFlash.remove(), 500);
-            }
-        }, 3000); // disappears after 3s
-    </script>
-    @endif
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -365,29 +357,29 @@
             const navLabels = document.querySelectorAll('.nav-label');
             const hamburgerIcon = document.getElementById('hamburger-icon');
             const closeIcon = document.getElementById('close-icon');
-            
+
             // Navigation elements
             const navMyCourses = document.getElementById('nav-my-courses');
             const navEnroll = document.getElementById('nav-enroll');
             const navProfile = document.getElementById('nav-profile');
-            
+
             // Section elements
             const myCoursesSection = document.getElementById('my-courses-section');
             const enrollSection = document.getElementById('enroll-section');
             const profileSection = document.getElementById('profile-section');
 
             let sidebarOpen = true;
-            
+
             sidebarToggle.addEventListener('click', function() {
                 sidebarOpen = !sidebarOpen;
-                
+
                 if (sidebarOpen) {
                     sidebar.classList.remove('w-16');
                     sidebar.classList.add('w-64');
                     sidebarTitle.classList.remove('opacity-0', 'w-0', 'hidden');
                     sidebarHeader.classList.remove('justify-center');
                     sidebarHeader.classList.add('justify-between');
-                    
+
                     navLabels.forEach(label => {
                         label.classList.remove('opacity-0', 'w-0', 'ml-0');
                         label.classList.add('ml-3');
@@ -395,7 +387,7 @@
                     document.querySelectorAll('.nav-item').forEach(item => {
                         item.classList.remove('justify-center');
                     });
-                    
+
                     closeIcon.classList.remove('hidden');
                     hamburgerIcon.classList.add('hidden');
                 } else {
@@ -404,7 +396,7 @@
                     sidebarTitle.classList.add('opacity-0', 'w-0', 'hidden');
                     sidebarHeader.classList.remove('justify-between');
                     sidebarHeader.classList.add('justify-center');
-                    
+
                     navLabels.forEach(label => {
                         label.classList.add('opacity-0', 'w-0', 'ml-0');
                         label.classList.remove('ml-3');
@@ -412,7 +404,7 @@
                     document.querySelectorAll('.nav-item').forEach(item => {
                         item.classList.add('justify-center');
                     });
-                    
+
                     hamburgerIcon.classList.remove('hidden');
                     closeIcon.classList.add('hidden');
                 }
@@ -424,7 +416,7 @@
                     nav.classList.remove('bg-[#35b5ac]', 'text-white');
                     nav.classList.add('text-gray-700', 'hover:bg-gray-100');
                 });
-                
+
                 activeNav.classList.remove('text-gray-700', 'hover:bg-gray-100');
                 activeNav.classList.add('bg-[#35b5ac]', 'text-white');
             }
@@ -433,7 +425,7 @@
                 myCoursesSection.classList.add('hidden');
                 enrollSection.classList.add('hidden');
                 profileSection.classList.add('hidden');
-                
+
                 targetSection.classList.remove('hidden');
             }
 
