@@ -1,8 +1,8 @@
 <header class="bg-white/90 backdrop-blur shadow-md sticky top-0 z-10 border-b border-gray-200">
     <nav class="container mx-auto flex items-center justify-between py-4 px-6" x-data="{ open: false }">
         <div class="flex items-center gap-3">
-            <span class="inline-block bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full px-3 py-1 text-lg font-extrabold shadow-sm tracking-tight">
-                <a href="{{ route('welcome') }}" class="hover:text-blue-600 focus:text-blue-700 transition">ヨルシカ</a>
+            <span class="inline-block bg-gradient-to-r from-[#35b5ac] to-[#35b5ac]/70 text-white rounded-full px-3 py-1 text-lg font-extrabold shadow-sm tracking-tight">
+                <a href="{{ route('welcome') }}" class="hover:text-[#f3f3f3] transition">アグアド大好</a>
             </span>
             <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">
                 {{ $title ?? '' }}
