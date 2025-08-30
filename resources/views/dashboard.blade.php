@@ -132,6 +132,7 @@
                                                 message="Are you sure you want to unenroll from {{ $course->title }}?"
                                                 confirmText="Unenroll"
                                                 cancelText="Cancel"
+                                                loadingMessage="Unenrolling from course..."
                                                 :formId="'unenroll-form-' . $course->id">
                                                 <x-slot:trigger>
                                                     <button type="button"
@@ -227,6 +228,7 @@
                                         message="Are you sure you want to enroll in {{ $course->title }}?"
                                         confirmText="Enroll"
                                         cancelText="Cancel"
+                                        loadingMessage="Enrolling in course..."
                                         :formId="'enroll-form-' . $course->id">
                                         <x-slot:trigger>
                                             <button type="button"
@@ -326,11 +328,20 @@
                                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none transition-all"
                                             placeholder="Enter your bio">{{ old('bio', $learner->bio ?? '') }}</textarea>
                                 </div>
-
-                                <button type="submit"
+                                <x-confirm-dialog
+                                    title="Please confirm"
+                                    message="Are you sure you want to update your profile?"
+                                    confirmText="Update"
+                                    cancelText="Cancel"
+                                    loadingMessage="Updating profile..."
+                                    :formId="'profile-form'">
+                                <x-slot:trigger>
+                                    <button type="button"
                                         class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all border-0">
                                     Update Profile
                                 </button>
+                                </x-slot:trigger>
+                                </x-confirm-dialog>
                             </form>
                         </div>
                     </div>

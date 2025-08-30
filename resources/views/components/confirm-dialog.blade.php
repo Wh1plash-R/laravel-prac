@@ -5,15 +5,18 @@
     'cancelText' => 'Cancel',
     'formId' => null,
     'event' => null,
+    'loadingMessage' => 'Processing...',
 ])
 
 <div x-data="{
         open: false,
+        loading: false,
         formId: @js($formId),
         confirm() {
+            this.loading = true;
+            this.open = false;
             const form = this.formId ? document.getElementById(this.formId) : $root.closest('form');
             if (form) form.submit();
-            this.open = false;
         }
     }" x-init="() => { if (@js($event)) { window.addEventListener(@js($event), () => { open = true }) } }" class="inline">
     @isset($trigger)
@@ -33,6 +36,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Loading Overlay -->
+    <x-loading-overlay show="loading" :message="$loadingMessage" />
 </div>
 
 <style>
