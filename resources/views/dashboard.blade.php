@@ -64,7 +64,7 @@
                     <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden">My Courses</span>
                 </a>
 
-                <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors group  {{ isset($course) ? 'pointer-events-none opacity-50 cursor-not-allowed' : '' }}">
+                <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
@@ -91,8 +91,9 @@
                 <div class="p-8">
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         <div class="lg:col-span-3">
-                            @if ($course)
+                            @if ($learner_courses && $learner_courses->count() > 0)
                             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                @foreach ($learner_courses as $course)
                                 <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
                                     <div class="p-6">
                                         <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
@@ -106,6 +107,7 @@
 
                                         <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
                                             tags
+                                            {{$course->department}}
                                         </div>
 
                                         <div class="mb-4">
@@ -120,16 +122,17 @@
 
                                         <form method="POST"
                                               action="{{ route('dashboard.update',$user->id) }}"
-                                              id="unenroll-form">
+                                              id="unenroll-form-{{ $course->id }}">
                                             @csrf
                                             @method('PATCH')
                                             <input type="hidden" name="unenroll" value="1">
+                                            <input type="hidden" name="course_id" value="{{ $course->id }}">
                                             <x-confirm-dialog
                                                 title="Please confirm"
-                                                message="Are you sure you want to unenroll {{ $course->title }}?"
+                                                message="Are you sure you want to unenroll from {{ $course->title }}?"
                                                 confirmText="Unenroll"
                                                 cancelText="Cancel"
-                                                :formId="'unenroll-form'">
+                                                :formId="'unenroll-form-' . $course->id">
                                                 <x-slot:trigger>
                                                     <button type="button"
                                                             class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
@@ -140,6 +143,7 @@
                                         </form>
                                     </div>
                                 </div>
+                                @endforeach
                             </div>
                             @else
                             <div class="flex items-center justify-center h-96">
@@ -159,7 +163,7 @@
                         <div class="lg:col-span-1 space-y-6">
                             <x-user-profile-card :user="$user ?? auth()->user()" />
                             <x-calendar-card />
-                            @if ($course) 
+                            @if ($course)
                                 <x-pending-assignments-card />
                             @endif
                         </div>
@@ -175,13 +179,22 @@
 
                 <div class="p-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        @foreach ($courses as $course )
-                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
+                        @foreach ($courses as $course)
+                        @php
+                            $isEnrolled = $learner_courses && $learner_courses->contains('id', $course->id);
+                        @endphp
+                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden {{ $isEnrolled ? 'opacity-75' : '' }}">
                             <div class="p-6">
-                                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                    </svg>
+                                <div class="w-12 h-12 {{ $isEnrolled ? 'bg-green-100' : 'bg-blue-100' }} rounded-lg flex items-center justify-center mb-4">
+                                    @if($isEnrolled)
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    @else
+                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                        </svg>
+                                    @endif
                                 </div>
 
                                 <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
@@ -193,30 +206,37 @@
                                 </div>
 
                                 <!-- Action Button -->
-                                <form method="POST"
-                                action="{{ route('dashboard.update',$user->id) }}"
-                                id="enroll-form-{{ $course->id }}" >
+                                @if($isEnrolled)
+                                    <button type="button" disabled
+                                            class="w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
+                                        Already Enrolled
+                                    </button>
+                                @else
+                                    <form method="POST"
+                                    action="{{ route('dashboard.update',$user->id) }}"
+                                    id="enroll-form-{{ $course->id }}" >
 
-                                    @csrf
-                                    @method('PATCH')
+                                        @csrf
+                                        @method('PATCH')
 
-                                {{-- Hidden input para ma-include ang course_id --}}
-                                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                    {{-- Hidden input para ma-include ang course_id --}}
+                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
 
-                                <x-confirm-dialog
-                                    title="Please confirm"
-                                    message="Are you sure you want to enroll in {{ $course->title }}?"
-                                    confirmText="Enroll"
-                                    cancelText="Cancel"
-                                    :formId="'enroll-form-' . $course->id">
-                                    <x-slot:trigger>
-                                        <button type="button"
-                                                class="w-full gradient-bg text-white font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0">
-                                            Enroll Now
-                                        </button>
-                                    </x-slot:trigger>
-                                </x-confirm-dialog>
-                                </form>
+                                    <x-confirm-dialog
+                                        title="Please confirm"
+                                        message="Are you sure you want to enroll in {{ $course->title }}?"
+                                        confirmText="Enroll"
+                                        cancelText="Cancel"
+                                        :formId="'enroll-form-' . $course->id">
+                                        <x-slot:trigger>
+                                            <button type="button"
+                                                    class="w-full gradient-bg text-white font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0">
+                                                Enroll Now
+                                            </button>
+                                        </x-slot:trigger>
+                                    </x-confirm-dialog>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                         @endforeach
@@ -294,7 +314,7 @@
                                         required
                                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
                                         placeholder="Enter your skill"
-                                        value="{{ old('skill', $user->skill ?? '') }}">
+                                        value="{{ old('skill', $learner->skill ?? '') }}">
                                 </div>
 
                                 <div>
@@ -304,7 +324,7 @@
                                             rows="4"
                                             required
                                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none transition-all"
-                                            placeholder="Enter your bio">{{ old('bio') }}</textarea>
+                                            placeholder="Enter your bio">{{ old('bio', $learner->bio ?? '') }}</textarea>
                                 </div>
 
                                 <button type="submit"
@@ -317,7 +337,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 max-w-6xl">
                         <div class="bg-blue-50 rounded-xl p-6 text-center hover-subtle">
-                            <div class="text-3xl font-bold text-blue-600 mb-2">{{ isset($course) ? '1' : '0' }}</div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</div>
                             <div class="text-blue-800 font-medium">Courses Enrolled</div>
                         </div>
                         <div class="bg-green-50 rounded-xl p-6 text-center hover-subtle">
@@ -437,7 +457,6 @@
 
             navEnroll.addEventListener('click', function(e) {
                 e.preventDefault();
-                if (navEnroll.classList.contains('pointer-events-none')) return;
                 setActiveNav(navEnroll);
                 showSection(enrollSection);
             });

@@ -12,7 +12,7 @@ class LearnerController extends Controller
     {
         return view('learners.index', [
             "mentor" => 'Rouin',
-            "learners" => Learner::with('course')->orderBy('created_at', 'desc')->paginate(10),
+            "learners" => Learner::with('courses')->orderBy('created_at', 'desc')->paginate(10),
         ]);
     }
 
@@ -24,7 +24,7 @@ class LearnerController extends Controller
         and passes it to the method as a parameter
         Naming Convention (never forget)
         */
-        $learner->with('course');
+        $learner->with('courses');
         return view('learners.show', ['learner' => $learner]);
     }
 
@@ -40,7 +40,7 @@ class LearnerController extends Controller
             'name' => 'required|string|max:255',
             'skill' => 'nullable|string|max:255',
             'bio' => 'nullable|string|max:1000',
-            'course_id' => 'nullable|exists:courses,id',
+            'courses' => 'nullable|exists:courses,id',
         ]);
 
         Learner::create($validated_data);

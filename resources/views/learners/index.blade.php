@@ -14,7 +14,9 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900">Name: {{ $learner->name }} </h3>
                             <p class="text-gray-600">Skill: {{ $learner->skill? $learner->skill: 'None' }}</p>
-                            <p class="text-gray-600">Course: {{ $learner->course? $learner->course->title:'None'}}</p>
+                            @foreach ($learner->courses as $course)
+                                <p class="text-gray-600">Course: {{ $course->title }}</p>
+                            @endforeach
                         </div>
                     </x-card>
                 </li>

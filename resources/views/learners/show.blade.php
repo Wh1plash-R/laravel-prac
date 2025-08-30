@@ -12,9 +12,11 @@
     </ul>
     <div class="mb-6">
       <h3 class="font-semibold text-lg text-blue-500 mb-2">Course Information</h3>
-      <p><span class="font-medium text-gray-600">Course Name:</span> {{ $learner->course->title?? 'None' }} </p>
-      <p><span class="font-medium text-gray-600">Course Description:</span> {{ $learner->course->description ?? 'No description available' }}</p>
-      <p><span class="font-medium text-gray-600">Department:</span> {{ $learner->course->department ?? 'No department available' }}</p>
+      @foreach ($learner->courses as $course)
+        <p><span class="font-medium text-gray-600">Course Name:</span> {{ $course->title?? 'None' }} </p>
+        <p><span class="font-medium text-gray-600">Course Description:</span> {{ $course->description ?? 'No description available' }}</p>
+        <p><span class="font-medium text-gray-600">Department:</span> {{ $course->department ?? 'No department available' }}</p>
+      @endforeach
     </div>
     <form
       action="{{ route('learners.destroy', $learner->id) }}"
