@@ -18,14 +18,12 @@ class LearnerSeeder extends Seeder
             'name' => 'suis',
             'skill' => 'PHP',
             'bio' => 'Yorushika vocalist.',
-            'course_id' => 1,
         ]);
 
         Learner::factory()->create([
             'name' => 'n-buna',
             'skill' => 'PHP',
             'bio' => 'Yorushika composer.',
-            'course_id' => 1,
         ]);
 
         Learner::factory()

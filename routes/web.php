@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RouinController;
 use App\Http\Controllers\LearnerController;
+use App\Http\Controllers\InstructorController;
 
 
 Route::get('/rouin', [RouinController::class, 'rouin'])->name('rouin');
@@ -16,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::patch('/dashboard/{user}', [DashboardController::class, 'update'])->name('dashboard.update');
+    Route::get('/course/{course}', [DashboardController::class, 'showCourse'])->name('course.view');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -29,6 +31,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // important to use destroy instead of delete to match the convention
     Route::get('/learners/{learner}/edit', [LearnerController::class, 'edit'])->name('learners.edit');
     Route::patch('/learners/{learner}', [LearnerController::class, 'update'])->name('learners.update');
+});
+
+// Instructor routes - for instructors managing their courses
+Route::middleware(['auth', 'role:instructor'])->group(function () {
+    Route::get('/instructor/courses', [InstructorController::class, 'index'])->name('instructor.index');
+    Route::get('/instructor/course/{course}', [InstructorController::class, 'courseView'])->name('instructor.course.view');
+    Route::post('/instructor/course/{course}/announcement', [InstructorController::class, 'storeAnnouncement'])->name('instructor.announcement.store');
+    Route::post('/instructor/course/{course}/activity', [InstructorController::class, 'storeActivity'])->name('instructor.activity.store');
 });
 
 

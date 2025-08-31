@@ -12,6 +12,7 @@ class Course extends Model
         'title',
         'description',
         'department',
+        'instructor_id',
     ];
 
     /** @use HasFactory<\Database\Factories\CourseFactory> */
@@ -20,5 +21,10 @@ class Course extends Model
     public function learners()
     {
         return $this->belongsToMany(Learner::class)->withTimestamps();
+    }
+
+    public function instructor()
+    {
+        return $this->belongsTo(Instructor::class, 'instructor_id');
     }
 }

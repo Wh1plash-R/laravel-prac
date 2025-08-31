@@ -64,9 +64,9 @@
     @endif
 
     <div class="flex min-h-screen bg-gray-50">
-        
+
         <!-- Sidebar Section -->
-        <div id="sidebar" 
+        <div id="sidebar"
             class="bg-[#F5F5F5] shadow-lg transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 w-64">
 
             <div class="flex items-center justify-between p-4 border-b border-gray-200" id="sidebar-header">
@@ -160,26 +160,10 @@
                                                 </div>
                                             </div>
 
-                                            <form method="POST"
-                                                action="{{ route('dashboard.update',$user->id) }}"
-                                                id="unenroll-form-{{ $course->id }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="unenroll" value="1">
-                                                <input type="hidden" name="course_id" value="{{ $course->id }}">
-                                                <x-confirm-dialog title="Please confirm"
-                                                    message="Are you sure you want to unenroll from {{ $course->title }}?"
-                                                    confirmText="Unenroll" cancelText="Cancel"
-                                                    loadingMessage="Unenrolling from course..."
-                                                    :formId="'unenroll-form-' . $course->id">
-                                                    <x-slot:trigger>
-                                                        <button type="button"
-                                                            class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
-                                                            Unenroll
-                                                        </button>
-                                                    </x-slot:trigger>
-                                                </x-confirm-dialog>
-                                            </form>
+                                            <a href="{{ route('course.view', $course->id) }}"
+                                           class="w-full gradient-bg text-white font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0 text-center block">
+                                            View Course
+                                        </a>
                                         </div>
                                     </div>
                                     @endforeach
