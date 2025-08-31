@@ -1,14 +1,14 @@
 <x-layout :title="'Register'" :header="false">
     <h1></h1>
-    <div class="h-auto max-w-5xl flex">
+    <div class="h-auto max-w-7xl flex space-x-10">
         <!-- Left Panel - Register Form -->
-        <div class="w-full lg:w-[40%] flex items-center justify-center p-8 shadow-lg border border-gray-200 rounded-2xl">
+        <div class="bg-white w-full lg:w-[35%] flex items-center justify-center p-8 shadow-lg border border-gray-200 rounded-2xl">
             <div class="max-w-md w-full">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h1 class="text-xl mb-5">Logo Wala pa</h1>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-24 mx-auto">
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Create your account</h1>
-                    <p class="text-gray-600 text-sm">Join <b>ヨルシカ's</b> learning app and get started for free.</p>
+                    <p class="text-gray-600 text-sm">Join <b>BeeCourse's</b> learning app and get started for free.</p>
                 </div>
 
                 <!-- Register Form -->
@@ -22,7 +22,7 @@
                             name="name"
                             placeholder="Name"
                             value="{{ old('name') }}"
-                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('name') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#35b5ac] focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('name') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200"
                             required
                             autocomplete="name"
                         >
@@ -38,7 +38,7 @@
                             name="email"
                             placeholder="Email"
                             value="{{ old('email') }}"
-                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('email') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#35b5ac] focus:border-transparent transition-all duration-200"
+                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('email') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200"
                             required
                             autocomplete="username"
                         >
@@ -54,7 +54,7 @@
                             name="password"
                             id="password"
                             placeholder="Password"
-                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#35b5ac] focus:border-transparent transition-all duration-200 pr-12"
+                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12"
                             required
                             autocomplete="new-password"
                         >
@@ -73,7 +73,7 @@
                             name="password_confirmation"
                             id="password_confirmation"
                             placeholder="Confirm Password"
-                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#35b5ac] focus:border-transparent transition-all duration-200 pr-12"
+                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12"
                             required
                             autocomplete="new-password"
                         >
@@ -85,7 +85,7 @@
                     <!-- Submit -->
                     <button
                         type="submit"
-                        class="w-full bg-[#35b5ac] text-white py-4 rounded-2xl font-semibold hover:bg-[#35b5ac]/80 transition-colors duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                        class="w-full bg-[#faa125] text-white py-4 rounded-2xl font-semibold hover:bg-[#faa125]/80 transition-colors duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                         x-bind:disabled="loading"
                     >
                         <span x-show="!loading">Register</span>
@@ -102,7 +102,7 @@
                     <div class="text-center text-sm mt-6">
                         <p class="text-gray-600">
                             Already registered?
-                            <a href="{{ route('welcome') }}" class="text-[#35b5ac] hover:text-[#35b5ac]/80 font-semibold transition-colors">Log in</a>
+                            <a href="{{ route('welcome') }}" class="text-[#faa125] hover:text-[#faa125]/80 font-semibold transition-colors">Log in</a>
                         </p>
                     </div>
                 </form>
@@ -110,7 +110,7 @@
         </div>
 
         <!-- Right Panel - Image -->
-        <div class="hidden lg:flex w-[60%] items-center justify-center ">
+        <div class="hidden lg:flex w-[65%] items-center justify-center ">
             <img src="{{ asset('images/welcomeImage.png') }}" alt="Logo" class="scale-100">
         </div>
     </div>

@@ -14,7 +14,7 @@
                 <!-- Header -->
                 <div class="text-center mb-8">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-24 mx-auto">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back!</h1>
+                    <h1 class="mt-2 text-3xl font-bold text-gray-900 mb-2">Welcome to <span class="text-[#faa125]">Bee</span>Course!</h1>
                     <p class="text-left text-gray-600 text-sm">Simplify your workflow and boost your productivity with <b>BeeCourse's</b> learning app. Get started for free.</p>
                 </div>
 
