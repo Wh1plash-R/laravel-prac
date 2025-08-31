@@ -286,9 +286,17 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
                         <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                             <div class="flex items-center mb-6">
-                                <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
-                                    {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
-                                </div>
+                                @if($user->hasProfilePicture())
+                                    <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 mr-4">
+                                        <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
+                                             alt="Profile picture"
+                                             class="w-full h-full object-cover">
+                                    </div>
+                                @else
+                                    <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
+                                        {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
+                                    </div>
+                                @endif
                                 <div>
                                     <h4 class="text-xl font-bold text-gray-900">{{ Auth::user()->name }}</h4>
                                     <p class="text-gray-500">iba pa info</p>
@@ -307,6 +315,25 @@
                                     {{isset($learner->skill) ? $learner->skill : 'None';}}</span>
                                 </div>
                             </div>
+
+                            <!-- Profile Picture Display -->
+                            @if($user->hasProfilePicture())
+                            <div class="mb-6">
+                                <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Profile Picture
+                                </h5>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 mx-auto">
+                                        <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
+                                             alt="Profile picture"
+                                             class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
 
                             <div>
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
@@ -333,10 +360,17 @@
                             <form id="profile-form"
                                 method="POST"
                                 action="{{ route('dashboard.update', $user->id) }}"
+                                enctype="multipart/form-data"
                                 class="space-y-6">
 
                                 @csrf
                                 @method('PATCH')
+
+                                <!-- Profile Picture Upload -->
+                                <x-profile-picture-upload
+                                    name="profile_picture"
+                                    :currentImage="$user->profile_picture"
+                                    label="Profile Picture" />
 
                                 <div>
                                     <label for="skill" class="block text-gray-700 font-semibold mb-2">Update Skill</label>

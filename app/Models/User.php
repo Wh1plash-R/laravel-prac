@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'profile_picture',
     ];
 
     /**
@@ -80,5 +81,24 @@ class User extends Authenticatable
     public function isInstructor()
     {
         return $this->hasRole('instructor');
+    }
+
+    /**
+     * Get the profile picture as base64 encoded string
+     */
+    public function getProfilePictureBase64()
+    {
+        if ($this->profile_picture) {
+            return base64_encode($this->profile_picture);
+        }
+        return null;
+    }
+
+    /**
+     * Check if user has a profile picture
+     */
+    public function hasProfilePicture()
+    {
+        return !empty($this->profile_picture);
     }
 }

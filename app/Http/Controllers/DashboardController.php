@@ -89,8 +89,16 @@ class DashboardController extends Controller
             $request->validate([
                 'skill' => 'required|string|max:255',
                 'bio' => 'required|string|max:500',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
             ]);
-            $learner->update($request->all());
+
+            // Handle profile picture upload
+            if ($request->hasFile('profile_picture')) {
+                $imageData = file_get_contents($request->file('profile_picture'));
+                $user->update(['profile_picture' => $imageData]);
+            }
+
+            $learner->update($request->only(['skill', 'bio']));
             return redirect()->route('dashboard')->with('success', 'Profile updated successfully.');
         }
     }
