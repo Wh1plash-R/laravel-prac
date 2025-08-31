@@ -87,9 +87,8 @@
                             d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                     <!-- close button (shows when expanded) -->
-                    <svg id="close-icon" class="w-5 h-5 text-gray-600 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
+                    <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        class="lucide lucide-panel-left-icon lucide-panel-left"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
                     </svg>
                 </button>
             </div>
@@ -97,15 +96,15 @@
             <!-- Navigation -->
             <nav class="flex-1 p-4 space-y-2">
                 <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#fdd666] text-[#333] transition-colors active group">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard">
+                        <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
                     </svg>
                     <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Dashboard</span>
                 </a>
 
                 <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open-icon lucide-book-open">
+                        <path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
                     </svg>
                     <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Enroll in Courses</span>
                 </a>
@@ -156,7 +155,7 @@
                                                 </svg>
                                             </div>
 
-                                            <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
+                                            <h4 class="font-bold text-lg text-gray-900 mb-2 course-title">{{$course->title}}</h4>
                                             <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
 
                                             <div
@@ -346,6 +345,25 @@
                                 </div>
                             </div>
 
+                            <!-- Profile Picture Display -->
+                            @if($user->hasProfilePicture())
+                            <div class="mb-6">
+                                <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Profile Picture
+                                </h5>
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 mx-auto">
+                                        <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
+                                             alt="Profile picture"
+                                             class="w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+
                             <div>
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -358,7 +376,7 @@
                                     {{isset($learner->bio) ? $learner->bio : 'None';}}</span>
                                 </div>
                             </div>
-                            <div class="flex justify-end my-4">
+                            <div class="flex justify-end mb-4">
                             <button id="edit-profile-btn"
                                     class="px-4 py-2 gradient-bg text-[#333] font-semibold rounded-lg shadow hover:opacity-90 transition">
                                 Edit Profile
@@ -412,7 +430,7 @@
                                     :formId="'profile-form'">
                                 <x-slot:trigger>
                                     <button type="button"
-                                        class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all border-0 mt-2">
+                                        class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all border-0">
                                     Update Profile
                                 </button>
                                 </x-slot:trigger>
