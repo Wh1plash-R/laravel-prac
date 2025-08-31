@@ -7,7 +7,7 @@
 
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #faa125 0%, #fc662f 100%);
+            background: linear-gradient(135deg, #fdd666 0%, #faa125 100%);
         }
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -15,6 +15,15 @@
 
         .nav-item:hover:not(.active) {
             background-color: #e5e7eb;
+        }
+
+        .course-title {
+            height: 3.5rem; /* Exactly 2 lines at text-lg */
+            line-height: 1.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         /* Hover subtle effect for cards */
@@ -87,25 +96,25 @@
 
             <!-- Navigation -->
             <nav class="flex-1 p-4 space-y-2">
-                <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#faa125] text-white transition-colors active group">
+                <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#fdd666] text-[#333] transition-colors active group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
-                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">My Courses</span>
+                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Dashboard</span>
                 </a>
 
                 <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Enroll in Courses</span>
+                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Enroll in Courses</span>
                 </a>
 
                 <a href="#" id="nav-profile" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
-                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Personal Information</span>
+                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Personal Information</span>
                 </a>
             </nav>
         </div>
@@ -116,12 +125,18 @@
             <div id="my-courses-section" class="h-full flex flex-col lg:flex-row gap-5">
                 <!-- Left Section (Main content & courses) -->
                 <div class="flex-1">
-                    <div class="gradient-bg p-8 text-white rounded-lg">
-                        <h3 class="text-3xl font-bold mb-2">My Courses</h3>
-                        <p class="text-white/90">Manage and track your enrolled courses</p>
+                    <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-2">My Courses</h3>
+                            <p class="text-[#333]/90">Manage and track your enrolled courses</p>
+                        </div>
+                        <div>
+                            <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
+
+                        </div>
                     </div>
 
-                    <div class="p-8">
+                    <div class="pt-8">
                         <div class="grid grid-cols-1 gap-6">
                             <!-- Main Content Area -->
                             <div>
@@ -161,7 +176,7 @@
                                             </div>
 
                                             <a href="{{ route('course.view', $course->id) }}"
-                                           class="w-full gradient-bg text-white font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0 text-center block">
+                                           class="w-full gradient-bg text-[#333] font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0 text-center block">
                                             View Course
                                         </a>
                                         </div>
@@ -200,22 +215,30 @@
             </div>
 
 
-            <!-- Enroll Section - Full Width -->
+               <!-- Enroll Section - Full Width -->
             <div id="enroll-section" class="hidden h-full">
-                <div class="gradient-bg p-8 text-white rounded-lg">
-                    <h3 class="text-3xl font-bold mb-2">Available Courses</h3>
-                    <p class="text-white/90">Discover and enroll in new courses</p>
-                </div>
+               
+                <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
+                        <div>
+                            <h3 class="text-3xl font-bold mb-2">Available Courses</h3>
+                            <p class="text-[#333]/90">Discover and enroll in new courses</p>
+                        </div>
+                        <div>
+                            <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
 
-                <div class="p-8">
+                        </div>
+                    </div>
+               
+
+                <div class="pt-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         @foreach ($courses as $course)
                         @php
                             $isEnrolled = $learner_courses && $learner_courses->contains('id', $course->id);
                         @endphp
-                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden {{ $isEnrolled ? 'opacity-75' : '' }}">
-                            <div class="p-6">
-                                <div class="w-12 h-12 {{ $isEnrolled ? 'bg-green-100' : 'bg-blue-100' }} rounded-lg flex items-center justify-center mb-4">
+                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden flex flex-col h-full {{ $isEnrolled ? 'opacity-75' : '' }}">
+                            <div class="p-6 flex flex-col h-full">
+                                <div class="w-12 h-12 {{ $isEnrolled ? 'bg-green-100' : 'bg-blue-100' }} rounded-lg flex items-center justify-center mb-4 flex-shrink-0">
                                     @if($isEnrolled)
                                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -227,47 +250,49 @@
                                     @endif
                                 </div>
 
-                                <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
-                                <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{$course->description}}</p>
+                                <h4 class="font-bold text-lg text-gray-900 mb-2 flex-shrink-0 course-title">{{$course->title}}</h4>
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">{{$course->description}}</p>
 
-                                <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                                <div class="flex items-center justify-between text-sm text-gray-500 mb-4 flex-shrink-0">
                                     <span>12 Weeks</span>
                                     <span>⭐ 4.8</span>
                                 </div>
 
                                 <!-- Action Button -->
-                                @if($isEnrolled)
-                                    <button type="button" disabled
-                                            class="w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
-                                        Already Enrolled
-                                    </button>
-                                @else
-                                    <form method="POST"
-                                    action="{{ route('dashboard.update',$user->id) }}"
-                                    id="enroll-form-{{ $course->id }}" >
+                                <div class="mt-auto flex-shrink-0">
+                                    @if($isEnrolled)
+                                        <button type="button" disabled
+                                                class="w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
+                                            Already Enrolled
+                                        </button>
+                                    @else
+                                        <form method="POST"
+                                        action="{{ route('dashboard.update',$user->id) }}"
+                                        id="enroll-form-{{ $course->id }}" >
 
-                                        @csrf
-                                        @method('PATCH')
+                                            @csrf
+                                            @method('PATCH')
 
-                                    {{-- Hidden input para ma-include ang course_id --}}
-                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                        {{-- Hidden input para ma-include ang course_id --}}
+                                        <input type="hidden" name="course_id" value="{{ $course->id }}">
 
-                                    <x-confirm-dialog
-                                        title="Please confirm"
-                                        message="Are you sure you want to enroll in {{ $course->title }}?"
-                                        confirmText="Enroll"
-                                        cancelText="Cancel"
-                                        loadingMessage="Enrolling in course..."
-                                        :formId="'enroll-form-' . $course->id">
-                                        <x-slot:trigger>
-                                            <button type="button"
-                                                    class="w-full gradient-bg text-white font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0">
-                                                Enroll Now
-                                            </button>
-                                        </x-slot:trigger>
-                                    </x-confirm-dialog>
-                                    </form>
-                                @endif
+                                        <x-confirm-dialog
+                                            title="Please confirm"
+                                            message="Are you sure you want to enroll in {{ $course->title }}?"
+                                            confirmText="Enroll"
+                                            cancelText="Cancel"
+                                            loadingMessage="Enrolling in course..."
+                                            :formId="'enroll-form-' . $course->id">
+                                            <x-slot:trigger>
+                                                <button type="button"
+                                                        class="w-full gradient-bg text-[#010101] font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0">
+                                                    Enroll Now
+                                                </button>
+                                            </x-slot:trigger>
+                                        </x-confirm-dialog>
+                                        </form>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                         @endforeach
@@ -277,12 +302,17 @@
 
             <!-- Profile Section - Full Width -->
             <div id="profile-section" class="hidden h-full">
-                <div class="gradient-bg p-8 text-white  rounded-lg">
-                    <h3 class="text-3xl font-bold mb-2">My Profile</h3>
-                    <p class="text-white/90">Manage your account and preferences</p>
-                </div>
+                <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2">My Profile</h3>
+                        <p class="text-[#333]/90">Manage your account and preferences</p>
+                    </div>
+                    <div>
+                        <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
 
-                <div class="p-8">
+                    </div>
+                </div>
+                <div class="pt-8">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
                         <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                             <div class="flex items-center mb-6">
@@ -330,7 +360,7 @@
                             </div>
                             <div class="flex justify-end my-4">
                             <button id="edit-profile-btn"
-                                    class="px-4 py-2 gradient-bg text-white font-semibold rounded-lg shadow hover:opacity-90 transition">
+                                    class="px-4 py-2 gradient-bg text-[#333] font-semibold rounded-lg shadow hover:opacity-90 transition">
                                 Edit Profile
                             </button>
                         </div>
@@ -504,11 +534,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function setActiveNav(activeNav) {
         const navItems = [navMyCourses, navEnroll, navProfile];
         navItems.forEach(nav => {
-            nav.classList.remove('bg-[#faa125]', 'text-white', 'active');
+            nav.classList.remove('bg-[#fdd666]', 'text-[#333]', 'active');
             nav.classList.add('text-gray-700');
         });
         activeNav.classList.remove('text-gray-700');
-        activeNav.classList.add('bg-[#faa125]', 'text-white', 'active');
+        activeNav.classList.add('bg-[#fdd666]', 'text-[#333]', 'active');
     }
 
     function showSection(targetSection) {
