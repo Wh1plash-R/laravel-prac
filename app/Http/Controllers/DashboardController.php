@@ -46,7 +46,7 @@ class DashboardController extends Controller
             return redirect()->route('dashboard')->with('error', 'You are not enrolled in this course.');
         }
 
-        $course->load('instructor');
+        $course->load(['instructor', 'announcements', 'assignments']);
 
         return view('learners.course-view', compact('course', 'user', 'learner'));
     }

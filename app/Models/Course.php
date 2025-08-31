@@ -27,4 +27,14 @@ class Course extends Model
     {
         return $this->belongsTo(Instructor::class, 'instructor_id');
     }
+
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany(Assignment::class);
+    }
 }

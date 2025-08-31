@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             InstructorSeeder::class,
             CourseSeeder::class,
             LearnerSeeder::class,
+            AnnouncementSeeder::class,
+            AssignmentSeeder::class,
         ]);
 
 

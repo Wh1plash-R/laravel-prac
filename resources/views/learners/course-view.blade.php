@@ -185,31 +185,25 @@
                             <h2 class="text-2xl font-bold text-gray-900">Announcements</h2>
                         </div>
                         <div class="space-y-4">
-                            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
-                                <div class="flex items-start">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-blue-900">Welcome to the Course!</h4>
-                                        <p class="text-blue-800 text-sm mt-1">
-                                            We're excited to have you join us. Please review the course materials and don't hesitate to ask questions.
-                                        </p>
-                                        <p class="text-blue-600 text-xs mt-2">Posted 2 days ago</p>
+                            @forelse($course->announcements()->orderBy('created_at', 'desc')->get() as $announcement)
+                                <div class="bg-{{ $announcement->type_color }}-50 border-l-4 border-{{ $announcement->type_color }}-400 p-4 rounded-r-lg">
+                                    <div class="flex items-start">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-{{ $announcement->type_color }}-900">{{ $announcement->title }}</h4>
+                                            <p class="text-{{ $announcement->type_color }}-800 text-sm mt-1">
+                                                {{ $announcement->description }}
+                                            </p>
+                                            <p class="text-{{ $announcement->type_color }}-600 text-xs mt-2">
+                                                Posted {{ $announcement->created_at->diffForHumans() }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
-                                <div class="flex items-start">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-yellow-900">Assignment Due Reminder</h4>
-                                        <p class="text-yellow-800 text-sm mt-1">
-                                            Don't forget that Assignment 1 is due next week. Make sure to submit it on time.
-                                        </p>
-                                        <p class="text-yellow-600 text-xs mt-2">Posted 1 week ago</p>
-                                    </div>
+                            @empty
+                                <div class="text-center py-4">
+                                    <p class="text-gray-500 text-sm">No announcements have been posted yet.</p>
                                 </div>
-                            </div>
-                            <div class="text-center py-4">
-                                <p class="text-gray-500 text-sm">More announcements will appear here as they are posted.</p>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
 
@@ -224,49 +218,32 @@
                             <h2 class="text-2xl font-bold text-gray-900">Assignments</h2>
                         </div>
                         <div class="space-y-4">
-                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-gray-900">Assignment 1: Introduction</h4>
-                                        <p class="text-gray-600 text-sm mt-1">Complete the introductory exercises and submit your responses.</p>
-                                        <div class="flex items-center mt-2 text-xs text-gray-500">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            Due: Next Friday
+                            @forelse($course->assignments()->orderBy('due_date', 'asc')->get() as $assignment)
+                                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors {{ $assignment->status === 'locked' ? 'opacity-60' : '' }}">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-gray-900">{{ $assignment->title }}</h4>
+                                            <p class="text-gray-600 text-sm mt-1">{{ $assignment->description }}</p>
+                                            <div class="flex items-center mt-2 text-xs text-gray-500">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                Due: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }}
+                                                <span class="ml-2">• {{ $assignment->points }} points</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $assignment->status_color }}-100 text-{{ $assignment->status_color }}-800">
+                                                {{ $assignment->status_text }}
+                                            </span>
                                         </div>
                                     </div>
-                                    <div class="ml-4">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            Pending
-                                        </span>
-                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors opacity-60">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-gray-900">Assignment 2: Project Work</h4>
-                                        <p class="text-gray-600 text-sm mt-1">Work on your main project and submit the first milestone.</p>
-                                        <div class="flex items-center mt-2 text-xs text-gray-500">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            Due: In 3 weeks
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                                            Locked
-                                        </span>
-                                    </div>
+                            @empty
+                                <div class="text-center py-4">
+                                    <p class="text-gray-500 text-sm">No assignments have been posted yet.</p>
                                 </div>
-                            </div>
-
-                            <div class="text-center py-4">
-                                <p class="text-gray-500 text-sm">More assignments will be unlocked as you progress through the course.</p>
-                            </div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -277,42 +254,157 @@
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Course Statistics</h3>
                         <div class="space-y-4">
+                            @php
+                                $totalAssignments = $course->assignments()->count();
+                                $completedAssignments = $course->assignments()->where('status', 'completed')->count();
+                                $activeAssignments = $course->assignments()->where('status', 'active')->count();
+                                $completionPercentage = $totalAssignments > 0 ? round(($completedAssignments / $totalAssignments) * 100) : 0;
+
+                                // Find next deadline (earliest active assignment)
+                                $nextDeadline = $course->assignments()
+                                    ->where('status', 'active')
+                                    ->where('due_date', '>', now())
+                                    ->orderBy('due_date', 'asc')
+                                    ->first();
+                            @endphp
+
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Completion</span>
-                                <span class="font-semibold text-gray-900">25%</span>
+                                <span class="font-semibold text-gray-900">{{ $completionPercentage }}%</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Assignments</span>
-                                <span class="font-semibold text-gray-900">0/2</span>
+                                <span class="font-semibold text-gray-900">{{ $completedAssignments }}/{{ $totalAssignments }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-600">Next Deadline</span>
-                                <span class="font-semibold text-red-600">5 days</span>
+                                <span class="text-gray-600">Active</span>
+                                <span class="font-semibold text-blue-600">{{ $activeAssignments }}</span>
                             </div>
+                            @if($nextDeadline)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Next Deadline</span>
+                                    @php
+                                        $now = now();
+                                        $dueDate = $nextDeadline->due_date;
+                                        $isOverdue = $dueDate < $now;
+
+                                        if ($isOverdue) {
+                                            $diff = $now->diff($dueDate);
+                                            $daysOverdue = $diff->days;
+                                            $hoursOverdue = $diff->h;
+                                        } else {
+                                            $diff = $dueDate->diff($now);
+                                            $daysUntilDue = $diff->days;
+                                            $hoursUntilDue = $diff->h;
+                                        }
+                                    @endphp
+                                    <span class="font-semibold {{ $isOverdue ? 'text-red-600' : ($daysUntilDue <= 3 ? 'text-orange-600' : 'text-green-600') }}">
+                                        @if($isOverdue)
+                                            @if($daysOverdue > 0)
+                                                {{ $daysOverdue }}d {{ $hoursOverdue }}h overdue
+                                            @else
+                                                {{ $hoursOverdue }}h overdue
+                                            @endif
+                                        @elseif($daysUntilDue == 0)
+                                            @if($hoursUntilDue > 0)
+                                                {{ $hoursUntilDue }}h
+                                            @else
+                                                < 1h
+                                            @endif
+                                        @elseif($daysUntilDue == 1)
+                                            1d {{ $hoursUntilDue }}h
+                                        @else
+                                            {{ $daysUntilDue }}d {{ $hoursUntilDue }}h
+                                        @endif
+                                    </span>
+                                </div>
+                            @else
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Next Deadline</span>
+                                    <span class="font-semibold text-gray-500">None</span>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
-                    <!-- Finished Activity -->
+                    <!-- Recent Announcements -->
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Finished Activities</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Announcements</h3>
                         <div class="space-y-3 text-sm">
-                            <div class="flex items-start">
-                                <div class="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-gray-700">Activity 1</p>
-                                    <p class="text-gray-500 text-xs">2 days ago</p>
+                            @forelse($course->announcements()->orderBy('created_at', 'desc')->limit(3)->get() as $announcement)
+                                <div class="flex items-start">
+                                    <div class="w-2 h-2 bg-{{ $announcement->type_color }}-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-700 font-medium">{{ Str::limit($announcement->title, 30) }}</p>
+                                        <p class="text-gray-500 text-xs">{{ $announcement->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-2">
+                                    <p class="text-gray-500 text-xs">No announcements yet</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Assignments -->
+                    {{-- <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Assignments</h3>
+                        <div class="space-y-3 text-sm">
+                            @forelse($course->assignments()->where('status', 'active')->orderBy('due_date', 'asc')->limit(3)->get() as $assignment)
+                                <div class="flex items-start">
+                                    <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                    <div class="flex-1">
+                                        <p class="text-gray-700 font-medium">{{ Str::limit($assignment->title, 30) }}</p>
+                                        <p class="text-gray-500 text-xs">
+                                            Due {{ $assignment->due_date->format('M j') }}
+                                            @php
+                                                $daysUntilDue = now()->diffInDays($assignment->due_date, false);
+                                            @endphp
+                                            @if($daysUntilDue == 0)
+                                                <span class="text-red-600 font-medium">(Today)</span>
+                                            @elseif($daysUntilDue == 1)
+                                                <span class="text-orange-600 font-medium">(Tomorrow)</span>
+                                            @elseif($daysUntilDue <= 3)
+                                                <span class="text-orange-600 font-medium">({{ $daysUntilDue }} days)</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-2">
+                                    <p class="text-gray-500 text-xs">No upcoming assignments</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div> --}}
+
+                    <!-- Course Progress -->
+                    <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                    <span>Course Progress</span>
+                                    <span>{{ $completionPercentage }}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="gradient-bg h-2 rounded-full transition-all duration-300" style="width: {{ $completionPercentage }}%"></div>
                                 </div>
                             </div>
-                            <div class="flex items-start">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-gray-700">Activity 2</p>
-                                    <p class="text-gray-500 text-xs">1 day ago</p>
+
+                            @if($totalAssignments > 0)
+                                <div class="grid grid-cols-2 gap-4 text-center">
+                                    <div class="bg-green-50 rounded-lg p-3">
+                                        <div class="text-2xl font-bold text-green-600">{{ $completedAssignments }}</div>
+                                        <div class="text-xs text-green-700">Completed</div>
+                                    </div>
+                                    <div class="bg-blue-50 rounded-lg p-3">
+                                        <div class="text-2xl font-bold text-blue-600">{{ $activeAssignments }}</div>
+                                        <div class="text-xs text-blue-700">Active</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="text-center py-2">
-                                <p class="text-gray-500 text-xs">More activity will appear as you progress</p>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

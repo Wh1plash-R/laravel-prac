@@ -87,7 +87,7 @@
                             d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                     <!-- close button (shows when expanded) -->
-                    <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                    <svg id="close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-panel-left-icon lucide-panel-left"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/>
                     </svg>
                 </button>
@@ -207,8 +207,8 @@
                 <!-- Right Sidebar -->
                 <div class="lg:w-1/4 space-y-6 flex flex-col sm:flex-col lg:flex-col">
                     <x-calendar-card class="flex-1" />
-                    @if ($course)
-                        <x-pending-assignments-card class="flex-1" />
+                    @if ($learner_courses && $learner_courses->count() > 0)
+                        <x-pending-assignments-card :learner-courses="$learner_courses" class="flex-1" />
                     @endif
                 </div>
             </div>
@@ -216,7 +216,7 @@
 
                <!-- Enroll Section - Full Width -->
             <div id="enroll-section" class="hidden h-full">
-               
+
                 <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
                         <div>
                             <h3 class="text-3xl font-bold mb-2">Available Courses</h3>
@@ -227,7 +227,7 @@
 
                         </div>
                     </div>
-               
+
 
                 <div class="pt-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -328,7 +328,7 @@
                                 @endif
                                 <div>
                                     <h4 class="text-xl font-bold text-gray-900">{{ Auth::user()->name }}</h4>
-                                    <p class="text-gray-500">iba pa info</p>
+                                    <p class="text-gray-500">{{ Auth::user()->email }}</p>
                                 </div>
                             </div>
 
@@ -340,13 +340,13 @@
                                     Skills
                                 </h5>
                                 <div class="bg-gray-50 p-4 rounded-lg">
-                                    <span class="text-gray-700" id="profile-skill">
-                                    {{isset($learner->skill) ? $learner->skill : 'None';}}</span>
+                                    <span class="text-gray-700">
+                                    {{isset($learner->skill) ? $learner->skill : 'None'}}</span>
                                 </div>
                             </div>
 
                             <!-- Profile Picture Display -->
-                            @if($user->hasProfilePicture())
+                            {{-- @if($user->hasProfilePicture())
                             <div class="mb-6">
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -362,7 +362,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @endif
+                            @endif --}}
 
                             <div>
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
@@ -371,71 +371,11 @@
                                     </svg>
                                     Bio
                                 </h5>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <span class="text-gray-700" id="profile-bio">
-                                    {{isset($learner->bio) ? $learner->bio : 'None';}}</span>
+                                                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <span class="text-gray-700">
+                                    {{isset($learner->bio) ? $learner->bio : 'None'}}</span>
                                 </div>
                             </div>
-                            <div class="flex justify-end mb-4">
-                            <button id="edit-profile-btn"
-                                    class="px-4 py-2 gradient-bg text-[#333] font-semibold rounded-lg shadow hover:opacity-90 transition">
-                                Edit Profile
-                            </button>
-                        </div>
-                    </div>
-
-                        <div id="update-profile-card" class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle hidden">
-                            <h4 class="text-xl font-bold text-gray-900 mb-6">Update Profile</h4>
-                            <form id="profile-form"
-                                method="POST"
-                                action="{{ route('dashboard.update', $user->id) }}"
-                                enctype="multipart/form-data"
-                                class="space-y-6">
-
-                                @csrf
-                                @method('PATCH')
-
-                                <!-- Profile Picture Upload -->
-                                <x-profile-picture-upload
-                                    name="profile_picture"
-                                    :currentImage="$user->profile_picture"
-                                    label="Profile Picture" />
-
-                                <div>
-                                    <label for="skill" class="block text-gray-700 font-semibold mb-2">Update Skill</label>
-                                    <input type="text"
-                                        id="skill"
-                                        name="skill"
-                                        required
-                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-                                        placeholder="Enter your skill"
-                                        value="{{ old('skill', $learner->skill ?? '') }}">
-                                </div>
-
-                                <div>
-                                    <label for="bio" class="block text-gray-700 font-semibold mb-2">Update Bio</label>
-                                    <textarea id="bio"
-                                            name="bio"
-                                            rows="4"
-                                            required
-                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none transition-all"
-                                            placeholder="Enter your bio">{{ old('bio', $learner->bio ?? '') }}</textarea>
-                                </div>
-                                <x-confirm-dialog
-                                    title="Please confirm"
-                                    message="Are you sure you want to update your profile?"
-                                    confirmText="Update"
-                                    cancelText="Cancel"
-                                    loadingMessage="Updating profile..."
-                                    :formId="'profile-form'">
-                                <x-slot:trigger>
-                                    <button type="button"
-                                        class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all border-0">
-                                    Update Profile
-                                </button>
-                                </x-slot:trigger>
-                                </x-confirm-dialog>
-                            </form>
                         </div>
                     </div>
 
@@ -569,18 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
     navMyCourses.addEventListener('click', e => { e.preventDefault(); setActiveNav(navMyCourses); showSection(myCoursesSection); });
     navEnroll.addEventListener('click', e => { e.preventDefault(); setActiveNav(navEnroll); showSection(enrollSection); });
     navProfile.addEventListener('click', e => { e.preventDefault(); setActiveNav(navProfile); showSection(profileSection); });
-
-    // Profile edit toggle
-    const editProfileBtn = document.getElementById('edit-profile-btn');
-    const updateProfileCard = document.getElementById('update-profile-card');
-    if (editProfileBtn && updateProfileCard) {
-        editProfileBtn.addEventListener('click', function() {
-            updateProfileCard.classList.toggle('hidden');
-            if (!updateProfileCard.classList.contains('hidden')) {
-                updateProfileCard.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
 });
 </script>
 
