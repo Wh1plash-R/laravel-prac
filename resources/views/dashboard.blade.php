@@ -13,8 +13,35 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
         }
 
+        .nav-item:hover:not(.active) {
+            background-color: #e5e7eb;
+        }
 
+        /* Hover subtle effect for cards */
+        .hover-subtle {
+            transition: all 0.3s ease;
+        }
 
+        .hover-subtle:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Fade in animation for flash messages */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
     </style>
 
     @if (session('success'))
@@ -38,7 +65,7 @@
 
     <div class="flex min-h-screen bg-gray-50">
         <!-- Sidebar -->
-        <div id="sidebar" class="bg-white shadow-lg transition-all duration-300 ease-in-out w-64 flex flex-col border-r border-gray-200">
+        <div id="sidebar" class="bg-[#F5F5F5] shadow-lg transition-all duration-300 ease-in-out w-64 flex flex-col border-r border-gray-200">
             <div class="flex items-center justify-between p-4 border-b border-gray-200">
                 <h3 id="sidebar-title" class="text-lg font-semibold text-gray-800 transition-all duration-300">Navigation</h3>
                 <button id="sidebar-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
@@ -47,7 +74,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
-                    <!-- opnn button -->
+                    <!-- open button -->
                     <svg id="hamburger-icon" class="w-5 h-5 text-gray-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
@@ -57,21 +84,21 @@
 
             <!-- Navigation -->
             <nav class="flex-1 p-4 space-y-2">
-                <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#35b5ac] text-white transition-colors group ">
+                <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#35b5ac] text-white transition-colors active group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
                     <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden">My Courses</span>
                 </a>
 
-                <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors group">
+                <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
                     <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden">Enroll in Courses</span>
                 </a>
 
-                <a href="#" id="nav-profile" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors group ">
+                <a href="#" id="nav-profile" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
@@ -376,8 +403,6 @@
       </div>
     @endif
 
-
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sidebar elements
@@ -416,23 +441,6 @@
                         label.classList.add('ml-3');
                     });
                     document.querySelectorAll('.nav-item').forEach(item => {
-                        item.classList.remove('justify-center');
-                    });
-
-                    closeIcon.classList.remove('hidden');
-                    hamburgerIcon.classList.add('hidden');
-                } else {
-                    sidebar.classList.remove('w-64');
-                    sidebar.classList.add('w-16');
-                    sidebarTitle.classList.add('opacity-0', 'w-0', 'hidden');
-                    sidebarHeader.classList.remove('justify-between');
-                    sidebarHeader.classList.add('justify-center');
-
-                    navLabels.forEach(label => {
-                        label.classList.add('opacity-0', 'w-0', 'ml-0');
-                        label.classList.remove('ml-3');
-                    });
-                    document.querySelectorAll('.nav-item').forEach(item => {
                         item.classList.add('justify-center');
                     });
 
@@ -444,12 +452,12 @@
             function setActiveNav(activeNav) {
                 const navItems = [navMyCourses, navEnroll, navProfile];
                 navItems.forEach(nav => {
-                    nav.classList.remove('bg-[#35b5ac]', 'text-white');
-                    nav.classList.add('text-gray-700', 'hover:bg-gray-100');
+                    nav.classList.remove('bg-[#35b5ac]', 'text-white', 'active');
+                    nav.classList.add('text-gray-700');
                 });
 
-                activeNav.classList.remove('text-gray-700', 'hover:bg-gray-100');
-                activeNav.classList.add('bg-[#35b5ac]', 'text-white');
+                activeNav.classList.remove('text-gray-700');
+                activeNav.classList.add('bg-[#35b5ac]', 'text-white', 'active');
             }
 
             function showSection(targetSection) {

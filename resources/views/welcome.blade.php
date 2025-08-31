@@ -1,21 +1,21 @@
 <x-layout :title="'Welcome'" :header="false">
     <h1></h1>
-    <div class="h-auto max-w-5xl flex">
+    <div class="h-auto max-w-7xl flex space-x-10">
         <!-- Left Panel - Image -->
-        <div class="hidden lg:flex w-[60%] items-center justify-center ">
+        <div class="hidden lg:flex w-[65%] items-center justify-center ">
 
             <img src="{{ asset('images/welcomeImage.png') }}" alt="Logo" class="scale-100">
 
         </div>
 
         <!-- Right Panel - Login Form -->
-        <div class="w-full lg:w-[40%] flex items-center justify-center p-8 shadow-lg border border-gray-200 rounded-2xl">
+        <div class="w-full lg:w-[35%] flex items-center justify-center p-8 shadow-lg border bg-white border-gray-200 rounded-2xl">
             <div class="max-w-md w-full">
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h1 class="text-xl mb-5">Logo Wala pa</h1>
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-24 mx-auto">
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back!</h1>
-                    <p class="text-gray-600 text-sm">Simplify your workflow and boost your productivity with <b>ヨルシカ's</b> learning app. Get started for free.</p>
+                    <p class="text-left text-gray-600 text-sm">Simplify your workflow and boost your productivity with <b>BeeCourse's</b> learning app. Get started for free.</p>
                 </div>
 
                 <!-- Login Form -->
@@ -29,7 +29,7 @@
                             name="email"
                             placeholder="Email"
                             value="{{ old('email') }}"
-                            class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#35b5ac] focus:border-transparent transition-all duration-200 @error('email') border-red-500 @enderror"
+                            class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 @error('email') border-red-500 @enderror"
                             required
                         >
                         @error('email')
@@ -44,7 +44,7 @@
                             name="password"
                             id="password"
                             placeholder="Password"
-                            class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#35b5ac] focus:border-transparent transition-all duration-200 pr-12 @error('password') border-red-500 @enderror"
+                            class="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12 @error('password') border-red-500 @enderror"
                             required
                         >
                         <button type="button" id="togglePassword" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -58,11 +58,11 @@
                     <!-- Remember Me & Forgot Password -->
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 text-[#35b5ac] shadow-sm g focus:ring-blue-200 focus:ring-opacity-0">
+                            <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 text-[#faa125] shadow-sm g focus:ring-blue-200 focus:ring-opacity-0">
                             <label for="remember" class="ml-2 text-sm text-gray-600">Remember me</label>
                         </div>
                         @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="text-sm text-[#35b5ac] hover:text-[#35b5ac]/80 transition-colors">
+                            <a href="{{ route('password.request') }}" class="text-sm text-[#faa125] hover:text-[#faa125]/80 transition-colors">
                                 Forgot Password?
                             </a>
                         @endif
@@ -71,7 +71,7 @@
                     <!-- Login Button -->
                     <button
                         type="submit"
-                        class="w-full bg-[#35b5ac] text-white py-4 rounded-2xl font-semibold hover:bg-[#35b5ac]/80 transition-colors duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
+                        class="w-full bg-[#faa125] text-white py-4 rounded-2xl font-semibold hover:bg-[#faa125]/80 transition-colors duration-200 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                         x-bind:disabled="loading"
                     >
                         <span x-show="!loading">Login</span>
@@ -96,7 +96,7 @@
                 <div class="text-center text-sm mt-8">
                     <p class="text-gray-600">
                         Not a member?
-                        <a href="{{ route('register') }}" class="text-[#35b5ac] hover:text-[#35b5ac]/80 font-semibold transition-colors">
+                        <a href="{{ route('register') }}" class="text-[#faa125] hover:text-[#faa125]/80 font-semibold transition-colors">
                             Register now
                         </a>
                     </p>
