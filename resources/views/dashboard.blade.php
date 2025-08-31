@@ -7,7 +7,7 @@
 
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #35b5ac 0%, #2dd4aa 100%);
+            background: linear-gradient(135deg, #faa125 0%, #fc662f 100%);
         }
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
@@ -64,143 +64,161 @@
     @endif
 
     <div class="flex min-h-screen bg-gray-50">
-        <!-- Sidebar -->
-        <div id="sidebar" class="bg-[#F5F5F5] shadow-lg transition-all duration-300 ease-in-out w-64 flex flex-col border-r border-gray-200">
-            <div class="flex items-center justify-between p-4 border-b border-gray-200">
+        
+        <!-- Sidebar Section -->
+        <div id="sidebar" 
+            class="bg-[#F5F5F5] shadow-lg transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 w-64">
+
+            <div class="flex items-center justify-between p-4 border-b border-gray-200" id="sidebar-header">
                 <h3 id="sidebar-title" class="text-lg font-semibold text-gray-800 transition-all duration-300">Navigation</h3>
                 <button id="sidebar-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0">
-                    <!-- close button -->
-                    <svg id="close-icon" class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                    <!-- open button -->
-                    <svg id="hamburger-icon" class="w-5 h-5 text-gray-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- hamburger button (shows when collapsed) -->
+                    <svg id="hamburger-icon" class="w-5 h-5 w-auto text-gray-600 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <!-- close button (shows when expanded) -->
+                    <svg id="close-icon" class="w-5 h-5 text-gray-600 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
             </div>
 
             <!-- Navigation -->
             <nav class="flex-1 p-4 space-y-2">
-                <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#35b5ac] text-white transition-colors active group">
+                <a href="#" id="nav-my-courses" class="nav-item flex items-center justify-start p-3 rounded-lg bg-[#faa125] text-white transition-colors active group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                     </svg>
-                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden">My Courses</span>
+                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">My Courses</span>
                 </a>
 
                 <a href="#" id="nav-enroll" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>
-                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden">Enroll in Courses</span>
+                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Enroll in Courses</span>
                 </a>
 
                 <a href="#" id="nav-profile" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
-                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden">Profile</span>
+                    <span class="nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Personal Information</span>
                 </a>
             </nav>
         </div>
 
-        <!-- Main content (papalitan pa design) -->
-        <div class="flex-1 transition-all duration-300">
-            <div id="my-courses-section" class="h-full">
-                <div class="gradient-bg p-8 text-white">
-                    <h3 class="text-3xl font-bold mb-2">My Courses</h3>
-                    <p class="text-white/90">Manage and track your enrolled courses</p>
-                </div>
+        <!-- Main content -->
+        <div class="flex-1 transition-all duration-300 m-5">
+            <!-- My Courses Section with Right Sidebar -->
+            <div id="my-courses-section" class="h-full flex flex-col lg:flex-row gap-5">
+                <!-- Left Section (Main content & courses) -->
+                <div class="flex-1">
+                    <div class="gradient-bg p-8 text-white rounded-lg">
+                        <h3 class="text-3xl font-bold mb-2">My Courses</h3>
+                        <p class="text-white/90">Manage and track your enrolled courses</p>
+                    </div>
 
-                <div class="p-8">
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-3">
-                            @if ($learner_courses && $learner_courses->count() > 0)
-                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                @foreach ($learner_courses as $course)
-                                <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
-                                    <div class="p-6">
-                                        <div class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    <div class="p-8">
+                        <div class="grid grid-cols-1 gap-6">
+                            <!-- Main Content Area -->
+                            <div>
+                                @if ($learner_courses && $learner_courses->count() > 0)
+                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    @foreach ($learner_courses as $course)
+                                    <div
+                                        class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
+                                        <div class="p-6">
+                                            <div
+                                                class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
+                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                                    </path>
+                                                </svg>
+                                            </div>
+
+                                            <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
+                                            <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
+
+                                            <div
+                                                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
+                                                tags
+                                                {{$course->department}}
+                                            </div>
+
+                                            <div class="mb-4">
+                                                <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                                    <span>Progress</span>
+                                                    <span>25%</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                                    <div class="gradient-bg h-2 rounded-full" style="width: 25%"></div>
+                                                </div>
+                                            </div>
+
+                                            <form method="POST"
+                                                action="{{ route('dashboard.update',$user->id) }}"
+                                                id="unenroll-form-{{ $course->id }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="unenroll" value="1">
+                                                <input type="hidden" name="course_id" value="{{ $course->id }}">
+                                                <x-confirm-dialog title="Please confirm"
+                                                    message="Are you sure you want to unenroll from {{ $course->title }}?"
+                                                    confirmText="Unenroll" cancelText="Cancel"
+                                                    loadingMessage="Unenrolling from course..."
+                                                    :formId="'unenroll-form-' . $course->id">
+                                                    <x-slot:trigger>
+                                                        <button type="button"
+                                                            class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
+                                                            Unenroll
+                                                        </button>
+                                                    </x-slot:trigger>
+                                                </x-confirm-dialog>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                @else
+                                <div class="flex items-center justify-center h-96">
+                                    <div class="text-center">
+                                        <div
+                                            class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                                </path>
                                             </svg>
                                         </div>
-
-                                        <h4 class="font-bold text-lg text-gray-900 mb-2">{{$course->title}}</h4>
-                                        <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
-
-                                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
-                                            tags
-                                            {{$course->department}}
-                                        </div>
-
-                                        <div class="mb-4">
-                                            <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                                <span>Progress</span>
-                                                <span>25%</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                                <div class="gradient-bg h-2 rounded-full" style="width: 25%"></div>
-                                            </div>
-                                        </div>
-
-                                        <form method="POST"
-                                              action="{{ route('dashboard.update',$user->id) }}"
-                                              id="unenroll-form-{{ $course->id }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="unenroll" value="1">
-                                            <input type="hidden" name="course_id" value="{{ $course->id }}">
-                                            <x-confirm-dialog
-                                                title="Please confirm"
-                                                message="Are you sure you want to unenroll from {{ $course->title }}?"
-                                                confirmText="Unenroll"
-                                                cancelText="Cancel"
-                                                loadingMessage="Unenrolling from course..."
-                                                :formId="'unenroll-form-' . $course->id">
-                                                <x-slot:trigger>
-                                                    <button type="button"
-                                                            class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
-                                                        Unenroll
-                                                    </button>
-                                                </x-slot:trigger>
-                                            </x-confirm-dialog>
-                                        </form>
+                                        <h4 class="text-xl font-semibold text-gray-900 mb-2">No courses enrolled</h4>
+                                        <p class="text-gray-500 mb-6">Start your learning journey by enrolling in a course</p>
                                     </div>
                                 </div>
-                                @endforeach
+                                @endif
                             </div>
-                            @else
-                            <div class="flex items-center justify-center h-96">
-                                <div class="text-center">
-                                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                        <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                        </svg>
-                                    </div>
-                                    <h4 class="text-xl font-semibold text-gray-900 mb-2">No courses enrolled</h4>
-                                    <p class="text-gray-500 mb-6">Start your learning journey by enrolling in a course</p>
-                                </div>
-                            </div>
-                            @endif
-                        </div>
-
-                        <div class="lg:col-span-1 space-y-6">
-                            <x-user-profile-card :user="$user ?? auth()->user()" />
-                            <x-calendar-card />
-                            @if ($course)
-                                <x-pending-assignments-card />
-                            @endif
                         </div>
                     </div>
                 </div>
+
+                <!-- Right Sidebar -->
+                <div class="lg:w-1/4 space-y-6 flex flex-col sm:flex-col lg:flex-col">
+                    <x-calendar-card class="flex-1" />
+                    @if ($course)
+                        <x-pending-assignments-card class="flex-1" />
+                    @endif
+                </div>
             </div>
 
+
+            <!-- Enroll Section - Full Width -->
             <div id="enroll-section" class="hidden h-full">
-                <div class="gradient-bg p-8 text-white">
+                <div class="gradient-bg p-8 text-white rounded-lg">
                     <h3 class="text-3xl font-bold mb-2">Available Courses</h3>
                     <p class="text-white/90">Discover and enroll in new courses</p>
                 </div>
@@ -273,8 +291,9 @@
                 </div>
             </div>
 
+            <!-- Profile Section - Full Width -->
             <div id="profile-section" class="hidden h-full">
-                <div class="gradient-bg p-8 text-white">
+                <div class="gradient-bg p-8 text-white  rounded-lg">
                     <h3 class="text-3xl font-bold mb-2">My Profile</h3>
                     <p class="text-white/90">Manage your account and preferences</p>
                 </div>
@@ -319,7 +338,7 @@
                             </div>
                             <div class="flex justify-end mb-4">
                             <button id="edit-profile-btn"
-                                    class="px-4 py-2 bg-[#35b5ac] text-white font-semibold rounded-lg shadow hover:opacity-90 transition">
+                                    class="px-4 py-2 gradient-bg text-white font-semibold rounded-lg shadow hover:opacity-90 transition">
                                 Edit Profile
                             </button>
                         </div>
@@ -403,100 +422,119 @@
       </div>
     @endif
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar elements
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebarTitle = document.getElementById('sidebar-title');
-            const sidebarHeader = sidebarTitle.parentElement;
-            const navLabels = document.querySelectorAll('.nav-label');
-            const hamburgerIcon = document.getElementById('hamburger-icon');
-            const closeIcon = document.getElementById('close-icon');
+   <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar elements
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarTitle = document.getElementById('sidebar-title');
+    const navLabels = document.querySelectorAll('.nav-label');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+    const sidebarHeader = document.getElementById('sidebar-header');
 
-            // Navigation elements
-            const navMyCourses = document.getElementById('nav-my-courses');
-            const navEnroll = document.getElementById('nav-enroll');
-            const navProfile = document.getElementById('nav-profile');
+    // Navigation
+    const navMyCourses = document.getElementById('nav-my-courses');
+    const navEnroll = document.getElementById('nav-enroll');
+    const navProfile = document.getElementById('nav-profile');
 
-            // Section elements
-            const myCoursesSection = document.getElementById('my-courses-section');
-            const enrollSection = document.getElementById('enroll-section');
-            const profileSection = document.getElementById('profile-section');
+    // Sections
+    const myCoursesSection = document.getElementById('my-courses-section');
+    const enrollSection = document.getElementById('enroll-section');
+    const profileSection = document.getElementById('profile-section');
 
-            let sidebarOpen = true;
+    let sidebarOpen = true;
 
-            sidebarToggle.addEventListener('click', function() {
-                sidebarOpen = !sidebarOpen;
-
-                if (sidebarOpen) {
-                    sidebar.classList.remove('w-16');
-                    sidebar.classList.add('w-64');
-                    sidebarTitle.classList.remove('opacity-0', 'w-0', 'hidden');
-                    sidebarHeader.classList.remove('justify-center');
-                    sidebarHeader.classList.add('justify-between');
-
-                    navLabels.forEach(label => {
-                        label.classList.remove('opacity-0', 'w-0', 'ml-0');
-                        label.classList.add('ml-3');
-                    });
-                    document.querySelectorAll('.nav-item').forEach(item => {
-                        item.classList.add('justify-center');
-                    });
-
-                    hamburgerIcon.classList.remove('hidden');
-                    closeIcon.classList.add('hidden');
-                }
-            });
-
-            function setActiveNav(activeNav) {
-                const navItems = [navMyCourses, navEnroll, navProfile];
-                navItems.forEach(nav => {
-                    nav.classList.remove('bg-[#35b5ac]', 'text-white', 'active');
-                    nav.classList.add('text-gray-700');
-                });
-
-                activeNav.classList.remove('text-gray-700');
-                activeNav.classList.add('bg-[#35b5ac]', 'text-white', 'active');
-            }
-
-            function showSection(targetSection) {
-                myCoursesSection.classList.add('hidden');
-                enrollSection.classList.add('hidden');
-                profileSection.classList.add('hidden');
-
-                targetSection.classList.remove('hidden');
-            }
-
-            navMyCourses.addEventListener('click', function(e) {
-                e.preventDefault();
-                setActiveNav(navMyCourses);
-                showSection(myCoursesSection);
-            });
-
-            navEnroll.addEventListener('click', function(e) {
-                e.preventDefault();
-                setActiveNav(navEnroll);
-                showSection(enrollSection);
-            });
-
-            navProfile.addEventListener('click', function(e) {
-                e.preventDefault();
-                setActiveNav(navProfile);
-                showSection(profileSection);
-            });
-
-            // Profile edit toggle
-            const editProfileBtn = document.getElementById('edit-profile-btn');
-            const updateProfileCard = document.getElementById('update-profile-card');
-
-            editProfileBtn.addEventListener('click', function() {
-                updateProfileCard.classList.toggle('hidden');
-                // Optional: scroll into view
-                if (!updateProfileCard.classList.contains('hidden')) {
-                    updateProfileCard.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
+    function expandSidebar() {
+        sidebar.classList.remove('w-20');
+        sidebar.classList.add('w-64');
+        sidebarTitle.classList.remove('hidden');
+        sidebarHeader.classList.add('justify-between');
+        sidebarHeader.classList.remove('justify-center');
+        hamburgerIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        navLabels.forEach(label => label.classList.remove('hidden'));
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.add('justify-start');
+            item.classList.remove('justify-center');
         });
-    </script>
+    }
+
+    function collapseSidebar() {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-20');
+        sidebarTitle.classList.add('hidden');
+        sidebarHeader.classList.remove('justify-between');
+        sidebarHeader.classList.add('justify-center');
+        hamburgerIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        navLabels.forEach(label => label.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.add('justify-center');
+            item.classList.remove('justify-start');
+        });
+    }
+
+    // 🔥 Initialize sidebar depending on screen size
+    function initSidebar() {
+        if (window.innerWidth < 1024) { // mobile / tablet (Tailwind lg breakpoint)
+            collapseSidebar();
+            sidebarOpen = false;
+        } else {
+            expandSidebar();
+            sidebarOpen = true;
+        }
+    }
+
+    initSidebar();
+
+    // 🔄 Recheck on window resize
+    window.addEventListener('resize', initSidebar);
+
+    // Toggle button
+    sidebarToggle.addEventListener('click', function() {
+        sidebarOpen = !sidebarOpen;
+        if (sidebarOpen) {
+            expandSidebar();
+        } else {
+            collapseSidebar();
+        }
+    });
+
+    // Section navigation
+    function setActiveNav(activeNav) {
+        const navItems = [navMyCourses, navEnroll, navProfile];
+        navItems.forEach(nav => {
+            nav.classList.remove('bg-[#faa125]', 'text-white', 'active');
+            nav.classList.add('text-gray-700');
+        });
+        activeNav.classList.remove('text-gray-700');
+        activeNav.classList.add('bg-[#faa125]', 'text-white', 'active');
+    }
+
+    function showSection(targetSection) {
+        myCoursesSection.classList.add('hidden');
+        enrollSection.classList.add('hidden');
+        profileSection.classList.add('hidden');
+        targetSection.classList.remove('hidden');
+    }
+
+    navMyCourses.addEventListener('click', e => { e.preventDefault(); setActiveNav(navMyCourses); showSection(myCoursesSection); });
+    navEnroll.addEventListener('click', e => { e.preventDefault(); setActiveNav(navEnroll); showSection(enrollSection); });
+    navProfile.addEventListener('click', e => { e.preventDefault(); setActiveNav(navProfile); showSection(profileSection); });
+
+    // Profile edit toggle
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const updateProfileCard = document.getElementById('update-profile-card');
+    if (editProfileBtn && updateProfileCard) {
+        editProfileBtn.addEventListener('click', function() {
+            updateProfileCard.classList.toggle('hidden');
+            if (!updateProfileCard.classList.contains('hidden')) {
+                updateProfileCard.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    }
+});
+</script>
+
 </x-app-layout>

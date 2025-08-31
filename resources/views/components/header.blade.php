@@ -1,42 +1,61 @@
 <header class="bg-white/90 backdrop-blur shadow-md sticky top-0 z-10 border-b border-gray-200">
-    <nav class="container mx-auto flex items-center justify-between py-4 px-6" x-data="{ open: false }">
+    <nav class="mx-auto flex items-center justify-between py-4 px-6" x-data="{ open: false }">
         <div class="flex items-center gap-3">
-            <span class="inline-block bg-gradient-to-r from-[#35b5ac] to-[#35b5ac]/70 text-white rounded-full px-3 py-1 text-lg font-extrabold shadow-sm tracking-tight">
-                <a href="{{ route('welcome') }}" class="hover:text-[#f3f3f3] transition">アグアド大好</a>
-            </span>
-            <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">
+            <a href="{{ route('welcome') }}">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-10 mx-auto">
+                <a href="{{ route('welcome') }}" class="hover:text-black/90 transition font-extrabold text-lg"><span class="text-[#faa125]">Bee</span>Course</a>
+            </a>
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">
                 {{ $title ?? '' }}
             </h1>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
             @if(auth()->check())
                 @if(auth()->user()->isAdmin())
                     <a href="{{ route('learners.index') }}" class="px-4 py-2 rounded-lg font-semibold bg-blue-600 text-white hover:bg-blue-700 transition shadow border border-blue-700">All Learners</a>
                     <a href="{{ route('learners.add') }}" class="px-4 py-2 rounded-lg font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition shadow border border-indigo-700">Add New Learner</a>
                 @endif
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-dropdown align="right" width="48">
+                <div class="sm:flex sm:items-center sm:ms-6">
+                    <x-dropdown align="right" width="60">
                         <x-slot name="trigger">
-                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>{{ Auth::user()->name }}</div>
-                                <div class="ms-1">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
+                            <button class="inline-flex items-center justify-center w-10 h-10 bg-gradient-to-r from-[#faa125] to-[#fc662f] hover:bg-[#faa125]/90 rounded-full text-white font-semibold text-sm transition ease-in-out duration-150 focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:ring-offset-2">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                            <!-- User Info Section -->
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-[#faa125] to-orange-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-gray-900">{{ Auth::user()->name }}</div>
+                                        <div class="text-sm text-gray-600">{{ Auth::user()->email }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Menu Items -->
+                            <div class="py-1">
+                                <x-dropdown-link :href="route('profile.edit')" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    {{ __('Edit profile') }}
                                 </x-dropdown-link>
-                            </form>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')" 
+                                        onclick="event.preventDefault(); this.closest('form').submit();"
+                                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                        {{ __('Log Out') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </div>
                         </x-slot>
                     </x-dropdown>
                 </div>
