@@ -25,17 +25,19 @@
         </div>
     @endisset
 
-    <div x-cloak x-show="open" class="fixed inset-0 z-50 flex items-center justify-center px-4" style="display: none;">
-        <div class="absolute inset-0 bg-gray-900/60" @click="open = false"></div>
-        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-200 p-6 animate-fade-in">
-            <h3 class="text-lg font-bold text-gray-900">{{ $title }}</h3>
-            <p class="mt-2 text-gray-600">{{ $message }}</p>
-            <div class="mt-6 flex items-center justify-end gap-3">
-                <button type="button" @click="open = false" class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition">{{ $cancelText }}</button>
-                <button type="button" @click="confirm()" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">{{ $confirmText }}</button>
+    <template x-teleport="body">
+        <div x-cloak x-show="open" class="fixed inset-0 z-[9999] flex items-center justify-center px-4" style="display: none;">
+            <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" @click="open = false"></div>
+            <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-200 p-6 animate-fade-in">
+                <h3 class="text-lg font-bold text-gray-900">{{ $title }}</h3>
+                <p class="mt-2 text-gray-600">{{ $message }}</p>
+                <div class="mt-6 flex items-center justify-end gap-3">
+                    <button type="button" @click="open = false" class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition">{{ $cancelText }}</button>
+                    <button type="button" @click="confirm()" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">{{ $confirmText }}</button>
+                </div>
             </div>
         </div>
-    </div>
+    </template>
 
     <!-- Loading Overlay -->
     <x-loading-overlay show="loading" :message="$loadingMessage" />
