@@ -24,7 +24,7 @@
         }
     </style>
 
-    <div class="py-12 bg-gray-50 min-h-screen">
+    <div class="py-8 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header Section -->
             <div class="mb-8">
@@ -42,8 +42,58 @@
                 </div>
             </div>
 
+              <!-- Quick Stats Section -->
+            @if($courses->count() > 0)
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-2-5.5V21m0 0H3"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">{{ $courses->count() }}</div>
+                            <div class="text-gray-600 text-sm">Active Courses</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">{{ $courses->sum('learners_count') }}</div>
+                            <div class="text-gray-600 text-sm">Total Learners</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-gray-900">0</div>
+                            <div class="text-gray-600 text-sm">Pending Reviews</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+
+            <h1 class="mt-8 pl-6 text-2xl font-bold text-[#333]">My Courses</h1>
+
             <!-- Courses Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse($courses as $course)
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <div class="flex items-start justify-between mb-4">
@@ -94,52 +144,7 @@
                 @endforelse
             </div>
 
-            <!-- Quick Stats Section -->
-            @if($courses->count() > 0)
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-2-5.5V21m0 0H3"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-gray-900">{{ $courses->count() }}</div>
-                            <div class="text-gray-600 text-sm">Active Courses</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-gray-900">{{ $courses->sum('learners_count') }}</div>
-                            <div class="text-gray-600 text-sm">Total Learners</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-                            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="text-2xl font-bold text-gray-900">0</div>
-                            <div class="text-gray-600 text-sm">Pending Reviews</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
+          
         </div>
     </div>
 </x-app-layout>
