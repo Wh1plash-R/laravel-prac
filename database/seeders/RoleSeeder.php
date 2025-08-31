@@ -15,12 +15,17 @@ class RoleSeeder extends Seeder
     {
        Role::create([
             'name' => 'admin',
-            'description' => 'Administrator with full access',
+            'description' => 'Administrator for the entire platform',
         ]);
 
         Role::create([
             'name' => 'user',
-            'description' => 'Regular user with limited access',
+            'description' => 'Regular user or learners',
+        ]);
+
+        Role::create([
+            'name' => 'instructor',
+            'description' => 'Instructor of the courses',
         ]);
     }
 }

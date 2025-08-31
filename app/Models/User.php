@@ -57,6 +57,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class);
+    }
+
     public function hasRole($role)
     {
         return $this->role->name === $role;
@@ -70,5 +75,10 @@ class User extends Authenticatable
     public function isUser()
     {
         return $this->hasRole('user');
+    }
+
+    public function isInstructor()
+    {
+        return $this->hasRole('instructor');
     }
 }

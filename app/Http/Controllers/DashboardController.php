@@ -21,6 +21,10 @@ class DashboardController extends Controller
             }
             return $redirect;
         }
+        elseif($user->isInstructor())
+        {
+            return redirect()->route('instructor.index');
+        }
 
         $learner = Learner::with('courses')->firstWhere('user_id', $user->id); // firstWhere() = where()->first()
         $courses = Course::all();
@@ -29,6 +33,24 @@ class DashboardController extends Controller
 
         return view('dashboard', compact('user', 'learner', 'courses', 'learner_courses', 'course'));
         // Compact() = $user => the current value of user etc.
+    }
+
+    public function showCourse(Course $course)
+    {
+        $user = auth()->user();
+        $learner = Learner::where('user_id', $user->id)->firstOrFail();
+
+        // Check if the user is enrolled in this course
+        $isEnrolled = $learner->courses()->where('course_id', $course->id)->exists();
+
+        if (!$isEnrolled) {
+            return redirect()->route('dashboard')->with('error', 'You are not enrolled in this course.');
+        }
+
+        // Load course with instructor relationship
+        $course->load('instructor');
+
+        return view('learners.course-view', compact('course', 'user', 'learner'));
     }
 
     public function update(Request $request, User $user)

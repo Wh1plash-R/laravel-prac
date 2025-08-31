@@ -106,8 +106,7 @@
                                         <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
 
                                         <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
-                                            tags
-                                            {{$course->department}}
+                                            tags:   {{$course->department}}
                                         </div>
 
                                         <div class="mb-4">
@@ -120,28 +119,10 @@
                                             </div>
                                         </div>
 
-                                        <form method="POST"
-                                              action="{{ route('dashboard.update',$user->id) }}"
-                                              id="unenroll-form-{{ $course->id }}">
-                                            @csrf
-                                            @method('PATCH')
-                                            <input type="hidden" name="unenroll" value="1">
-                                            <input type="hidden" name="course_id" value="{{ $course->id }}">
-                                            <x-confirm-dialog
-                                                title="Please confirm"
-                                                message="Are you sure you want to unenroll from {{ $course->title }}?"
-                                                confirmText="Unenroll"
-                                                cancelText="Cancel"
-                                                loadingMessage="Unenrolling from course..."
-                                                :formId="'unenroll-form-' . $course->id">
-                                                <x-slot:trigger>
-                                                    <button type="button"
-                                                            class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
-                                                        Unenroll
-                                                    </button>
-                                                </x-slot:trigger>
-                                            </x-confirm-dialog>
-                                        </form>
+                                        <a href="{{ route('course.view', $course->id) }}"
+                                           class="w-full gradient-bg text-white font-semibold py-2 px-4 rounded-lg hover:shadow-lg transition-all border-0 text-center block">
+                                            View Course
+                                        </a>
                                     </div>
                                 </div>
                                 @endforeach
