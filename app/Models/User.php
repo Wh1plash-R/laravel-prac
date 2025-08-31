@@ -101,4 +101,32 @@ class User extends Authenticatable
     {
         return !empty($this->profile_picture);
     }
+
+    public function getProfilePictureUrlAttribute()
+    {
+        if (empty($this->profile_picture)) {
+            return null;
+        }
+
+        $bin = $this->profile_picture;
+        $mime = 'image/jpeg';
+
+        if (strncmp($bin, "\x89PNG\x0D\x0A\x1A\x0A", 8) === 0) {
+            $mime = 'image/png';
+        }
+
+        elseif (strncmp($bin, "\xFF\xD8\xFF", 3) === 0) {
+            $mime = 'image/jpeg';
+        }
+
+        elseif (strncmp($bin, 'GIF87a', 6) === 0 || strncmp($bin, 'GIF89a', 6) === 0) {
+            $mime = 'image/gif';
+        }
+
+        elseif (strncmp($bin, 'RIFF', 4) === 0 && strpos(substr($bin, 8, 4), 'WEBP') !== false) {
+            $mime = 'image/webp';
+        }
+
+        return 'data:' . $mime . ';base64,' . base64_encode($bin);
+    }
 }

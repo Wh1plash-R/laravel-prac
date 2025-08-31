@@ -9,8 +9,12 @@
 
 <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
     <div class="flex items-center gap-4">
-        <div class="w-14 h-14 gradient-bg rounded-full flex items-center justify-center text-white text-2xl font-bold">
-            {{ $initial }}
+        <div class="w-14 h-14 rounded-full flex items-center justify-center text-white text-2xl font-bold overflow-hidden {{ $currentUser?->profile_picture_url ? '' : 'gradient-bg' }}">
+            @if($currentUser?->profile_picture_url)
+                <img src="{{ $currentUser->profile_picture_url }}" alt="Avatar" class="w-full h-full object-cover">
+            @else
+                {{ $initial }}
+            @endif
         </div>
         <div class="min-w-0">
             <h4 class="text-lg font-bold text-gray-900 truncate">{{ $name }}</h4>

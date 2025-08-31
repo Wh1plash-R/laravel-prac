@@ -316,25 +316,6 @@
                                 </div>
                             </div>
 
-                            <!-- Profile Picture Display -->
-                            @if($user->hasProfilePicture())
-                            <div class="mb-6">
-                                <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                    Profile Picture
-                                </h5>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 mx-auto">
-                                        <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
-                                             alt="Profile picture"
-                                             class="w-full h-full object-cover">
-                                    </div>
-                                </div>
-                            </div>
-                            @endif
-
                             <div>
                                 <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,7 +328,7 @@
                                     {{isset($learner->bio) ? $learner->bio : 'None';}}</span>
                                 </div>
                             </div>
-                            <div class="flex justify-end mb-4">
+                            <div class="flex justify-end my-4">
                             <button id="edit-profile-btn"
                                     class="px-4 py-2 gradient-bg text-white font-semibold rounded-lg shadow hover:opacity-90 transition">
                                 Edit Profile
@@ -401,7 +382,7 @@
                                     :formId="'profile-form'">
                                 <x-slot:trigger>
                                     <button type="button"
-                                        class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all border-0">
+                                        class="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:shadow-lg transition-all border-0 mt-2">
                                     Update Profile
                                 </button>
                                 </x-slot:trigger>

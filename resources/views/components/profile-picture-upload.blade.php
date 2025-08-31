@@ -26,10 +26,7 @@
 
     <!-- File Input -->
     <div class="relative">
-        <input type="file"
-               id="{{ $name }}"
-               name="{{ $name }}"
-               accept="image/*"
+        <input type="file" name="{{ $name }}" id="{{ $name }}" accept="image/png, image/jpeg, image/gif, image/webp"
                class="hidden"
                {{ $attributes }}>
 

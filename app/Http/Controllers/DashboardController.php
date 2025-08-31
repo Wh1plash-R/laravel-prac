@@ -55,6 +55,10 @@ class DashboardController extends Controller
     {
         $learner = Learner::where('user_id', $user->id)->firstOrFail();
 
+        if (!$learner) {
+            return redirect()->route('dashboard')->with('error', 'Learner profile not found.');
+        }
+
         if ($request->boolean('unenroll') && $request->filled('course_id'))
         {
             $request->validate([
@@ -84,17 +88,22 @@ class DashboardController extends Controller
             return redirect()->route('dashboard')->with('success', 'Course enrolled successfully.');
         }
 
+        // Handle profile updates (skill, bio, and profile picture)
         else
         {
             $request->validate([
-                'skill' => 'required|string|max:255',
-                'bio' => 'required|string|max:500',
-                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000',
+                'skill' => 'nullable|string|max:255',
+                'bio' => 'nullable|string|max:500',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ]);
 
-            // Handle profile picture upload
+            $learnerData = $request->only(['skill', 'bio']);
+            if (!empty($learnerData)) {
+                $learner->update($learnerData);
+            }
+
             if ($request->hasFile('profile_picture')) {
-                $imageData = file_get_contents($request->file('profile_picture'));
+                $imageData = file_get_contents($request->file('profile_picture')->getRealPath());
                 $user->update(['profile_picture' => $imageData]);
             }
 
