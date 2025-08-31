@@ -113,7 +113,7 @@
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
-                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Personal Information</span>
+                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">My Profile</span>
                 </a>
             </nav>
         </div>
@@ -126,8 +126,8 @@
                 <div class="flex-1">
                     <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
                         <div>
-                            <h3 class="text-3xl font-bold mb-2">My Courses</h3>
-                            <p class="text-[#333]/90">Manage and track your enrolled courses</p>
+                            <h3 class="text-3xl font-bold mb-2">Hello, {{ Auth::user()->name }}!</h3>
+                            <p class="text-[#333]/90">Keep your studies organized and see your progress grow with each lesson.</p>
                         </div>
                         <div>
                             <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
@@ -135,16 +135,37 @@
                         </div>
                     </div>
 
+
                     <div class="pt-8">
                         <div class="grid grid-cols-1 gap-6">
+                            <!-- profile stats -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-full">
+                                <div class="bg-blue-200 rounded-xl p-6 text-center hover-subtle">
+                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</div>
+                                    <div class="text-[#333]/80 font-medium">Courses Enrolled</div>
+                                </div>
+                                <div class="bg-green-200 rounded-xl p-6 text-center hover-subtle">
+                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($course) ? '75%' : '0%' }}</div>
+                                    <div class="text-[#333]/80 font-medium">Average Progress</div>
+                                </div>
+                                <div class="bg-purple-200 rounded-xl p-6 text-center hover-subtle">
+                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($course) ? '24' : '0' }}</div>
+                                    <div class="text-[#333]/80 font-medium">Hours Learned</div>
+                                </div>
+                            </div>  
                             <!-- Main Content Area -->
                             <div>
+
+                                <div class="text-[#333] pl-8">
+                                    <h1 class="text-2xl font-bold">My Courses</h1>
+                                    <p class="text-[#333]/90">Manage and track your enrolled courses.</p>
+                                </div>
                                 @if ($learner_courses && $learner_courses->count() > 0)
-                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
+
                                     @foreach ($learner_courses as $course)
-                                    <div
-                                        class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
-                                        <div class="p-6">
+                                    <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
+                                        <div class="p-8">
                                             <div
                                                 class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
                                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
@@ -214,9 +235,8 @@
             </div>
 
 
-               <!-- Enroll Section - Full Width -->
+            <!-- Enroll Section - Full Width -->
             <div id="enroll-section" class="hidden h-full">
-
                 <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
                         <div>
                             <h3 class="text-3xl font-bold mb-2">Available Courses</h3>
@@ -379,20 +399,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 max-w-6xl">
-                        <div class="bg-blue-50 rounded-xl p-6 text-center hover-subtle">
-                            <div class="text-3xl font-bold text-blue-600 mb-2">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</div>
-                            <div class="text-blue-800 font-medium">Courses Enrolled</div>
-                        </div>
-                        <div class="bg-green-50 rounded-xl p-6 text-center hover-subtle">
-                            <div class="text-3xl font-bold text-green-600 mb-2">{{ isset($course) ? '75%' : '0%' }}</div>
-                            <div class="text-green-800 font-medium">Average Progress</div>
-                        </div>
-                        <div class="bg-purple-50 rounded-xl p-6 text-center hover-subtle">
-                            <div class="text-3xl font-bold text-purple-600 mb-2">{{ isset($course) ? '24' : '0' }}</div>
-                            <div class="text-purple-800 font-medium">Hours Learned</div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>

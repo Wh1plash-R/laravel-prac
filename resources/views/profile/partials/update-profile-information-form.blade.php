@@ -23,6 +23,14 @@
         @csrf
         @method('patch')
 
+        <!-- Profile Picture Upload -->
+        <div class="space-y-4">
+            <x-profile-picture-upload
+                name="profile_picture"
+                :currentImage="$user->profile_picture"
+                label="Profile Picture" />
+        </div>
+
         <!-- Name Field -->
         <div class="space-y-2">
             <x-input-label for="name" :value="__('Full Name')" class="text-gray-700 font-semibold" />
@@ -89,13 +97,7 @@
             @endif
         </div>
 
-        <!-- Profile Picture Upload -->
-        <div class="space-y-4">
-            <x-profile-picture-upload
-                name="profile_picture"
-                :currentImage="$user->profile_picture"
-                label="Profile Picture" />
-        </div>
+        
 
         <!-- Skill Field -->
         <div class="space-y-2">
