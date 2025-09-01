@@ -328,82 +328,143 @@
                     </div>
                     <div>
                         <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
-
                     </div>
                 </div>
+                
                 <div class="pt-8">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
-                        <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
-                            <div class="flex items-center mb-6">
-                                @if($user->hasProfilePicture())
-                                    <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-200 mr-4">
-                                        <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
-                                             alt="Profile picture"
-                                             class="w-full h-full object-cover">
-                                    </div>
-                                @else
-                                    <div class="w-16 h-16 gradient-bg rounded-full flex items-center justify-center text-white text-2xl font-bold mr-4">
-                                        {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
-                                    </div>
-                                @endif
-                                <div>
-                                    <h4 class="text-xl font-bold text-gray-900">{{ Auth::user()->name }}</h4>
-                                    <p class="text-gray-500">{{ Auth::user()->email }}</p>
-                                </div>
+                    <!-- Single Unified Container -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                        <!-- Header Section with Gradient Background -->
+                        <div class="h-16 relative">
+                            <!-- Background Pattern -->
+                            <div class="absolute inset-0 opacity-20">
+                                <div class="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"></div>
+                                <svg class="absolute bottom-0 right-0 w-32 h-32 transform translate-x-8 translate-y-8" viewBox="0 0 200 200">
+                                    <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="1" opacity="0.2"/>
+                                </svg>
                             </div>
-
-                            <div class="mb-6">
-                                <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
-                                    </svg>
-                                    Skills
-                                </h5>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <span class="text-gray-700">
-                                    {{isset($learner->skill) ? $learner->skill : 'None'}}</span>
-                                </div>
-                            </div>
-
-                            <!-- Profile Picture Display -->
-                            {{-- @if($user->hasProfilePicture())
-                            <div class="mb-6">
-                                <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                    Profile Picture
-                                </h5>
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 mx-auto">
-                                        <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
-                                             alt="Profile picture"
-                                             class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- Profile Section -->
+                        <div class="p-8 -mt-16 relative">
+                            <div class="flex flex-col lg:flex-row items-start gap-8 mb-8">
+                                <!-- Profile Picture - Left Side -->
+                                <div class="relative flex-shrink-0">
+                                    @if($user->hasProfilePicture())
+                                        <div class="w-36 h-36 lg:w-56 lg:h-56 rounded-2xl overflow-hidden border-4 border-white shadow-xl ring-4 ring-blue-100">
+                                            <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
+                                                alt="Profile picture"
+                                                class="w-full h-full object-cover">
+                                        </div>
+                                    @else
+                                        <div class="w-32 h-32 lg:w-40 lg:h-40 gradient-bg rounded-2xl flex items-center justify-center text-white text-4xl lg:text-5xl font-bold shadow-xl ring-4 ring-yellow-100">
+                                            {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
+                                        </div>
+                                    @endif
+                                    <!-- Online Status Indicator -->
+                                    <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
                                     </div>
                                 </div>
+                                
+                                <!-- Profile Info - Right Side (LinkedIn Style) -->
+                                <div class="flex-1">
+                                    <!-- Name & Email -->
+                                    <div class="mb-4">
+                                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">{{ Auth::user()->name }}</h2>
+                                        <p class="text-lg text-gray-600">{{ Auth::user()->email }}</p>
+                                    </div>
+                                    
+                                    <!-- Skills -->
+                                    <div class="mb-4">
+                                        @if(isset($learner->skill) && $learner->skill !== 'None')
+                                            <div class="flex flex-wrap gap-2">
+                                                @foreach(explode(',', $learner->skill) as $skill)
+                                                    <span class="px-3 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 text-sm font-medium rounded-full border border-blue-100">
+                                                        {{ trim($skill) }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <div class="text-gray-500 text-sm italic">No skills added</div>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- Bio -->
+                                    <div class="mb-6">
+                                        @if(isset($learner->bio) && $learner->bio !== 'None')
+                                            <p class="text-gray-700 leading-relaxed">{{ $learner->bio }}</p>
+                                        @else
+                                            <p class="text-gray-500 text-sm italic">No bio added</p>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- Status & Stats -->
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                        <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full text-sm font-medium">
+                                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                                            Active Learner
+                                        </div>
+                                        
+                                        <div class="flex items-center gap-6 text-sm text-gray-600">
+                                            <span><strong class="text-gray-900">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</strong> Courses</span>
+                                            <span><strong class="text-gray-900">24</strong> Hours</span>
+                                            <span><strong class="text-gray-900">75%</strong> Avg Progress</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            @endif --}}
-
+                            
+                            <!-- Divider -->
+                            <div class="border-t border-gray-200 my-8"></div>
+                            
+                            <!-- Achievement Section -->
                             <div>
-                                <h5 class="font-semibold text-gray-900 mb-2 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                    Bio
-                                </h5>
-                                                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <span class="text-gray-700">
-                                    {{isset($learner->bio) ? $learner->bio : 'None'}}</span>
+                                <div class="flex items-center mb-6">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mr-4">
+                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-gray-900">Achievements</h3>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div class="text-center p-6 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-100">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                            </svg>
+                                        </div>
+                                        <h4 class="font-bold text-lg text-gray-900 mb-2">Fast Learner</h4>
+                                        <p class="text-sm text-gray-600">Completed 3+ courses this month</p>
+                                    </div>
+                                    
+                                    <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                            </svg>
+                                        </div>
+                                        <h4 class="font-bold text-lg text-gray-900 mb-2">High Achiever</h4>
+                                        <p class="text-sm text-gray-600">Maintains 75%+ average progress</p>
+                                    </div>
+                                    
+                                    <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                            </svg>
+                                        </div>
+                                        <h4 class="font-bold text-lg text-gray-900 mb-2">Consistent</h4>
+                                        <p class="text-sm text-gray-600">24 hours of learning completed</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    
-                </div>
             </div>
-        </div>
-    </div>
 
     {{-- Validation Errors --}}
     @if ($errors->any())
