@@ -167,10 +167,12 @@
                                 <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                                     <div class="flex items-center justify-between">
                                         <div class="flex items-center">
-                                            <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center mr-3">
-                                                <span class="text-white font-semibold text-sm">
-                                                    {{ substr($learner->user->name ?? $learner->name, 0, 2) }}
-                                                </span>
+                                            <div class="w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                                                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200">
+                                                    <img src="{{$learner->user->profile_picture_url }}"
+                                                        alt="Profile picture"
+                                                        class="w-full h-full object-cover">
+                                                </div>
                                             </div>
                                             <div>
                                                 <h4 class="font-semibold text-gray-900">{{ $learner->user->name ?? $learner->name }}</h4>
@@ -222,44 +224,53 @@
                             </button>
                         </div>
 
-                        <!-- Sample Announcements (Placeholder) -->
+                        <!-- Announcements -->
                         <div class="space-y-4">
-                            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-blue-900">Welcome to the Course!</h4>
-                                        <p class="text-blue-800 text-sm mt-1">
-                                            Welcome everyone to our new semester. Please check the syllabus and upcoming assignments.
-                                        </p>
-                                        <p class="text-blue-600 text-xs mt-2">Posted 2 days ago</p>
-                                    </div>
-                                    <div class="ml-4 flex space-x-2">
-                                        <button class="text-blue-600 hover:text-blue-800 text-sm">Edit</button>
-                                        <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
-                                <div class="flex items-start justify-between">
-                                    <div class="flex-1">
-                                        <h4 class="font-semibold text-yellow-900">Assignment Reminder</h4>
-                                        <p class="text-yellow-800 text-sm mt-1">
-                                            Remember that the first assignment is due next Friday. Please submit it through the course portal.
-                                        </p>
-                                        <p class="text-yellow-600 text-xs mt-2">Posted 1 week ago</p>
-                                    </div>
-                                    <div class="ml-4 flex space-x-2">
-                                        <button class="text-yellow-600 hover:text-yellow-800 text-sm">Edit</button>
-                                        <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                            @forelse($announcements as $announcement)
+                                <div class="bg-{{ $announcement->type_color }}-50 border-l-4 border-{{ $announcement->type_color }}-400 p-4 rounded-r-lg">
+                                    <div class="flex items-start justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center mb-1">
+                                                <h4 class="font-semibold text-{{ $announcement->type_color }}-900">{{ $announcement->title }}</h4>
+                                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-{{ $announcement->type_color }}-100 text-{{ $announcement->type_color }}-800">
+                                                    {{ ucfirst($announcement->type) }}
+                                                </span>
+                                            </div>
+                                            <p class="text-{{ $announcement->type_color }}-800 text-sm mt-1">
+                                                {{ $announcement->description }}
+                                            </p>
+                                            <p class="text-{{ $announcement->type_color }}-600 text-xs mt-2">
+                                                Posted {{ $announcement->created_at->diffForHumans() }}
+                                            </p>
+                                        </div>
+                                        <div class="ml-4 flex space-x-2">
+                                            <button class="text-{{ $announcement->type_color }}-600 hover:text-{{ $announcement->type_color }}-800 text-sm">Edit</button>
+                                            <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="text-center py-4">
-                                <button onclick="openModal('announcementModal')"
-                                        class="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                                    + Add New Announcement
-                                </button>
-                            </div>
+                            @empty
+                                <div class="text-center py-8">
+                                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                                    </svg>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Announcements</h3>
+                                    <p class="text-gray-500 mb-4">You haven't posted any announcements yet.</p>
+                                    <button onclick="openModal('announcementModal')"
+                                            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
+                                        + Post Your First Announcement
+                                    </button>
+                                </div>
+                            @endforelse
+
+                            @if($announcements->count() > 0)
+                                <div class="text-center py-4">
+                                    <button onclick="openModal('announcementModal')"
+                                            class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                        + Add New Announcement
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -280,70 +291,66 @@
                             </button>
                         </div>
 
-                        <!-- Sample Activities (Placeholder) -->
+                        <!-- Assignments -->
                         <div class="space-y-4">
-                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center">
-                                            <h4 class="font-semibold text-gray-900">Assignment 1: Introduction</h4>
-                                            <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                Assignment
-                                            </span>
+                            @forelse($assignments as $assignment)
+                                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex-1">
+                                            <div class="flex items-center">
+                                                <h4 class="font-semibold text-gray-900">{{ $assignment->title }}</h4>
+                                                <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $assignment->status_color }}-100 text-{{ $assignment->status_color }}-800">
+                                                    {{ $assignment->status_text }}
+                                                </span>
+                                            </div>
+                                            <p class="text-gray-600 text-sm mt-1">{{ $assignment->description }}</p>
+                                            <div class="flex items-center mt-2 text-xs text-gray-500">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                @if($assignment->due_date->isFuture())
+                                                    Due: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }}
+                                                @else
+                                                    <span class="text-red-500">Due: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }} (Past due)</span>
+                                                @endif
+                                                @if($assignment->points)
+                                                    • {{ $assignment->points }} points
+                                                @endif
+                                            </div>
+                                            <p class="text-xs text-gray-400 mt-1">Created {{ $assignment->created_at->diffForHumans() }}</p>
                                         </div>
-                                        <p class="text-gray-600 text-sm mt-1">Complete the introductory exercises and submit your responses.</p>
-                                        <div class="flex items-center mt-2 text-xs text-gray-500">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            Due: Next Friday • 100 points
-                                        </div>
-                                    </div>
-                                    <div class="ml-4 flex items-center space-x-2">
-                                        <span class="text-sm text-gray-600">{{ $enrolledLearners->count() }}/{{ $enrolledLearners->count() }} submitted</span>
-                                        <div class="flex space-x-1">
-                                            <button class="text-purple-600 hover:text-purple-800 text-sm">Edit</button>
-                                            <button class="text-gray-600 hover:text-gray-800 text-sm">View</button>
-                                            <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex-1">
-                                        <div class="flex items-center">
-                                            <h4 class="font-semibold text-gray-900">Quiz 1: Basic Concepts</h4>
-                                            <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Quiz
-                                            </span>
-                                        </div>
-                                        <p class="text-gray-600 text-sm mt-1">Test your understanding of the basic concepts covered in the first module.</p>
-                                        <div class="flex items-center mt-2 text-xs text-gray-500">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            Due: In 2 weeks • 50 points
-                                        </div>
-                                    </div>
-                                    <div class="ml-4 flex items-center space-x-2">
-                                        <span class="text-sm text-gray-600">0/{{ $enrolledLearners->count() }} completed</span>
-                                        <div class="flex space-x-1">
-                                            <button class="text-purple-600 hover:text-purple-800 text-sm">Edit</button>
-                                            <button class="text-gray-600 hover:text-gray-800 text-sm">View</button>
-                                            <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                        <div class="ml-4 flex items-center space-x-2">
+                                            <span class="text-sm text-gray-600">0/{{ $enrolledLearners->count() }} submitted</span>
+                                            <div class="flex space-x-1">
+                                                <button class="text-purple-600 hover:text-purple-800 text-sm">Edit</button>
+                                                <button class="text-gray-600 hover:text-gray-800 text-sm">View</button>
+                                                <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            @empty
+                                <div class="text-center py-8">
+                                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                                    </svg>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Activities or Assignments</h3>
+                                    <p class="text-gray-500 mb-4">You haven't created any activities or assignments yet.</p>
+                                    <button onclick="openModal('activityModal')"
+                                            class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
+                                        + Create Your First Assignment
+                                    </button>
+                                </div>
+                            @endforelse
 
-                            <div class="text-center py-4">
-                                <button onclick="openModal('activityModal')"
-                                        class="text-purple-600 hover:text-purple-800 font-medium text-sm">
-                                    + Add New Activity or Assignment
-                                </button>
-                            </div>
+                            @if($assignments->count() > 0)
+                                <div class="text-center py-4">
+                                    <button onclick="openModal('activityModal')"
+                                            class="text-purple-600 hover:text-purple-800 font-medium text-sm">
+                                        + Add New Activity or Assignment
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -360,15 +367,15 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Active Assignments</span>
-                                <span class="font-semibold text-gray-900">2</span>
+                                <span class="font-semibold text-gray-900">{{ $assignments->where('status', 'active')->count() }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-600">Pending Submissions</span>
-                                <span class="font-semibold text-red-600">{{ $enrolledLearners->count() * 2 }}</span>
+                                <span class="text-gray-600">Total Assignments</span>
+                                <span class="font-semibold text-gray-900">{{ $assignments->count() }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Announcements</span>
-                                <span class="font-semibold text-gray-900">2</span>
+                                <span class="font-semibold text-gray-900">{{ $announcements->count() }}</span>
                             </div>
                         </div>
                     </div>
@@ -444,6 +451,7 @@
 
                 <form action="{{ route('instructor.announcement.store', $course) }}" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <div>
                         <label for="announcement_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input type="text" name="title" id="announcement_title" required
@@ -451,18 +459,20 @@
                     </div>
 
                     <div>
-                        <label for="announcement_content" class="block text-sm font-medium text-gray-700 mb-2">Content</label>
-                        <textarea name="content" id="announcement_content" rows="4" required
+                        <label for="announcement_description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea name="description" id="announcement_description" rows="4" required
                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
                     </div>
 
                     <div>
-                        <label for="announcement_priority" class="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-                        <select name="priority" id="announcement_priority" required
+                        <label for="announcement_type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                        <select name="type" id="announcement_type" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="low">Low</option>
-                            <option value="medium" selected>Medium</option>
-                            <option value="high">High</option>
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="info">Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="success">Success</option>
+                            <option value="important">Important</option>
                         </select>
                     </div>
 
@@ -495,6 +505,7 @@
                 </div>
 
                 <form action="{{ route('instructor.activity.store', $course) }}" method="POST" class="space-y-4">
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
                     @csrf
                     <div>
                         <label for="activity_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
@@ -513,22 +524,22 @@
                             <label for="activity_type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
                             <select name="type" id="activity_type" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                <option value="" disabled selected>Select Type</option>
                                 <option value="assignment">Assignment</option>
                                 <option value="activity">Activity</option>
-                                <option value="quiz">Quiz</option>
                             </select>
                         </div>
 
                         <div>
                             <label for="activity_points" class="block text-sm font-medium text-gray-700 mb-2">Points</label>
-                            <input type="number" name="points" id="activity_points" min="0" placeholder="100"
+                            <input type="number" name="points" id="activity_points" min="10" placeholder="100" max="100" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
                         </div>
                     </div>
 
                     <div>
                         <label for="activity_due_date" class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
-                        <input type="datetime-local" name="due_date" id="activity_due_date" required
+                        <input type="datetime-local" name="due_date" id="activity_due_date" required min="{{ date('Y-m-d\TH:i') }}"
                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
                     </div>
 

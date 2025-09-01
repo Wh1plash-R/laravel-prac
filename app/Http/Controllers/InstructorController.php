@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\Learner;
 use App\Models\Instructor;
+use App\Models\Assignment;
 use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
@@ -23,13 +25,14 @@ class InstructorController extends Controller
             abort(403, 'Unauthorized access to this course.');
         }
 
-        // Load course with enrolled learners
-        $course->load(['learners.user', 'instructor']);
+        $course->load(['learners.user', 'instructor', 'announcements', 'assignments']);
 
         return view('instructors.course-view', [
             'course' => $course,
             'instructor' => $instructor,
             'enrolledLearners' => $course->learners,
+            'announcements' => $course->announcements()->orderBy('created_at', 'desc')->get(),
+            'assignments' => $course->assignments()->orderBy('created_at', 'desc')->get(),
             'user' => $user
         ]);
     }
@@ -65,12 +68,12 @@ class InstructorController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'priority' => 'required|in:low,medium,high'
+            'description' => 'required|string',
+            'type' => 'required|in:info,warning,success,important',
+            'course_id' => 'required|exists:courses,id'
         ]);
 
-        // TODO: Implement announcement storage logic
-
+        Announcement::create($validated);
         return redirect()->route('instructor.course.view', $course)
             ->with('success', 'Announcement posted successfully!');
     }
@@ -84,10 +87,11 @@ class InstructorController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'due_date' => 'required|date|after:now',
-            'points' => 'nullable|integer|min:0'
+            'points' => 'nullable|integer|min:0',
+            'course_id' => 'required|exists:courses,id'
         ]);
 
-        // TODO: Implement activity/assignment storage logic
+        Assignment::create($validated);
 
         return redirect()->route('instructor.course.view', $course)
             ->with('success', 'Activity/Assignment created successfully!');
