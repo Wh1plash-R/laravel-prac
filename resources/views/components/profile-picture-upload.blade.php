@@ -5,12 +5,34 @@
 
     <!-- Current Profile Picture Display -->
     @if($currentImage)
-    <div class="mb-4">
-        <p class="text-sm text-gray-600 mb-2">Current Profile Picture:</p>
-        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-            <img src="data:image/jpeg;base64,{{ base64_encode($currentImage) }}"
-                 alt="Current profile picture"
-                 class="w-full h-full object-cover">
+    <div class="mb-4 flex items-end gap-10">
+        <div>
+            <p class="text-sm text-gray-600 mb-2">Current Profile Picture:</p>
+            <div class="w-40 h-40 rounded-full overflow-hidden border-2 border-gray-200">
+                <img src="data:image/jpeg;base64,{{ base64_encode($currentImage) }}"
+                    alt="Current profile picture"
+                    class="w-full h-full object-cover">
+            </div>
+        </div>
+
+        <!-- Preview Container -->
+        <div class="">
+            <div id="preview-container-{{ $name }}" class="hidden">
+                <p class="text-sm text-gray-600 mb-2">Preview:</p>
+                <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img id="preview-{{ $name }}"
+                        alt="Preview"
+                        class="w-full h-full object-cover">
+                </div>
+            </div>
+        
+
+            <!-- File Info -->
+            <div id="file-info-{{ $name }}" class="hidden">
+                <p class="text-sm text-gray-600">
+                    Selected: <span id="file-name-{{ $name }}" class="font-medium"></span>
+                </p>
+            </div>
         </div>
     </div>
     @else
@@ -37,24 +59,18 @@
             </svg>
             Choose Image
         </label>
+        
+        <!-- wala pa function #backendh8r here -->
+        <label for="{{ $name }}"
+               class="cursor-pointer inline-flex items-center px-4 py-2 bg-red-600 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-[#f3f3f3] hover:bg-red-600/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-[#f3f3f3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+            Remove Profile
+        </label>
     </div>
 
-    <!-- Preview Container -->
-    <div id="preview-container-{{ $name }}" class="hidden">
-        <p class="text-sm text-gray-600 mb-2">Preview:</p>
-        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-            <img id="preview-{{ $name }}"
-                 alt="Preview"
-                 class="w-full h-full object-cover">
-        </div>
-    </div>
-
-    <!-- File Info -->
-    <div id="file-info-{{ $name }}" class="hidden">
-        <p class="text-sm text-gray-600">
-            Selected: <span id="file-name-{{ $name }}" class="font-medium"></span>
-        </p>
-    </div>
+    
 </div>
 
 <script>
