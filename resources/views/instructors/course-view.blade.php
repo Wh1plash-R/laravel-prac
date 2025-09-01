@@ -128,11 +128,11 @@
 
                         <!-- Quick Add Buttons -->
                         <div class="space-y-2">
-                            <button onclick="openModal('announcementModal')"
+                            <button onclick="openAnnouncementModal()"
                                     class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-emerald-700 shadow">
                                 + New Announcement
                             </button>
-                            <button onclick="openModal('activityModal')"
+                            <button onclick="openActivityModal()"
                                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-blue-700 shadow">
                                 + Add Activity
                             </button>
@@ -218,7 +218,7 @@
                                 </div>
                                 <h2 class="text-2xl font-bold text-gray-900">Course Announcements</h2>
                             </div>
-                            <button onclick="openModal('announcementModal')"
+                            <button onclick="openAnnouncementModal()"
                                     class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                 + Add Announcement
                             </button>
@@ -243,9 +243,25 @@
                                                 Posted {{ $announcement->created_at->diffForHumans() }}
                                             </p>
                                         </div>
-                                        <div class="ml-4 flex space-x-2">
-                                            <button class="text-{{ $announcement->type_color }}-600 hover:text-{{ $announcement->type_color }}-800 text-sm">Edit</button>
-                                            <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                        <div class="ml-4 flex items-center space-x-2">
+                                            <button onclick="openAnnouncementModal({{ $announcement->id }})" class="text-{{ $announcement->type_color }}-600 hover:text-{{ $announcement->type_color }}-800 text-sm font-medium">Edit</button>
+
+                                            <form id="delete-announcement-{{ $announcement->id }}" action="{{ route('instructor.announcement.destroy', $announcement) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+
+                                            <x-confirm-dialog
+                                                title="Delete Announcement"
+                                                :message="'Are you sure you want to delete ' . $announcement->title . '? This action cannot be undone.'"
+                                                confirmText="Delete"
+                                                cancelText="Cancel"
+                                                loadingMessage="Deleting announcement..."
+                                                :formId="'delete-announcement-' . $announcement->id">
+                                                <x-slot:trigger>
+                                                    <button type="button" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                                </x-slot:trigger>
+                                            </x-confirm-dialog>
                                         </div>
                                     </div>
                                 </div>
@@ -256,7 +272,7 @@
                                     </svg>
                                     <h3 class="text-lg font-medium text-gray-900 mb-2">No Announcements</h3>
                                     <p class="text-gray-500 mb-4">You haven't posted any announcements yet.</p>
-                                    <button onclick="openModal('announcementModal')"
+                                    <button onclick="openAnnouncementModal()"
                                             class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                         + Post Your First Announcement
                                     </button>
@@ -265,7 +281,7 @@
 
                             @if($announcements->count() > 0)
                                 <div class="text-center py-4">
-                                    <button onclick="openModal('announcementModal')"
+                                    <button onclick="openAnnouncementModal()"
                                             class="text-blue-600 hover:text-blue-800 font-medium text-sm">
                                         + Add New Announcement
                                     </button>
@@ -285,7 +301,7 @@
                                 </div>
                                 <h2 class="text-2xl font-bold text-gray-900">Activities & Assignments</h2>
                             </div>
-                            <button onclick="openModal('activityModal')"
+                            <button onclick="openActivityModal()"
                                     class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                 + Add Activity
                             </button>
@@ -321,10 +337,28 @@
                                         </div>
                                         <div class="ml-4 flex items-center space-x-2">
                                             <span class="text-sm text-gray-600">0/{{ $enrolledLearners->count() }} submitted</span>
-                                            <div class="flex space-x-1">
-                                                <button class="text-purple-600 hover:text-purple-800 text-sm">Edit</button>
-                                                <button class="text-gray-600 hover:text-gray-800 text-sm">View</button>
-                                                <button class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                            <div class="flex items-center space-x-2">
+                                                <button onclick="openActivityModal({{ $assignment->id }})" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Edit</button>
+
+                                                {{-- Not Functional Yet --}}
+                                                <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">View</button>
+
+                                                <form id="delete-assignment-{{ $assignment->id }}" action="{{ route('instructor.assignment.destroy', $assignment) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
+
+                                                <x-confirm-dialog
+                                                    title="Delete Assignment"
+                                                    :message="'Are you sure you want to delete ' . $assignment->title . '? This action cannot be undone.'"
+                                                    confirmText="Delete"
+                                                    cancelText="Cancel"
+                                                    loadingMessage="Deleting assignment..."
+                                                    :formId="'delete-assignment-' . $assignment->id">
+                                                    <x-slot:trigger>
+                                                        <button type="button" class="text-red-600 hover:text-red-800 text-sm">Delete</button>
+                                                    </x-slot:trigger>
+                                                </x-confirm-dialog>
                                             </div>
                                         </div>
                                     </div>
@@ -336,7 +370,7 @@
                                     </svg>
                                     <h3 class="text-lg font-medium text-gray-900 mb-2">No Activities or Assignments</h3>
                                     <p class="text-gray-500 mb-4">You haven't created any activities or assignments yet.</p>
-                                    <button onclick="openModal('activityModal')"
+                                    <button onclick="openActivityModal()"
                                             class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                         + Create Your First Assignment
                                     </button>
@@ -345,7 +379,7 @@
 
                             @if($assignments->count() > 0)
                                 <div class="text-center py-4">
-                                    <button onclick="openModal('activityModal')"
+                                    <button onclick="openActivityModal()"
                                             class="text-purple-600 hover:text-purple-800 font-medium text-sm">
                                         + Add New Activity or Assignment
                                     </button>
@@ -415,11 +449,11 @@
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
                         <div class="space-y-3">
-                            <button onclick="openModal('announcementModal')"
+                            <button onclick="openAnnouncementModal()"
                                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                 Post Announcement
                             </button>
-                            <button onclick="openModal('activityModal')"
+                            <button onclick="openActivityModal()"
                                     class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                 Create Assignment
                             </button>
@@ -436,26 +470,30 @@
         </div>
     </div>
 
-    <!-- Add Announcement Modal -->
+    <!-- Add/Edit Announcement Modal -->
     <div id="announcementModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
         <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Add New Announcement</h3>
-                    <button onclick="closeModal('announcementModal')" class="text-gray-400 hover:text-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900" id="announcementModalTitle">
+                        Add New Announcement
+                    </h3>
+                    <button onclick="closeAnnouncementModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
-                <form action="{{ route('instructor.announcement.store', $course) }}" method="POST" class="space-y-4">
+                <form id="announcementForm" action="" method="POST" class="space-y-4">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="_method" value="POST" id="announcementMethod">
+
                     <div>
                         <label for="announcement_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input type="text" name="title" id="announcement_title" required
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                     </div>
 
                     <div>
@@ -468,7 +506,7 @@
                         <label for="announcement_type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
                         <select name="type" id="announcement_type" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                            <option value="" disabled selected>Select Type</option>
+                            <option value="" selected>Select Type</option>
                             <option value="info">Info</option>
                             <option value="warning">Warning</option>
                             <option value="success">Success</option>
@@ -477,7 +515,7 @@
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-4">
-                        <button type="button" onclick="closeModal('announcementModal')"
+                        <button type="button" onclick="closeAnnouncementModal()"
                                 class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
                             Cancel
                         </button>
@@ -491,22 +529,26 @@
         </div>
     </div>
 
-    <!-- Add Activity Modal -->
+    <!-- Add/Edit Activity Modal -->
     <div id="activityModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
         <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
             <div class="mt-3">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900">Add New Activity/Assignment</h3>
-                    <button onclick="closeModal('activityModal')" class="text-gray-400 hover:text-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900" id="activityModalTitle">
+                        Add New Activity/Assignment
+                    </h3>
+                    <button onclick="closeActivityModal()" class="text-gray-400 hover:text-gray-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
-                <form action="{{ route('instructor.activity.store', $course) }}" method="POST" class="space-y-4">
-                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                <form id="activityForm" action="" method="POST" class="space-y-4">
                     @csrf
+                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+                    <input type="hidden" name="_method" value="POST" id="activityMethod">
+
                     <div>
                         <label for="activity_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input type="text" name="title" id="activity_title" required
@@ -524,7 +566,7 @@
                             <label for="activity_type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
                             <select name="type" id="activity_type" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
-                                <option value="" disabled selected>Select Type</option>
+                                <option value="" selected>Select Type</option>
                                 <option value="assignment">Assignment</option>
                                 <option value="activity">Activity</option>
                             </select>
@@ -544,7 +586,7 @@
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-4">
-                        <button type="button" onclick="closeModal('activityModal')"
+                        <button type="button" onclick="closeActivityModal()"
                                 class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors">
                             Cancel
                         </button>
@@ -560,14 +602,117 @@
 
     <!-- Modal JavaScript -->
     <script>
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
+        let currentEditingAnnouncement = null;
+        let currentEditingAssignment = null;
+
+        function openAnnouncementModal(announcementId = null) {
+            const modal = document.getElementById('announcementModal');
+            const form = document.getElementById('announcementForm');
+            const title = document.getElementById('announcementModalTitle');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const methodInput = document.getElementById('announcementMethod');
+
+            // Reset form
+            form.reset();
+
+            if (announcementId) {
+                // Edit mode
+                const announcement = @json($announcements);
+                const announcementData = announcement.find(a => a.id == announcementId);
+
+                if (announcementData) {
+                    currentEditingAnnouncement = announcementData;
+                    title.textContent = 'Edit Announcement';
+                    submitBtn.textContent = 'Update Announcement';
+                    methodInput.value = 'PATCH';
+                    form.action = `/instructor/announcement/${announcementId}`;
+
+                    // Populate form fields
+                    document.getElementById('announcement_title').value = announcementData.title;
+                    document.getElementById('announcement_description').value = announcementData.description;
+                    document.getElementById('announcement_type').value = announcementData.type;
+                }
+            } else {
+                // Add mode
+                currentEditingAnnouncement = null;
+                title.textContent = 'Add New Announcement';
+                submitBtn.textContent = 'Post Announcement';
+                methodInput.value = 'POST';
+                form.action = '{{ route("instructor.announcement.store", $course) }}';
+            }
+
+            modal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
+        function openActivityModal(assignmentId = null) {
+            const modal = document.getElementById('activityModal');
+            const form = document.getElementById('activityForm');
+            const title = document.getElementById('activityModalTitle');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const methodInput = document.getElementById('activityMethod');
+
+            // Reset form
+            form.reset();
+
+            if (assignmentId) {
+                // Edit mode
+                const assignments = @json($assignments);
+                const assignmentData = assignments.find(a => a.id == assignmentId);
+
+                if (assignmentData) {
+                    currentEditingAssignment = assignmentData;
+                    title.textContent = 'Edit Activity/Assignment';
+                    submitBtn.textContent = 'Update Activity';
+                    methodInput.value = 'PATCH';
+                    form.action = `/instructor/assignment/${assignmentId}`;
+
+                    // Populate form fields
+                    document.getElementById('activity_title').value = assignmentData.title;
+                    document.getElementById('activity_description').value = assignmentData.description;
+                    document.getElementById('activity_type').value = assignmentData.type;
+                    document.getElementById('activity_points').value = assignmentData.points;
+
+                    // Format due date for datetime-local input
+                    const dueDate = new Date(assignmentData.due_date);
+                    const formattedDate = dueDate.toISOString().slice(0, 16);
+                    document.getElementById('activity_due_date').value = formattedDate;
+                }
+            } else {
+                // Add mode
+                currentEditingAssignment = null;
+                title.textContent = 'Add New Activity/Assignment';
+                submitBtn.textContent = 'Create Activity';
+                methodInput.value = 'POST';
+                form.action = '{{ route("instructor.activity.store", $course) }}';
+            }
+
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+
+        function closeAnnouncementModal() {
+            const modal = document.getElementById('announcementModal');
+            const form = document.getElementById('announcementForm');
+
+            modal.classList.add('hidden');
             document.body.classList.remove('overflow-hidden');
+
+            // Reset form and state
+            form.reset();
+            currentEditingAnnouncement = null;
+        }
+
+        function closeActivityModal() {
+            const modal = document.getElementById('activityModal');
+            const form = document.getElementById('activityForm');
+
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+
+            // Reset form and state
+            form.reset();
+            currentEditingAssignment = null;
         }
 
         // Close modal when clicking outside
@@ -576,10 +721,10 @@
             const activityModal = document.getElementById('activityModal');
 
             if (event.target === announcementModal) {
-                closeModal('announcementModal');
+                closeAnnouncementModal();
             }
             if (event.target === activityModal) {
-                closeModal('activityModal');
+                closeActivityModal();
             }
         }
 
@@ -591,6 +736,15 @@
                 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
                 dueDateInput.min = now.toISOString().slice(0, 16);
             }
+        });
+
+        // Handle form submissions
+        document.getElementById('announcementForm').addEventListener('submit', function(e) {
+            // Form will submit normally, no need for custom handling
+        });
+
+        document.getElementById('activityForm').addEventListener('submit', function(e) {
+            // Form will submit normally, no need for custom handling
         });
     </script>
 

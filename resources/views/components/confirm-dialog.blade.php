@@ -32,24 +32,29 @@
                 <h3 class="text-lg font-bold text-gray-900">{{ $title }}</h3>
                 <p class="mt-2 text-gray-600">{{ $message }}</p>
                 <div class="mt-6 flex items-center justify-end gap-3">
-                    <button type="button" @click="open = false" 
+                    <button type="button" @click="open = false"
                         class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition">
                         {{ $cancelText }}
                     </button>
 
                     {{-- Conditional confirm button --}}
                     @if ($confirmText === 'Enroll')
-                        <button type="button" @click="confirm()" 
+                        <button type="button" @click="confirm()"
                             class="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 border border-green-700 shadow transition">
                             {{ $confirmText }}
                         </button>
                     @elseif ($confirmText === 'Unenroll')
-                        <button type="button" @click="confirm()" 
+                        <button type="button" @click="confirm()"
+                            class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">
+                            {{ $confirmText }}
+                        </button>
+                    @elseif ($confirmText === 'Delete')
+                        <button type="button" @click="confirm()"
                             class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">
                             {{ $confirmText }}
                         </button>
                     @else
-                        <button type="button" @click="confirm()" 
+                        <button type="button" @click="confirm()"
                             class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 border border-gray-700 shadow transition">
                             {{ $confirmText }}
                         </button>

@@ -25,7 +25,7 @@
                         class="w-full h-full object-cover">
                 </div>
             </div>
-        
+
 
             <!-- File Info -->
             <div id="file-info-{{ $name }}" class="hidden">
@@ -59,7 +59,7 @@
             </svg>
             Choose Image
         </label>
-        
+
         <!-- wala pa function #backendh8r here -->
         <label for="{{ $name }}"
                class="cursor-pointer inline-flex items-center px-4 py-2 bg-red-600 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-[#f3f3f3] hover:bg-red-600/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
@@ -70,7 +70,22 @@
         </label>
     </div>
 
-    
+     <!-- Preview Container -->
+    <div id="preview-container-{{ $name }}" class="hidden">
+        <p class="text-sm text-gray-600 mb-2">Preview:</p>
+        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
+            <img id="preview-{{ $name }}"
+                 alt="Preview"
+                 class="w-full h-full object-cover">
+        </div>
+    </div>
+
+    <!-- File Info -->
+    <div id="file-info-{{ $name }}" class="hidden">
+        <p class="text-sm text-gray-600">
+            Selected: <span id="file-name-{{ $name }}" class="font-medium"></span>
+        </p>
+    </div>
 </div>
 
 <script>

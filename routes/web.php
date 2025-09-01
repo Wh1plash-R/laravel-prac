@@ -38,7 +38,13 @@ Route::middleware(['auth', 'role:instructor'])->group(function () {
     Route::get('/instructor/courses', [InstructorController::class, 'index'])->name('instructor.index');
     Route::get('/instructor/course/{course}', [InstructorController::class, 'courseView'])->name('instructor.course.view');
     Route::post('/instructor/course/{course}/announcement', [InstructorController::class, 'storeAnnouncement'])->name('instructor.announcement.store');
+    Route::get('/instructor/announcement/{announcement}/edit', [InstructorController::class, 'editAnnouncement'])->name('instructor.announcement.edit');
+    Route::patch('/instructor/announcement/{announcement}', [InstructorController::class, 'updateAnnouncement'])->name('instructor.announcement.update');
+    Route::delete('/instructor/announcement/{announcement}', [InstructorController::class, 'destroyAnnouncement'])->name('instructor.announcement.destroy');
     Route::post('/instructor/course/{course}/activity', [InstructorController::class, 'storeActivity'])->name('instructor.activity.store');
+    Route::get('/instructor/assignment/{assignment}/edit', [InstructorController::class, 'editAssignment'])->name('instructor.assignment.edit');
+    Route::patch('/instructor/assignment/{assignment}', [InstructorController::class, 'updateAssignment'])->name('instructor.assignment.update');
+    Route::delete('/instructor/assignment/{assignment}', [InstructorController::class, 'destroyAssignment'])->name('instructor.assignment.destroy');
 });
 
 
