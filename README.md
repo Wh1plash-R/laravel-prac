@@ -46,3 +46,8 @@ composer run dev
 -   Open http://localhost:8000
 -   Login credentials for admin: admin@admin.com - admin
 -   Register a user to see the learner side
+
+## Documentation
+
+-   System overview and user journeys: [SYSTEM_OVERVIEW_AND_USER_JOURNEY.txt](./SYSTEM_OVERVIEW_AND_USER_JOURNEY.txt)
+-   Sitemap, flowchart, and sequences: [docs/SITEMAP_AND_FLOWS.md](./docs/SITEMAP_AND_FLOWS.md)

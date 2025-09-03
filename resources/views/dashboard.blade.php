@@ -152,7 +152,7 @@
                                     <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($course) ? '24' : '0' }}</div>
                                     <div class="text-[#333]/80 font-medium">Hours Learned</div>
                                 </div>
-                            </div>  
+                            </div>
                             <!-- Main Content Area -->
                             <div>
 
@@ -181,7 +181,6 @@
 
                                             <div
                                                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
-                                                tags
                                                 {{$course->department}}
                                             </div>
 
@@ -330,7 +329,7 @@
                         <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
                     </div>
                 </div>
-                
+
                 <div class="pt-8">
                     <!-- Single Unified Container -->
                     <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
@@ -345,7 +344,7 @@
                                 </svg>
                             </div>
                         </div>
-                        
+
                         <!-- Profile Section -->
                         <div class="p-8 -mt-16 relative">
                             <div class="flex flex-col lg:flex-row items-start gap-8 mb-8">
@@ -367,7 +366,7 @@
                                         <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Profile Info - Right Side (LinkedIn Style) -->
                                 <div class="flex-1">
                                     <!-- Name & Email -->
@@ -375,7 +374,7 @@
                                         <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">{{ Auth::user()->name }}</h2>
                                         <p class="text-lg text-gray-600">{{ Auth::user()->email }}</p>
                                     </div>
-                                    
+
                                     <!-- Skills -->
                                     <div class="mb-4">
                                         @if(isset($learner->skill) && $learner->skill !== 'None')
@@ -390,7 +389,7 @@
                                             <div class="text-gray-500 text-sm italic">No skills added</div>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- Bio -->
                                     <div class="mb-6">
                                         @if(isset($learner->bio) && $learner->bio !== 'None')
@@ -399,14 +398,14 @@
                                             <p class="text-gray-500 text-sm italic">No bio added</p>
                                         @endif
                                     </div>
-                                    
+
                                     <!-- Status & Stats -->
                                     <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                                         <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full text-sm font-medium">
                                             <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
                                             Active Learner
                                         </div>
-                                        
+
                                         <div class="flex items-center gap-6 text-sm text-gray-600">
                                             <span><strong class="text-gray-900">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</strong> Courses</span>
                                             <span><strong class="text-gray-900">24</strong> Hours</span>
@@ -415,10 +414,10 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Divider -->
                             <div class="border-t border-gray-200 my-8"></div>
-                            
+
                             <!-- Achievement Section -->
                             <div>
                                 <div class="flex items-center mb-6">
@@ -429,7 +428,7 @@
                                     </div>
                                     <h3 class="text-xl font-bold text-gray-900">Achievements</h3>
                                 </div>
-                                
+
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div class="text-center p-6 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-100">
                                         <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -440,7 +439,7 @@
                                         <h4 class="font-bold text-lg text-gray-900 mb-2">Fast Learner</h4>
                                         <p class="text-sm text-gray-600">Completed 3+ courses this month</p>
                                     </div>
-                                    
+
                                     <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100">
                                         <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
                                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -450,7 +449,7 @@
                                         <h4 class="font-bold text-lg text-gray-900 mb-2">High Achiever</h4>
                                         <p class="text-sm text-gray-600">Maintains 75%+ average progress</p>
                                     </div>
-                                    
+
                                     <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
                                         <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
                                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

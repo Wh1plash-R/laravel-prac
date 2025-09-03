@@ -26,7 +26,7 @@ class CourseSeeder extends Seeder
         ];
 
         $courses_description = [
-            "Introduction to Programming" => "Learn the basics of programming.",
+            "Introduction to Programming" => "Learn the basics of C and C++ programming.",
             "Linear Algebra" => "Explore the concepts and its applications.",
             "Data Structures and Algorithms" => "Understand for efficient problem solving.",
             "Automata Theory and Formal Languages" => "Get familiar with the theory of computation.",

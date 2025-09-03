@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Learner;
 use App\Models\Instructor;
 use App\Models\Assignment;
+use App\Models\Submission;
 use Illuminate\Support\Facades\Auth;
 
 class InstructorController extends Controller
@@ -234,6 +235,15 @@ class InstructorController extends Controller
 
         $assignment->update($validated);
 
+        // Check if the request came from assignment view or course view
+        $referer = request()->header('referer');
+        if ($referer && str_contains($referer, '/instructor/assignment/')) {
+            // Came from assignment view, redirect back to assignment view
+            return redirect()->route('instructor.assignment.view', $assignment)
+                ->with('success', 'Assignment updated successfully!');
+        }
+
+        // Default: redirect to course view (for course view edits)
         return redirect()->route('instructor.course.view', $assignment->course)
             ->with('success', 'Assignment updated successfully!');
     }
@@ -264,5 +274,181 @@ class InstructorController extends Controller
             ->with('success', 'Assignment deleted successfully!');
     }
 
+    /**
+     * View assignment details with submissions for instructor
+     */
+    public function viewAssignment(Assignment $assignment)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        // Load the course relationship
+        $assignment->load('course');
+
+        if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this assignment.');
+        }
+
+        // Load assignment with course, submissions, and related learners
+        $assignment->load([
+            'course.learners.user',
+            'submissions.learner.user'
+        ]);
+
+        // Get all enrolled learners for this course
+        $enrolledLearners = $assignment->course->learners;
+
+        // Create a collection of learners with their submission status
+        $learnersWithSubmissions = $enrolledLearners->map(function ($learner) use ($assignment) {
+            $submission = $assignment->submissions->where('learner_id', $learner->id)->first();
+
+            return (object) [
+                'learner' => $learner,
+                'submission' => $submission,
+                'has_submitted' => $submission && $submission->isSubmitted(),
+                'is_graded' => $submission && $submission->isGraded(),
+                'grade' => $submission ? $submission->grade : null,
+                'status' => $submission ? $submission->status : 'not_started',
+                'submitted_at' => $submission ? $submission->submitted_at : null,
+            ];
+        });
+
+        // Debug submission counts
+        $submittedCount = $learnersWithSubmissions->where('has_submitted', true)->count();
+        $gradedCount = $learnersWithSubmissions->where('is_graded', true)->count();
+
+        return view('instructors.assignment-view', [
+            'assignment' => $assignment,
+            'instructor' => $instructor,
+            'learnersWithSubmissions' => $learnersWithSubmissions,
+            'totalLearners' => $enrolledLearners->count(),
+            'submittedCount' => $submittedCount,
+            'gradedCount' => $gradedCount,
+            'user' => $user
+        ]);
+    }
+
+    /**
+     * Grade a submission
+     */
+    public function gradeSubmission(Request $request, Assignment $assignment)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        // Load the course relationship
+        $assignment->load('course');
+
+        if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this assignment.');
+        }
+
+        $validated = $request->validate([
+            'learner_id' => 'required|exists:learners,id',
+            'grade' => 'required|integer|min:0|max:' . $assignment->points,
+            'feedback' => 'nullable|string|max:1000',
+        ]);
+
+        // Find the submission
+        $submission = Submission::where('assignment_id', $assignment->id)
+            ->where('learner_id', $validated['learner_id'])
+            ->first();
+
+        if (!$submission) {
+            return redirect()->back()->with('error', 'No submission found for this learner.');
+        }
+
+        // Check if submission has been submitted (not just draft)
+        if (!$submission->isSubmitted() && $submission->status !== 'graded') {
+            return redirect()->back()->with('error', 'Cannot grade a submission that has not been submitted yet.');
+        }
+
+        // Update the submission with grade and feedback
+        $submission->update([
+            'grade' => $validated['grade'],
+            'feedback' => $validated['feedback'],
+            'status' => 'graded',
+            'graded_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Grade submitted successfully!');
+    }
+
+    /**
+     * Download submission file for instructor
+     */
+    public function downloadSubmission(Assignment $assignment, Learner $learner)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        // Load the course relationship
+        $assignment->load('course');
+
+        if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this assignment.');
+        }
+
+        $submission = Submission::where('assignment_id', $assignment->id)
+            ->where('learner_id', $learner->id)
+            ->first();
+
+        if (!$submission || !$submission->file_path) {
+            abort(404, 'File not found.');
+        }
+
+        $filePath = storage_path('app/public/' . $submission->file_path);
+
+        if (!file_exists($filePath)) {
+            abort(404, 'File not found on server.');
+        }
+
+        return response()->download($filePath, $submission->file_name);
+    }
+
+    /**
+     * Lock an assignment (prevent further submissions)
+     */
+    public function lockAssignment(Assignment $assignment)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        // Load the course relationship
+        $assignment->load('course');
+
+        if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this assignment.');
+        }
+
+        $assignment->update(['status' => 'locked']);
+
+        return redirect()->back()->with('success', 'Assignment has been locked. Students can no longer submit work.');
+    }
+
+    /**
+     * Unlock an assignment (allow submissions)
+     */
+    public function unlockAssignment(Assignment $assignment)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        // Load the course relationship
+        $assignment->load('course');
+
+        if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this assignment.');
+        }
+
+        $assignment->update(['status' => 'active']);
+
+        return redirect()->back()->with('success', 'Assignment has been unlocked. Students can now submit work.');
+    }
 
 }

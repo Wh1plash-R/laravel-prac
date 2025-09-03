@@ -215,30 +215,105 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                 </svg>
                             </div>
-                            <h2 class="text-2xl font-bold text-gray-900">Assignments</h2>
+                            <h2 class="text-2xl font-bold text-gray-900">Activities & Assignments</h2>
                         </div>
+
+                        @php
+                            // Get all assignments for this course and learner's submissions
+                            $allAssignments = $course->assignments;
+
+                            // Get learner's submissions for this course
+                            $learnerSubmissions = $learner ? $learner->submissions()
+                                ->whereIn('assignment_id', $allAssignments->pluck('id'))
+                                ->get() : collect();
+                        @endphp
                         <div class="space-y-4">
                             @forelse($course->assignments()->orderBy('due_date', 'asc')->get() as $assignment)
-                                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors {{ $assignment->status === 'locked' ? 'opacity-60' : '' }}">
+                                @php
+                                    // Get learner's submission for this assignment
+                                    $submission = $learnerSubmissions->where('assignment_id', $assignment->id)->first();
+
+                                    // Determine learner-specific status
+                                    if ($assignment->status === 'locked') {
+                                        $learnerStatus = 'locked';
+                                        $statusColor = 'gray';
+                                        $statusText = 'Locked';
+                                    } elseif ($submission) {
+                                        switch ($submission->status) {
+                                            case 'graded':
+                                                $learnerStatus = 'graded';
+                                                $statusColor = 'green';
+                                                $statusText = 'Graded (' . $submission->grade . '/' . $assignment->points . ')';
+                                                break;
+                                            case 'submitted':
+                                                $learnerStatus = 'submitted';
+                                                $statusColor = 'blue';
+                                                $statusText = 'Submitted';
+                                                break;
+                                            case 'draft':
+                                                $learnerStatus = 'draft';
+                                                $statusColor = 'yellow';
+                                                $statusText = 'In Progress';
+                                                break;
+                                            default:
+                                                $learnerStatus = 'not_started';
+                                                $statusColor = 'gray';
+                                                $statusText = 'Not Started';
+                                        }
+                                    } else {
+                                        $learnerStatus = 'not_started';
+                                        $statusColor = 'gray';
+                                        $statusText = 'Not Started';
+                                    }
+
+                                    $isClickable = $assignment->status === 'active';
+                                    $isOverdue = $assignment->due_date < now() && !in_array($learnerStatus, ['submitted', 'graded']);
+                                @endphp
+
+                                @if($isClickable)
+                                    <a href="{{ route('assignment.view', $assignment) }}" class="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer">
+                                @else
+                                    <div class="border border-gray-200 rounded-lg p-4 opacity-60 cursor-not-allowed bg-gray-50">
+                                @endif
                                     <div class="flex items-center justify-between">
                                         <div class="flex-1">
-                                            <h4 class="font-semibold text-gray-900">{{ $assignment->title }}</h4>
+                                            <div class="flex items-center">
+                                                <h4 class="font-semibold text-gray-900">{{ $assignment->title }}</h4>
+                                                @if($assignment->status === 'locked')
+                                                    <svg class="w-4 h-4 ml-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                                    </svg>
+                                                @endif
+                                            </div>
                                             <p class="text-gray-600 text-sm mt-1">{{ $assignment->description }}</p>
                                             <div class="flex items-center mt-2 text-xs text-gray-500">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                Due: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }}
+                                                @if($isOverdue)
+                                                    <span class="text-red-500 font-medium">Overdue: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }}</span>
+                                                @else
+                                                    Due: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }}
+                                                @endif
                                                 <span class="ml-2">• {{ $assignment->points }} points</span>
                                             </div>
                                         </div>
-                                        <div class="ml-4">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $assignment->status_color }}-100 text-{{ $assignment->status_color }}-800">
-                                                {{ $assignment->status_text }}
+                                        <div class="ml-4 flex items-center space-x-2">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ $statusColor }}-100 text-{{ $statusColor }}-800">
+                                                {{ $statusText }}
                                             </span>
+                                            @if($isClickable)
+                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                            @endif
                                         </div>
                                     </div>
-                                </div>
+                                @if($isClickable)
+                                    </a>
+                                @else
+                                    </div>
+                                @endif
                             @empty
                                 <div class="text-center py-4">
                                     <p class="text-gray-500 text-sm">No assignments have been posted yet.</p>
@@ -253,18 +328,33 @@
                     <!-- Course Stats -->
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Course Statistics</h3>
-                        <div class="space-y-4">
+                                                <div class="space-y-4">
                             @php
-                                $totalAssignments = $course->assignments()->count();
-                                $completedAssignments = $course->assignments()->where('status', 'completed')->count();
-                                $activeAssignments = $course->assignments()->where('status', 'active')->count();
+                                // Get all assignments for this course
+                                $allAssignments = $course->assignments;
+                                $totalAssignments = $allAssignments->count();
+
+                                // Get learner's submissions for this course
+                                $statsLearnerSubmissions = $learner ? $learner->submissions()
+                                    ->whereIn('assignment_id', $allAssignments->pluck('id'))
+                                    ->get() : collect();
+
+                                // Calculate learner's progress
+                                $submittedAssignments = $statsLearnerSubmissions->where('status', 'submitted')->count();
+                                $gradedAssignments = $statsLearnerSubmissions->where('status', 'graded')->count();
+                                $draftAssignments = $statsLearnerSubmissions->where('status', 'draft')->count();
+                                $completedAssignments = $submittedAssignments + $gradedAssignments;
+
+                                // Calculate completion percentage based on submitted/graded assignments
                                 $completionPercentage = $totalAssignments > 0 ? round(($completedAssignments / $totalAssignments) * 100) : 0;
 
-                                // Find next deadline (earliest active assignment)
-                                $nextDeadline = $course->assignments()
+                                // Find next deadline (earliest active assignment that's not submitted)
+                                $submittedAssignmentIds = $statsLearnerSubmissions->whereIn('status', ['submitted', 'graded'])->pluck('assignment_id');
+                                $nextDeadline = $allAssignments
                                     ->where('status', 'active')
+                                    ->whereNotIn('id', $submittedAssignmentIds)
                                     ->where('due_date', '>', now())
-                                    ->orderBy('due_date', 'asc')
+                                    ->sortBy('due_date')
                                     ->first();
                             @endphp
 
@@ -277,8 +367,16 @@
                                 <span class="font-semibold text-gray-900">{{ $completedAssignments }}/{{ $totalAssignments }}</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-gray-600">Active</span>
-                                <span class="font-semibold text-blue-600">{{ $activeAssignments }}</span>
+                                <span class="text-gray-600">Submitted</span>
+                                <span class="font-semibold text-green-600">{{ $submittedAssignments + $gradedAssignments }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">In Progress</span>
+                                <span class="font-semibold text-blue-600">{{ $draftAssignments }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600">Graded</span>
+                                <span class="font-semibold text-purple-600">{{ $gradedAssignments }}</span>
                             </div>
                             @if($nextDeadline)
                                 <div class="flex justify-between items-center">
@@ -347,38 +445,6 @@
                         </div>
                     </div>
 
-                    <!-- Upcoming Assignments -->
-                    {{-- <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Upcoming Assignments</h3>
-                        <div class="space-y-3 text-sm">
-                            @forelse($course->assignments()->where('status', 'active')->orderBy('due_date', 'asc')->limit(3)->get() as $assignment)
-                                <div class="flex items-start">
-                                    <div class="w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                    <div class="flex-1">
-                                        <p class="text-gray-700 font-medium">{{ Str::limit($assignment->title, 30) }}</p>
-                                        <p class="text-gray-500 text-xs">
-                                            Due {{ $assignment->due_date->format('M j') }}
-                                            @php
-                                                $daysUntilDue = now()->diffInDays($assignment->due_date, false);
-                                            @endphp
-                                            @if($daysUntilDue == 0)
-                                                <span class="text-red-600 font-medium">(Today)</span>
-                                            @elseif($daysUntilDue == 1)
-                                                <span class="text-orange-600 font-medium">(Tomorrow)</span>
-                                            @elseif($daysUntilDue <= 3)
-                                                <span class="text-orange-600 font-medium">({{ $daysUntilDue }} days)</span>
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-2">
-                                    <p class="text-gray-500 text-xs">No upcoming assignments</p>
-                                </div>
-                            @endforelse
-                        </div>
-                    </div> --}}
-
                     <!-- Course Progress -->
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Progress Overview</h3>
@@ -397,13 +463,21 @@
                                 <div class="grid grid-cols-2 gap-4 text-center">
                                     <div class="bg-green-50 rounded-lg p-3">
                                         <div class="text-2xl font-bold text-green-600">{{ $completedAssignments }}</div>
-                                        <div class="text-xs text-green-700">Completed</div>
+                                        <div class="text-xs text-green-700">Submitted</div>
                                     </div>
                                     <div class="bg-blue-50 rounded-lg p-3">
-                                        <div class="text-2xl font-bold text-blue-600">{{ $activeAssignments }}</div>
-                                        <div class="text-xs text-blue-700">Active</div>
+                                        <div class="text-2xl font-bold text-blue-600">{{ $totalAssignments - $completedAssignments }}</div>
+                                        <div class="text-xs text-blue-700">Remaining</div>
                                     </div>
                                 </div>
+                                @if($draftAssignments > 0)
+                                    <div class="mt-2 text-center">
+                                        <div class="bg-yellow-50 rounded-lg p-2">
+                                            <div class="text-lg font-bold text-yellow-600">{{ $draftAssignments }}</div>
+                                            <div class="text-xs text-yellow-700">In Progress (Draft)</div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     </div>

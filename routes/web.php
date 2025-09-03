@@ -18,6 +18,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::patch('/dashboard/{user}', [DashboardController::class, 'update'])->name('dashboard.update');
     Route::get('/course/{course}', [DashboardController::class, 'showCourse'])->name('course.view');
+
+    // Assignment view routes for learners
+    Route::get('/assignment/{assignment}', [LearnerController::class, 'viewAssignment'])->name('assignment.view');
+    Route::post('/assignment/{assignment}/submit', [LearnerController::class, 'submitAssignment'])->name('assignment.submit');
+    Route::delete('/assignment/{assignment}/submission', [LearnerController::class, 'removeSubmission'])->name('assignment.remove');
+    Route::patch('/assignment/{assignment}/finalize', [LearnerController::class, 'finalizeSubmission'])->name('assignment.finalize');
+    Route::get('/assignment/{assignment}/download', [LearnerController::class, 'downloadSubmission'])->name('assignment.download');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -45,6 +52,13 @@ Route::middleware(['auth', 'role:instructor'])->group(function () {
     Route::get('/instructor/assignment/{assignment}/edit', [InstructorController::class, 'editAssignment'])->name('instructor.assignment.edit');
     Route::patch('/instructor/assignment/{assignment}', [InstructorController::class, 'updateAssignment'])->name('instructor.assignment.update');
     Route::delete('/instructor/assignment/{assignment}', [InstructorController::class, 'destroyAssignment'])->name('instructor.assignment.destroy');
+
+    // Assignment view and grading routes for instructors
+    Route::get('/instructor/assignment/{assignment}', [InstructorController::class, 'viewAssignment'])->name('instructor.assignment.view');
+    Route::post('/instructor/assignment/{assignment}/grade', [InstructorController::class, 'gradeSubmission'])->name('instructor.assignment.grade');
+    Route::get('/instructor/assignment/{assignment}/download/{learner}', [InstructorController::class, 'downloadSubmission'])->name('instructor.assignment.download');
+    Route::patch('/instructor/assignment/{assignment}/lock', [InstructorController::class, 'lockAssignment'])->name('instructor.assignment.lock');
+    Route::patch('/instructor/assignment/{assignment}/unlock', [InstructorController::class, 'unlockAssignment'])->name('instructor.assignment.unlock');
 });
 
 

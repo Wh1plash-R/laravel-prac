@@ -29,12 +29,17 @@ class Assignment extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
+
     public function getStatusColorAttribute()
     {
         return match($this->status) {
-            'active' => 'yellow',
+            'active' => 'green',
             'locked' => 'gray',
-            'completed' => 'green',
+            'completed' => 'blue',
             default => 'gray',
         };
     }
@@ -42,7 +47,7 @@ class Assignment extends Model
     public function getStatusTextAttribute()
     {
         return match($this->status) {
-            'active' => 'Pending',
+            'active' => 'Active',
             'locked' => 'Locked',
             'completed' => 'Completed',
             default => 'Unknown',

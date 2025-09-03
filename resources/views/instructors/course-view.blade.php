@@ -336,12 +336,11 @@
                                             <p class="text-xs text-gray-400 mt-1">Created {{ $assignment->created_at->diffForHumans() }}</p>
                                         </div>
                                         <div class="ml-4 flex items-center space-x-2">
-                                            <span class="text-sm text-gray-600">0/{{ $enrolledLearners->count() }} submitted</span>
+                                            <span class="text-sm text-gray-600">{{ $assignment->submissions->count() }}/{{ $enrolledLearners->count() }} submitted</span>
                                             <div class="flex items-center space-x-2">
                                                 <button onclick="openActivityModal({{ $assignment->id }})" class="text-purple-600 hover:text-purple-800 text-sm font-medium">Edit</button>
 
-                                                {{-- Not Functional Yet --}}
-                                                <button class="text-gray-600 hover:text-gray-800 text-sm font-medium">View</button>
+                                                <a href="{{ route('instructor.assignment.view', $assignment) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View</a>
 
                                                 <form id="delete-assignment-{{ $assignment->id }}" action="{{ route('instructor.assignment.destroy', $assignment) }}" method="POST" class="inline">
                                                     @csrf
@@ -457,12 +456,6 @@
                                     class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                 Create Assignment
                             </button>
-                            <button class="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
-                                View Grades
-                            </button>
-                            <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
-                                Export Data
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -515,7 +508,7 @@
                         <select name="type" id="announcement_type" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                                 @change="hasChanges = true">
-                            <option value="" selected>Select Type</option>
+                            <option value="" disabled selected>Select Type</option>
                             <option value="info">Info</option>
                             <option value="warning">Warning</option>
                             <option value="success">Success</option>
@@ -584,7 +577,7 @@
                             <select name="type" id="activity_type" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                                     @change="hasChanges = true">
-                                <option value="" selected>Select Type</option>
+                                <option value="" disabled selected>Select Type</option>
                                 <option value="assignment">Assignment</option>
                                 <option value="activity">Activity</option>
                             </select>

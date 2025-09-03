@@ -1,0 +1,151 @@
+SYSTEM OVERVIEW AND USER JOURNEY
+Last updated: 2025-09-03
+
+— Purpose —
+A lightweight Learning Management System (LMS) that supports two primary roles—Instructor and Learner—to manage courses, assignments, announcements, and submissions. The app uses Laravel with Blade views, Tailwind CSS, and Vite for assets. Authentication and roles are present, with dedicated flows for Instructors and Learners.
+
+— Tech Stack —
+• Backend: Laravel (PHP)
+• Views/UI: Blade templates, Tailwind CSS, Blade Icons/Heroicons
+• Build: Vite
+• Database: SQLite (configurable), Eloquent ORM
+• Auth: Laravel authentication scaffolding; roles via roles table; personal access tokens table present
+
+— Key Domain Models —
+• User: Base auth entity; may have a profile picture
+• Role: Defines user capabilities (e.g., Instructor, Learner)
+• Learner: Learner profile associated to a user
+• Instructor: Instructor profile associated to a user
+• Course: Created and owned by an Instructor; enrolls many Learners (pivot course_learner)
+• Assignment: Belongs to a Course; contains instructions and due date
+• Submission: Belongs to a Learner and an Assignment; tracks submitted work and status
+• Announcement: Linked to courses; visible to enrolled learners
+
+— High-level Features —
+• Authentication: Sign up, sign in, profile management, profile pictures (see PROFILE_PICTURE_FEATURE.md)
+• Roles & Access: Instructor and Learner experiences; restricted actions by role
+• Courses: Create, view, manage courses; enroll learners (explicitly or via flows provided in UI)
+• Assignments: Create, publish, view, submit, and review assignment submissions
+• Announcements: Create and view course announcements
+• Submissions: Learners upload work; instructors review
+
+— Information Architecture (UI labels and routes) —
+• Global
+  - Welcome: route name welcome; header brand "BeeCourse"
+  - Dashboard: route name dashboard; view resources/views/dashboard.blade.php
+  - Profile: route name profile.edit (edit), profile.update, profile.destroy; profile picture upload supported
+  - Logout: form POST to route logout from header dropdown
+
+• Learner
+  - Course Detail: route name course.view → resources/views/learners/course-view.blade.php
+    • Back to Dashboard button
+    • Unenroll form posts to route dashboard.update
+    • Sections: Enrolled Learners (count), Announcements, Assignments (clickable cards)
+  - Assignment: route name assignment.view → resources/views/learners/assignment-view.blade.php
+    • Back to Course link
+    • Actions: assignment.submit (POST, with file), assignment.remove (DELETE), assignment.finalize (PATCH), assignment.download (GET)
+
+• Instructor
+  - Courses Index: route name instructor.index → resources/views/instructors/index.blade.php
+  - Course Detail: route name instructor.course.view → resources/views/instructors/course-view.blade.php
+    • Back to Dashboard button
+    • Announcements: instructor.announcement.store (POST), instructor.announcement.edit (GET), instructor.announcement.update (PATCH), instructor.announcement.destroy (DELETE)
+    • Activity: instructor.activity.store (POST)
+    • Assignments: view via instructor.assignment.view; update via instructor.assignment.update; delete via instructor.assignment.destroy
+  - Assignment: route name instructor.assignment.view → resources/views/instructors/assignment-view.blade.php
+    • Download: instructor.assignment.download (GET)
+    • Grade: instructor.assignment.grade (POST)
+    • Lock/Unlock: instructor.assignment.lock (PATCH), instructor.assignment.unlock (PATCH)
+
+— Data Relationships (simplified) —
+User 1—1 Role (via role_id)
+User 1—1 Learner (optional)
+User 1—1 Instructor (optional)
+Instructor 1—* Course
+Course *—* Learner (course_learner)
+Course 1—* Assignment
+Assignment 1—* Submission (each by a Learner)
+Course 1—* Announcement
+
+— System Constraints & Notes —
+• SQLite database present for local development
+• Personal access tokens table exists (API/SPA compatibility)
+• Tailwind CSS for styling; Vite for assets; Blade components used for UI
+• Authorization enforced via route middleware and controller logic (role: admin, instructor)
+
+
+USER JOURNEYS (with UI labels and routes)
+
+Learner Journey
+1) Onboarding
+   - Visit Welcome → Sign up / Sign in
+   - After auth, redirected to Dashboard (dashboard)
+   - Optional: Profile → Upload profile picture (profile.edit → dashboard.update)
+
+2) Discover & Access Courses
+   - Dashboard shows available/enrolled courses; click "View" → Course Detail (course.view)
+
+3) Course Detail (learners/course-view)
+   - See Announcements and Assignments; Back to Dashboard link
+   - Unenroll via form posting to dashboard.update
+
+4) Assignment (learners/assignment-view)
+   - Open from Course Detail (assignment.view)
+   - Submit: assignment.submit (POST, with file)
+   - Manage: assignment.remove (DELETE), assignment.finalize (PATCH)
+   - Download current file: assignment.download (GET)
+   - Back to Course link
+
+5) Track Progress
+   - Return to Assignment to verify status (submitted/finalized)
+   - Monitor Announcements in Course Detail
+
+6) Profile & Sign out
+   - Profile edit, then Logout via header
+
+Success Criteria (Learner)
+• Can enroll/unenroll, view courses (dashboard.update, course.view)
+• Can submit/finalize assignments (assignment.*)
+• Can stay updated via announcements
+
+
+Instructor Journey
+1) Onboarding
+   - Sign in → Dashboard → Instructor Courses (instructor.index)
+
+2) Course Detail (instructor.course.view)
+   - Back to Dashboard link
+   - Manage Announcements (store/edit/update/destroy)
+   - Post Activity (instructor.activity.store)
+   - Open Assignments (instructor.assignment.view)
+
+3) Assignment (instructors/assignment-view)
+   - Download learner submission (instructor.assignment.download)
+   - Grade learner submission (instructor.assignment.grade)
+   - Lock/Unlock assignment (instructor.assignment.lock / instructor.assignment.unlock)
+   - Edit/Update assignment details (instructor.assignment.update) or Delete (instructor.assignment.destroy)
+
+4) Iterate
+   - Update course content, announcements, assignments as needed
+
+Success Criteria (Instructor)
+• Can manage courses, announcements, and assignments
+• Can review, grade, and control submission windows
+
+
+End-to-End Scenario (Happy Path)
+1) Instructor creates/opens a course; enrolls learners
+2) Instructor posts an announcement
+3) Instructor creates an assignment and leaves it unlocked
+4) Learner views course and submits work (assignment.submit)
+5) Instructor reviews and grades (instructor.assignment.grade); optionally locks assignment
+6) Learner confirms status and sees feedback
+
+Operational Notes
+• Seeders create roles/users for demo; admin can manage learners (learners.* routes under role:admin)
+• Use php artisan storage:link for public disk exposure in deployment
+
+Definition of Done for This Documentation
+• Reflects current routes, labels, and flows from the codebase
+• Provides clear learner and instructor journeys with route references
+• Ready for stakeholders and onboarding
