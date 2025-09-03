@@ -485,7 +485,13 @@
                     </button>
                 </div>
 
-                <form id="announcementForm" action="" method="POST" class="space-y-4">
+                <form id="announcementForm" action="" method="POST" class="space-y-4"
+                        x-data="{ hasChanges: false }"
+                        x-init="
+                            $watch('hasChanges', value => {
+                                if (value) window.announcementFormChanged = true;
+                            });
+                        ">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="_method" value="POST" id="announcementMethod">
@@ -493,19 +499,22 @@
                     <div>
                         <label for="announcement_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input type="text" name="title" id="announcement_title" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                @input="hasChanges = true">
                     </div>
 
                     <div>
                         <label for="announcement_description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                         <textarea name="description" id="announcement_description" rows="4" required
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                @input="hasChanges = true"></textarea>
                     </div>
 
                     <div>
                         <label for="announcement_type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
                         <select name="type" id="announcement_type" required
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                @change="hasChanges = true">
                             <option value="" selected>Select Type</option>
                             <option value="info">Info</option>
                             <option value="warning">Warning</option>
@@ -544,7 +553,13 @@
                     </button>
                 </div>
 
-                <form id="activityForm" action="" method="POST" class="space-y-4">
+                <form id="activityForm" action="" method="POST" class="space-y-4"
+                        x-data="{ hasChanges: false }"
+                        x-init="
+                            $watch('hasChanges', value => {
+                                if (value) window.activityFormChanged = true;
+                            });
+                        ">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
                     <input type="hidden" name="_method" value="POST" id="activityMethod">
@@ -552,20 +567,23 @@
                     <div>
                         <label for="activity_title" class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                         <input type="text" name="title" id="activity_title" required
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                @input="hasChanges = true">
                     </div>
 
                     <div>
                         <label for="activity_description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                         <textarea name="description" id="activity_description" rows="4" required
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"></textarea>
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                @input="hasChanges = true"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="activity_type" class="block text-sm font-medium text-gray-700 mb-2">Type</label>
                             <select name="type" id="activity_type" required
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                    @change="hasChanges = true">
                                 <option value="" selected>Select Type</option>
                                 <option value="assignment">Assignment</option>
                                 <option value="activity">Activity</option>
@@ -575,14 +593,16 @@
                         <div>
                             <label for="activity_points" class="block text-sm font-medium text-gray-700 mb-2">Points</label>
                             <input type="number" name="points" id="activity_points" min="10" placeholder="100" max="100" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                    @input="hasChanges = true">
                         </div>
                     </div>
 
                     <div>
                         <label for="activity_due_date" class="block text-sm font-medium text-gray-700 mb-2">Due Date</label>
                         <input type="datetime-local" name="due_date" id="activity_due_date" required min="{{ date('Y-m-d\TH:i') }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                                @change="hasChanges = true">
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-4">
@@ -599,6 +619,25 @@
             </div>
         </div>
     </div>
+
+    <!-- Unsaved Changes Confirmation Dialog -->
+    <x-confirm-dialog
+        title="Unsaved Changes"
+        message="You have unsaved changes. Are you sure you want to close without saving? Your changes will be lost."
+        confirmText="Discard Changes"
+        cancelText="Keep Editing"
+        loadingMessage="Closing..."
+        formId="unsaved-changes-form"
+        event="show-unsaved-changes-dialog">
+        <x-slot:trigger>
+            <!-- This will be triggered by JavaScript event -->
+        </x-slot:trigger>
+    </x-confirm-dialog>
+
+    <!-- Hidden form for the confirm dialog -->
+    <form id="unsaved-changes-form" style="display: none;">
+        @csrf
+    </form>
 
     <!-- Modal JavaScript -->
     <script>
@@ -662,6 +701,10 @@
 
                 if (assignmentData) {
                     currentEditingAssignment = assignmentData;
+                    // Format due date for datetime-local input
+                    const dueDate = new Date(assignmentData.due_date);
+                    const formattedDate = dueDate.toISOString().slice(0, 16);
+
                     title.textContent = 'Edit Activity/Assignment';
                     submitBtn.textContent = 'Update Activity';
                     methodInput.value = 'PATCH';
@@ -672,10 +715,6 @@
                     document.getElementById('activity_description').value = assignmentData.description;
                     document.getElementById('activity_type').value = assignmentData.type;
                     document.getElementById('activity_points').value = assignmentData.points;
-
-                    // Format due date for datetime-local input
-                    const dueDate = new Date(assignmentData.due_date);
-                    const formattedDate = dueDate.toISOString().slice(0, 16);
                     document.getElementById('activity_due_date').value = formattedDate;
                 }
             } else {
@@ -691,7 +730,15 @@
             document.body.classList.add('overflow-hidden');
         }
 
-        function closeAnnouncementModal() {
+        function closeAnnouncementModal(force = false) {
+            if (!force && hasAnnouncementChanges()) {
+                // Show confirmation dialog
+                window.dispatchEvent(new CustomEvent('show-unsaved-changes-dialog', {
+                    detail: { type: 'announcement' }
+                }));
+                return;
+            }
+
             const modal = document.getElementById('announcementModal');
             const form = document.getElementById('announcementForm');
 
@@ -703,7 +750,15 @@
             currentEditingAnnouncement = null;
         }
 
-        function closeActivityModal() {
+        function closeActivityModal(force = false) {
+            if (!force && hasActivityChanges()) {
+                // Show confirmation dialog
+                window.dispatchEvent(new CustomEvent('show-unsaved-changes-dialog', {
+                    detail: { type: 'activity' }
+                }));
+                return;
+            }
+
             const modal = document.getElementById('activityModal');
             const form = document.getElementById('activityForm');
 
@@ -728,6 +783,15 @@
             }
         }
 
+        // Helper functions for change detection
+        function hasAnnouncementChanges() {
+            return window.announcementFormChanged || false;
+        }
+
+        function hasActivityChanges() {
+            return window.activityFormChanged || false;
+        }
+
         // Set minimum date for due date input to today
         document.addEventListener('DOMContentLoaded', function() {
             const dueDateInput = document.getElementById('activity_due_date');
@@ -738,13 +802,32 @@
             }
         });
 
-        // Handle form submissions
-        document.getElementById('announcementForm').addEventListener('submit', function(e) {
-            // Form will submit normally, no need for custom handling
+        // Handle unsaved changes confirmation
+        window.addEventListener('show-unsaved-changes-dialog', function(event) {
+            const modalType = event.detail.type;
+
+            // Store the modal type for the confirm dialog
+            window.pendingModalClose = modalType;
         });
 
-        document.getElementById('activityForm').addEventListener('submit', function(e) {
-            // Form will submit normally, no need for custom handling
+        // Handle the confirm dialog form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const unsavedChangesForm = document.getElementById('unsaved-changes-form');
+            if (unsavedChangesForm) {
+                unsavedChangesForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Close the appropriate modal
+                    if (window.pendingModalClose === 'announcement') {
+                        closeAnnouncementModal(true);
+                    } else if (window.pendingModalClose === 'activity') {
+                        closeActivityModal(true);
+                    }
+
+                    // Clear the pending close
+                    window.pendingModalClose = null;
+                });
+            }
         });
     </script>
 

@@ -53,6 +53,11 @@
                             class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">
                             {{ $confirmText }}
                         </button>
+                    @elseif ($confirmText === 'Discard Changes')
+                        <button type="button" @click="confirm()"
+                            class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">
+                            {{ $confirmText }}
+                        </button>
                     @else
                         <button type="button" @click="confirm()"
                             class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 border border-gray-700 shadow transition">
