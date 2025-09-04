@@ -115,10 +115,10 @@
                         <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[200px]">
                             <div class="flex justify-between text-sm text-white/90 mb-2">
                                 <span>Progress</span>
-                                <span>25%</span>
+                                <span>{{ $completionPercentage }}%</span>
                             </div>
                             <div class="w-full bg-white/20 rounded-full h-2">
-                                <div class="bg-white h-2 rounded-full" style="width: 25%"></div>
+                                <div class="bg-white h-2 rounded-full" style="width: {{ $completionPercentage }}%"></div>
                             </div>
                         </div>
 

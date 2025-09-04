@@ -141,15 +141,15 @@
                             <!-- profile stats -->
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-full">
                                 <div class="bg-blue-200 rounded-xl p-6 text-center hover-subtle">
-                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</div>
+                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ $coursesEnrolled ?? (isset($learner_courses) ? count($learner_courses) : 0) }}</div>
                                     <div class="text-[#333]/80 font-medium">Courses Enrolled</div>
                                 </div>
                                 <div class="bg-green-200 rounded-xl p-6 text-center hover-subtle">
-                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($course) ? '75%' : '0%' }}</div>
+                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($averageProgress) ? $averageProgress . '%' : '0%' }}</div>
                                     <div class="text-[#333]/80 font-medium">Average Progress</div>
                                 </div>
                                 <div class="bg-purple-200 rounded-xl p-6 text-center hover-subtle">
-                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ isset($course) ? '24' : '0' }}</div>
+                                    <div class="text-3xl font-bold text-[#333] mb-2">{{ $hoursLearned ?? 0 }}</div>
                                     <div class="text-[#333]/80 font-medium">Hours Learned</div>
                                 </div>
                             </div>
@@ -187,10 +187,10 @@
                                             <div class="mb-4">
                                                 <div class="flex justify-between text-xs text-gray-500 mb-1">
                                                     <span>Progress</span>
-                                                    <span>25%</span>
+                                                    <span>{{ isset($courseProgress[$course->id]) ? $courseProgress[$course->id] . '%' : '0%' }}</span>
                                                 </div>
                                                 <div class="w-full bg-gray-200 rounded-full h-2">
-                                                    <div class="gradient-bg h-2 rounded-full" style="width: 25%"></div>
+                                                    <div class="gradient-bg h-2 rounded-full" style="width: {{ isset($courseProgress[$course->id]) ? $courseProgress[$course->id] : 0 }}%"></div>
                                                 </div>
                                             </div>
 
@@ -407,9 +407,9 @@
                                         </div>
 
                                         <div class="flex items-center gap-6 text-sm text-gray-600">
-                                            <span><strong class="text-gray-900">{{ isset($learner_courses) ? count($learner_courses) : '0' }}</strong> Courses</span>
-                                            <span><strong class="text-gray-900">24</strong> Hours</span>
-                                            <span><strong class="text-gray-900">75%</strong> Avg Progress</span>
+                                            <span><strong class="text-gray-900">{{ $coursesEnrolled ?? (isset($learner_courses) ? count($learner_courses) : 0) }}</strong> Courses</span>
+                                            <span><strong class="text-gray-900">{{ $hoursLearned ?? 0 }}</strong> Hours</span>
+                                            <span><strong class="text-gray-900">{{ isset($averageProgress) ? $averageProgress . '%' : '0%' }}</strong> Avg Progress</span>
                                         </div>
                                     </div>
                                 </div>
@@ -429,36 +429,26 @@
                                     <h3 class="text-xl font-bold text-gray-900">Achievements</h3>
                                 </div>
 
+                                {{-- You can add achievements on DashboardController.php --}}
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div class="text-center p-6 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border border-yellow-100">
-                                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                            </svg>
+                                    @if(!empty($achievementsEarned) && count($achievementsEarned) > 0)
+                                        @foreach($achievementsEarned as $ach)
+                                            <div class="text-center p-6 bg-gradient-to-br {{ $ach['bg'] }} rounded-xl border {{ $ach['border'] }}">
+                                                <div class="w-12 h-12 bg-gradient-to-br {{ $ach['iconBg'] }} rounded-xl flex items-center justify-center mx-auto mb-4">
+                                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $ach['iconPath'] }}"></path>
+                                                    </svg>
+                                                </div>
+                                                <h4 class="font-bold text-lg text-gray-900 mb-2">{{ $ach['title'] }}</h4>
+                                                <p class="text-sm text-gray-600">{{ $ach['description'] }}</p>
+                                            </div>
+                                        @endforeach
+                                    @else
+                                        <div class="col-span-1 md:col-span-3 text-center p-6 bg-white rounded-xl border border-gray-100">
+                                            <h4 class="font-semibold text-gray-900 mb-1">No achievements yet</h4>
+                                            <p class="text-sm text-gray-600">Keep learning to unlock achievements!</p>
                                         </div>
-                                        <h4 class="font-bold text-lg text-gray-900 mb-2">Fast Learner</h4>
-                                        <p class="text-sm text-gray-600">Completed 3+ courses this month</p>
-                                    </div>
-
-                                    <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-100">
-                                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
-                                            </svg>
-                                        </div>
-                                        <h4 class="font-bold text-lg text-gray-900 mb-2">High Achiever</h4>
-                                        <p class="text-sm text-gray-600">Maintains 75%+ average progress</p>
-                                    </div>
-
-                                    <div class="text-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
-                                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                            </svg>
-                                        </div>
-                                        <h4 class="font-bold text-lg text-gray-900 mb-2">Consistent</h4>
-                                        <p class="text-sm text-gray-600">24 hours of learning completed</p>
-                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
