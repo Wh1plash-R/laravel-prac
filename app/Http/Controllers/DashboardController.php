@@ -112,4 +112,17 @@ class DashboardController extends Controller
         }
     }
 
+    public function deleteProfilePicture(User $user)
+    {
+        // Ensure the authenticated user can only delete their own profile picture
+        if (auth()->user()->id !== $user->id) {
+            return redirect()->route('dashboard')->with('error', 'Unauthorized action.');
+        }
+
+        // Remove the profile picture by setting it to null
+        $user->update(['profile_picture' => null]);
+
+        return redirect()->route('dashboard')->with('success', 'Profile picture removed successfully.');
+    }
+
 }

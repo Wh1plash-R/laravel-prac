@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::patch('/dashboard/{user}', [DashboardController::class, 'update'])->name('dashboard.update');
+    Route::delete('/dashboard/{user}/profile-picture', [DashboardController::class, 'deleteProfilePicture'])->name('dashboard.delete-profile-picture');
     Route::get('/course/{course}', [DashboardController::class, 'showCourse'])->name('course.view');
 
     // Assignment view routes for learners

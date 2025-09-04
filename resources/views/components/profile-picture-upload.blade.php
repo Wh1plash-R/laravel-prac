@@ -60,15 +60,39 @@
             Choose Image
         </label>
 
-        <!-- wala pa function #backendh8r here -->
-        <label for="{{ $name }}"
-               class="cursor-pointer inline-flex items-center px-4 py-2 bg-red-600 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-[#f3f3f3] hover:bg-red-600/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-[#f3f3f3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-            Remove Profile
-        </label>
+        <!-- Delete Profile Picture Button -->
+        @if($currentImage)
+        <form id="delete-profile-form-{{ $name }}" method="POST" action="{{ route('dashboard.delete-profile-picture', auth()->user()->id) }}" class="inline">
+            @csrf
+            @method('DELETE')
+            <x-confirm-dialog
+            title="Remove Profile Picture"
+            message="Are you sure you want to remove your profile picture? This action cannot be undone."
+            confirmText="Remove Profile"
+            cancelText="Cancel"
+            loadingMessage="Removing profile picture..."
+            :formId="'delete-profile-form-' . $name">
+            <x-slot name="trigger">
+                <button type="button"
+                        class="inline-flex items-center px-4 py-2 bg-red-600 border border-red-300 rounded-lg shadow-sm text-sm font-medium text-[#f3f3f3] hover:bg-red-600/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-[#f3f3f3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 11v6"/><path d="M14 11v6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Remove Profile
+                </button>
+            </x-slot>
+        </x-confirm-dialog>
+        </form>
+        @endif
     </div>
+
+    <!-- Hidden Delete Form -->
+    @if($currentImage)
+    <form id="delete-profile-form-{{ $name }}" method="POST" action="{{ route('dashboard.delete-profile-picture', auth()->user()->id) }}" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    @endif
 
      <!-- Preview Container -->
     <div id="preview-container-{{ $name }}" class="hidden">
