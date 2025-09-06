@@ -73,23 +73,23 @@
                 <div class="mb-6">
                     <a href="{{ route('course.view', $assignment->course) }}"
                        class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white font-semibold rounded-lg transition-all border border-white/30 hover:border-white/50 group">
-                        <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
-                        Back to {{ $assignment->course->title }}
+                        <span class="break-words" title="{{ $assignment->course->title }}">Back to {{ Str::limit($assignment->course->title, 30) }}</span>
                     </a>
                 </div>
 
                 <div class="flex items-start justify-between">
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0 pr-4">
                         <div class="flex items-center mb-2">
-                            <svg class="w-6 h-6 mr-3 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-6 h-6 mr-3 text-white/80 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                             </svg>
                             <span class="text-white/80 text-sm font-medium">ASSIGNMENT</span>
                         </div>
-                        <h1 class="text-4xl font-bold mb-4">{{ $assignment->title }}</h1>
-                        <p class="text-white/90 text-lg mb-6">{{ $assignment->description }}</p>
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 break-words leading-tight" title="{{ $assignment->title }}">{{ $assignment->title }}</h1>
+                        <p class="text-white/90 text-base sm:text-lg mb-6 break-words">{{ $assignment->description }}</p>
 
                         <div class="flex items-center space-x-6 text-white/80">
                             <div class="flex items-center">
@@ -342,9 +342,9 @@
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Assignment Info</h3>
                         <div class="space-y-4">
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600">Course</span>
-                                <span class="font-semibold text-gray-900">{{ $assignment->course->title }}</span>
+                            <div class="flex justify-between items-start">
+                                <span class="text-gray-600 flex-shrink-0 mr-2">Course</span>
+                                <span class="font-semibold text-gray-900 text-right break-words" title="{{ $assignment->course->title }}">{{ Str::limit($assignment->course->title, 25) }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Points</span>
@@ -505,6 +505,51 @@
         </x-slot:trigger>
     </x-confirm-dialog>
 
+    <!-- Validation Error Dialogs -->
+    <x-confirm-dialog
+        title="No File Selected"
+        message="Please upload a file before submitting the assignment."
+        confirmText="OK"
+        cancelText=""
+        event="show-no-file-dialog">
+        <x-slot:trigger>
+            <!-- Triggered by JavaScript -->
+        </x-slot:trigger>
+    </x-confirm-dialog>
+
+    <x-confirm-dialog
+        title="Save Draft First"
+        message="Please save your draft first before submitting the assignment."
+        confirmText="OK"
+        cancelText=""
+        event="show-save-draft-dialog">
+        <x-slot:trigger>
+            <!-- Triggered by JavaScript -->
+        </x-slot:trigger>
+    </x-confirm-dialog>
+
+    <x-confirm-dialog
+        title="Invalid File Type"
+        message="Please select a valid file type (PDF, DOC, DOCX, TXT, ZIP)."
+        confirmText="OK"
+        cancelText=""
+        event="show-invalid-file-type-dialog">
+        <x-slot:trigger>
+            <!-- Triggered by JavaScript -->
+        </x-slot:trigger>
+    </x-confirm-dialog>
+
+    <x-confirm-dialog
+        title="File Too Large"
+        message="File size must be less than 10MB."
+        confirmText="OK"
+        cancelText=""
+        event="show-file-too-large-dialog">
+        <x-slot:trigger>
+            <!-- Triggered by JavaScript -->
+        </x-slot:trigger>
+    </x-confirm-dialog>
+
     <script>
         // File handling functions
         function formatFileSize(bytes) {
@@ -581,13 +626,13 @@
             const hasSelectedFile = fileInput && fileInput.files.length > 0;
 
             if (!hasCurrentFile && !hasSelectedFile) {
-                alert('Please upload a file before submitting the assignment.');
+                window.dispatchEvent(new CustomEvent('show-no-file-dialog'));
                 return;
             }
 
             // If there's a newly selected file, save it first
             if (hasSelectedFile) {
-                alert('Please save your draft first before submitting the assignment.');
+                window.dispatchEvent(new CustomEvent('show-save-draft-dialog'));
                 return;
             }
 
@@ -601,14 +646,14 @@
                 // Validate file type
                 const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain', 'application/zip'];
                 if (!allowedTypes.includes(file.type)) {
-                    alert('Please select a valid file type (PDF, DOC, DOCX, TXT, ZIP)');
+                    window.dispatchEvent(new CustomEvent('show-invalid-file-type-dialog'));
                     e.target.value = '';
                     return;
                 }
 
                 // Validate file size (10MB)
                 if (file.size > 10 * 1024 * 1024) {
-                    alert('File size must be less than 10MB');
+                    window.dispatchEvent(new CustomEvent('show-file-too-large-dialog'));
                     e.target.value = '';
                     return;
                 }

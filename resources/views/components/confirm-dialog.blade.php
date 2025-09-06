@@ -32,10 +32,12 @@
                 <h3 class="text-lg font-bold text-gray-900">{{ $title }}</h3>
                 <p class="mt-2 text-gray-600">{{ $message }}</p>
                 <div class="mt-6 flex items-center justify-end gap-3">
-                    <button type="button" @click="open = false"
-                        class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition">
-                        {{ $cancelText }}
-                    </button>
+                    @if($cancelText)
+                        <button type="button" @click="open = false"
+                            class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition">
+                            {{ $cancelText }}
+                        </button>
+                    @endif
 
                     {{-- Conditional confirm button --}}
                     @if ($confirmText === 'Enroll')
@@ -61,6 +63,11 @@
                     @elseif ($confirmText === 'Remove Profile')
                         <button type="button" @click="confirm()"
                             class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 border border-red-700 shadow transition">
+                            {{ $confirmText }}
+                        </button>
+                    @elseif ($confirmText === 'OK')
+                        <button type="button" @click="open = false"
+                            class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 border border-blue-700 shadow transition">
                             {{ $confirmText }}
                         </button>
                     @else

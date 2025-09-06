@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasOne(Instructor::class);
     }
 
+    public function achievements()
+    {
+        return $this->hasMany(UserAchievement::class);
+    }
+
     public function hasRole($role)
     {
         return $this->role->name === $role;

@@ -1,4 +1,4 @@
-@props(['learnerCourses' => null])
+@props(['learnerCourses' => null, 'learner' => null])
 
 <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
     <div class="flex items-center justify-between mb-4">
@@ -11,6 +11,15 @@
             @php
                 // Get all pending assignments from all enrolled courses
                 $allPendingAssignments = collect();
+
+                // Get all submitted assignment IDs for this learner (more efficient)
+                $submittedAssignmentIds = collect();
+                if ($learner) {
+                    $submittedAssignmentIds = \App\Models\Submission::where('learner_id', $learner->id)
+                        ->whereIn('status', ['submitted', 'graded'])
+                        ->pluck('assignment_id');
+                }
+
                 foreach($learnerCourses as $course) {
                     $course->load('assignments');
                     $pendingAssignments = $course->assignments()
@@ -19,12 +28,18 @@
                         ->get();
 
                     foreach($pendingAssignments as $assignment) {
-                        $allPendingAssignments->push([
-                            'course' => $course,
-                            'assignment' => $assignment,
-                            'daysUntilDue' => now()->diffInDays($assignment->due_date, false),
-                            'isOverdue' => $assignment->due_date < now(),
-                        ]);
+                        // Check if learner has already submitted this assignment
+                        $hasSubmitted = $submittedAssignmentIds->contains($assignment->id);
+
+                        // Only include if not submitted
+                        if (!$hasSubmitted) {
+                            $allPendingAssignments->push([
+                                'course' => $course,
+                                'assignment' => $assignment,
+                                'daysUntilDue' => now()->diffInDays($assignment->due_date, false),
+                                'isOverdue' => $assignment->due_date < now(),
+                            ]);
+                        }
                     }
                 }
 
@@ -46,28 +61,19 @@
                     $urgencyText = $isOverdue ? 'Overdue' : ($daysUntilDue == 0 ? 'Today' : ($daysUntilDue == 1 ? 'Tomorrow' : $daysUntilDue . ' days'));
                 @endphp
 
-                <div class="p-4 rounded-lg border border-gray-200 bg-white flex items-center justify-between hover:bg-gray-50 transition-colors">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <p class="font-semibold text-gray-800">{{ Str::limit($assignment->title, 25) }}</p>
-                            {{-- uncomment this when you want to show the urgency color --}}
-                            {{-- <span class="text-xs px-2 py-1 rounded-full bg-{{ $urgencyColor }}-100 text-{{ $urgencyColor }}-700 font-medium">
-                                {{ $urgencyText }}
-                            </span> --}}
+                <div class="p-4 rounded-lg border border-gray-200 bg-white flex items-start justify-between hover:bg-gray-50 transition-colors">
+                    <div class="flex-1 min-w-0 pr-3">
+                        <div class="flex items-start gap-2 mb-1">
+                            <p class="font-semibold text-gray-800 text-sm leading-tight break-words" title="{{ $assignment->title }}">
+                                {{ Str::limit($assignment->title, 40) }}
+                            </p>
                         </div>
-                        <p class="text-xs text-gray-500">{{ $course->title }} • {{ $assignment->points }} points</p>
+                        <p class="text-xs text-gray-500 break-words" title="{{ $course->title }}">{{ Str::limit($course->title, 30) }} • {{ $assignment->points }} points</p>
                         <p class="text-xs text-gray-400">Due: {{ $assignment->due_date->format('M j, Y \a\t g:i A') }}</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        {{-- uncomment this when you want to show the progress bar --}}
-                        {{-- <div class="w-14">
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="gradient-bg h-2 rounded-full" style="width: 0%"></div>
-                            </div>
-                            <span class="text-[10px] text-gray-500">0%</span>
-                        </div> --}}
                         <a href="{{ route('course.view', $course->id) }}"
-                           class="p-2 rounded-lg hover:bg-gray-100 text-gray-700 border border-gray-200 transition-colors">
+                            class="p-2 rounded-lg hover:bg-gray-100 text-gray-700 border border-gray-200 transition-colors">
                             &rsaquo;
                         </a>
                     </div>

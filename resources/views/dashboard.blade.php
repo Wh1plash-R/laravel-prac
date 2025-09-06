@@ -279,7 +279,7 @@
                 <div class="lg:w-1/4 space-y-6 flex flex-col sm:flex-col lg:flex-col">
                     <x-calendar-card class="flex-1" />
                     @if ($learner_courses && $learner_courses->count() > 0)
-                        <x-pending-assignments-card :learner-courses="$learner_courses" class="flex-1" />
+                        <x-pending-assignments-card :learner-courses="$learner_courses" :learner="$learner" class="flex-1" />
                     @endif
                 </div>
             </div>

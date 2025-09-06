@@ -7,6 +7,7 @@ use App\Models\CourseCompletion;
 use App\Models\Learner;
 use App\Models\Submission;
 use App\Models\User;
+use App\Models\UserAchievement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,67 +96,19 @@ class DashboardController extends Controller
             }
         }
 
-        // --- Dynamic Achievements ---
-        $achievementsEarned = [];
-        // Define rules and presentation
-        $possibleAchievements = [
-            [
-                'id' => 'getting_started',
-                'title' => 'Getting Started',
-                'description' => 'Enrolled in your first course or made your first submission',
-                'earned' => ($coursesEnrolled > 0) || ($hoursLearned > 0) || ($averageProgress > 0),
-                'bg' => 'from-blue-50 to-cyan-50',
-                'border' => 'border-blue-100',
-                'iconBg' => 'from-blue-500 to-cyan-500',
-                'iconPath' => 'M13 10V3L4 14h7v7l9-11h-7z',
-            ],
-            [
-                'id' => 'course_explorer',
-                'title' => 'Course Explorer',
-                'description' => 'Enrolled in 3+ courses',
-                'earned' => ($coursesEnrolled >= 3),
-                'bg' => 'from-yellow-50 to-orange-50',
-                'border' => 'border-yellow-100',
-                'iconBg' => 'from-yellow-400 to-orange-500',
-                'iconPath' => 'M12 20l9-5-9-5-9 5 9 5zm0-12l9-5-9-5-9 5 9 5z',
-            ],
-            [
-                'id' => 'high_achiever',
-                'title' => 'High Achiever',
-                'description' => 'Maintains 75%+ average progress',
-                'earned' => ($averageProgress >= 75),
-                'bg' => 'from-purple-50 to-pink-50',
-                'border' => 'border-purple-100',
-                'iconBg' => 'from-purple-500 to-pink-500',
-                'iconPath' => 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z',
-            ],
-            [
-                'id' => 'consistent',
-                'title' => 'Consistent',
-                'description' => '24 hours of learning completed',
-                'earned' => ($hoursLearned >= 24),
-                'bg' => 'from-blue-50 to-cyan-50',
-                'border' => 'border-blue-100',
-                'iconBg' => 'from-blue-500 to-cyan-500',
-                'iconPath' => 'M13 10V3L4 14h7v7l9-11h-7z',
-            ],
-            [
-                'id' => 'assignment_champ',
-                'title' => 'Assignment Champ',
-                'description' => 'Completed 5+ assignments',
-                'earned' => ($hoursLearned >= 5), // hoursLearned mirrors completed submissions
-                'bg' => 'from-green-50 to-emerald-50',
-                'border' => 'border-green-100',
-                'iconBg' => 'from-green-500 to-emerald-500',
-                'iconPath' => 'M5 13l4 4L19 7',
-            ],
+        // --- Persistent Achievements ---
+        $userStats = [
+            'coursesEnrolled' => $coursesEnrolled,
+            'hoursLearned' => $hoursLearned,
+            'averageProgress' => $averageProgress,
+            'totalSubmissions' => $completedSubmissions,
         ];
 
-        foreach ($possibleAchievements as $ach) {
-            if (!empty($ach['earned'])) {
-                $achievementsEarned[] = $ach;
-            }
-        }
+        // Check and award new achievements
+        $this->checkAndAwardAchievements($user->id, $userStats);
+
+        // Get all earned achievements (persistent)
+        $achievementsEarned = $this->getUserAchievements($user->id);
 
         return view('dashboard', compact(
             'user',
@@ -300,6 +253,94 @@ class DashboardController extends Controller
         $user->update(['profile_picture' => null]);
 
         return redirect()->route('dashboard')->with('success', 'Profile picture removed successfully.');
+    }
+
+    /**
+     * Check and award achievements based on current user stats
+     */
+    private function checkAndAwardAchievements(int $userId, array $stats): array
+    {
+        $awardedAchievements = [];
+        $possibleAchievements = UserAchievement::getPossibleAchievements();
+
+        foreach ($possibleAchievements as $achievement) {
+            $achievementId = $achievement['id'];
+
+            // Check if user already has this achievement
+            $hasAchievement = UserAchievement::where('user_id', $userId)
+                ->where('achievement_id', $achievementId)
+                ->exists();
+
+            if ($hasAchievement) {
+                continue;
+            }
+
+            // Check if user meets the criteria for this achievement
+            $shouldAward = $this->checkAchievementCriteria($achievementId, $stats);
+
+            if ($shouldAward) {
+                $awarded = UserAchievement::awardAchievement($userId, $achievementId);
+                if ($awarded) {
+                    $awardedAchievements[] = $awarded;
+                }
+            }
+        }
+
+        return $awardedAchievements;
+    }
+
+    /**
+     * Check if user meets criteria for a specific achievement
+     */
+    private function checkAchievementCriteria(string $achievementId, array $stats): bool
+    {
+        switch ($achievementId) {
+            case 'getting_started':
+                return ($stats['coursesEnrolled'] > 0) ||
+                       ($stats['hoursLearned'] > 0) ||
+                       ($stats['averageProgress'] > 0);
+
+            case 'course_explorer':
+                return $stats['coursesEnrolled'] >= 3;
+
+            case 'high_achiever':
+                return $stats['averageProgress'] >= 75;
+
+            case 'consistent':
+                return $stats['hoursLearned'] >= 24;
+
+            case 'assignment_champ':
+                return $stats['hoursLearned'] >= 5; // hoursLearned mirrors completed submissions
+
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Get all earned achievements for a user (both current and historical)
+     */
+    private function getUserAchievements(int $userId): array
+    {
+        $earnedAchievements = UserAchievement::where('user_id', $userId)
+            ->orderBy('earned_at', 'desc')
+            ->get()
+            ->toArray();
+
+        // Convert to the format expected by the dashboard
+        return array_map(function ($achievement) {
+            return [
+                'id' => $achievement['achievement_id'],
+                'title' => $achievement['title'],
+                'description' => $achievement['description'],
+                'bg' => $achievement['bg_class'],
+                'border' => $achievement['border_class'],
+                'iconBg' => $achievement['icon_bg_class'],
+                'iconPath' => $achievement['icon_path'],
+                'earned' => true,
+                'earned_at' => $achievement['earned_at'],
+            ];
+        }, $earnedAchievements);
     }
 
 }
