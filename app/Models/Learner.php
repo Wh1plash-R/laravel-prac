@@ -14,7 +14,23 @@ class Learner extends Model
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class)->withTimestamps();
+        return $this->belongsToMany(Course::class)->withPivot(['status', 'final_grade'])->withTimestamps();
+    }
+
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class)
+            ->wherePivot('status', 'enrolled')
+            ->withPivot(['status', 'final_grade'])
+            ->withTimestamps();
+    }
+
+    public function completedCourses()
+    {
+        return $this->belongsToMany(Course::class)
+            ->wherePivot('status', 'completed')
+            ->withPivot(['status', 'final_grade'])
+            ->withTimestamps();
     }
 
     public function user()

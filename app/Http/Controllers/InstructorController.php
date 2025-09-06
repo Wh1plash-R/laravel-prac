@@ -31,7 +31,7 @@ class InstructorController extends Controller
         return view('instructors.course-view', [
             'course' => $course,
             'instructor' => $instructor,
-            'enrolledLearners' => $course->learners,
+            'enrolledLearners' => $course->enrolledLearners,
             'announcements' => $course->announcements()->orderBy('created_at', 'desc')->get(),
             'assignments' => $course->assignments()->orderBy('created_at', 'desc')->get(),
             'user' => $user
@@ -84,7 +84,7 @@ class InstructorController extends Controller
         return view('instructors.course-view', [
             'course' => $course,
             'instructor' => $instructor,
-            'enrolledLearners' => $course->learners,
+            'enrolledLearners' => $course->enrolledLearners,
             'announcements' => $course->announcements()->orderBy('created_at', 'desc')->get(),
             'assignments' => $course->assignments()->orderBy('created_at', 'desc')->get(),
             'user' => $user
@@ -203,7 +203,7 @@ class InstructorController extends Controller
         return view('instructors.course-view', [
             'course' => $course,
             'instructor' => $instructor,
-            'enrolledLearners' => $course->learners,
+            'enrolledLearners' => $course->enrolledLearners,
             'announcements' => $course->announcements()->orderBy('created_at', 'desc')->get(),
             'assignments' => $course->assignments()->orderBy('created_at', 'desc')->get(),
             'user' => $user
@@ -449,6 +449,46 @@ class InstructorController extends Controller
         $assignment->update(['status' => 'active']);
 
         return redirect()->back()->with('success', 'Assignment has been unlocked. Students can now submit work.');
+    }
+
+    /**
+     * Promote all enrolled students to completed status and reset course
+     */
+    public function promoteStudents(Request $request, Course $course)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        if (!$instructor || $course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this course.');
+        }
+
+        // Check if there are any enrolled students
+        $enrolledCount = $course->enrolledLearners()->count();
+
+        if ($enrolledCount === 0) {
+            return redirect()->back()->with('error', 'No enrolled students to promote.');
+        }
+
+        try {
+            // Promote students and reset course
+            $promotedCount = $course->promoteStudents();
+
+            return redirect()->back()->with('success',
+                "Successfully promoted {$promotedCount} students to completed status. Course has been reset and is ready for new enrollments."
+            );
+        } catch (\Exception $e) {
+            \Log::error('Promotion error: ' . $e->getMessage(), [
+                'course_id' => $course->id,
+                'course_title' => $course->title,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error',
+                'An error occurred while promoting students. Please try again. Error: ' . $e->getMessage()
+            );
+        }
     }
 
 }

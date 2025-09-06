@@ -60,6 +60,9 @@ Route::middleware(['auth', 'role:instructor'])->group(function () {
     Route::get('/instructor/assignment/{assignment}/download/{learner}', [InstructorController::class, 'downloadSubmission'])->name('instructor.assignment.download');
     Route::patch('/instructor/assignment/{assignment}/lock', [InstructorController::class, 'lockAssignment'])->name('instructor.assignment.lock');
     Route::patch('/instructor/assignment/{assignment}/unlock', [InstructorController::class, 'unlockAssignment'])->name('instructor.assignment.unlock');
+
+    // Course promotion route
+    Route::post('/instructor/course/{course}/promote', [InstructorController::class, 'promoteStudents'])->name('instructor.course.promote');
 });
 
 

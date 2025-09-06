@@ -136,6 +136,12 @@
                                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-blue-700 shadow">
                                 + Add Activity
                             </button>
+                            @if($enrolledLearners->count() > 0)
+                                <button onclick="openPromoteModal()"
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
+                                    🎓 Promote Students
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -456,6 +462,12 @@
                                     class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
                                 Create Assignment
                             </button>
+                            @if($enrolledLearners->count() > 0)
+                                <button onclick="openPromoteModal()"
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
+                                    🎓 Promote Students
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -631,6 +643,89 @@
     <form id="unsaved-changes-form" style="display: none;">
         @csrf
     </form>
+
+    <!-- Promote Students Modal -->
+    <div id="promoteModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
+                <div class="p-6">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900">Promote Students</h3>
+                        </div>
+                        <button onclick="closePromoteModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Warning Message -->
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                        <div class="flex items-start">
+                            <svg class="w-5 h-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.996-.833-2.764 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                            <div class="text-sm">
+                                <p class="font-medium text-amber-800 mb-1">Important Notice</p>
+                                <p class="text-amber-700">
+                                    Promoting students will finalize their grades and complete the course for the current batch.
+                                    This action cannot be undone and will:
+                                </p>
+                                <ul class="list-disc list-inside text-amber-700 mt-2 space-y-1">
+                                    <li>Calculate final grades for all enrolled students</li>
+                                    <li>Remove students from current enrollment</li>
+                                    <li>Reset all course announcements and assignments</li>
+                                    <li>Prevent re-enrollment in this course</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Info -->
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <h4 class="font-semibold text-gray-900 mb-2">{{ $course->title }}</h4>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <p><strong>Department:</strong> {{ $course->department }}</p>
+                            <p><strong>Enrolled Students:</strong> {{ $enrolledLearners->count() }}</p>
+                            <p><strong>Total Assignments:</strong> {{ $assignments->count() }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form action="{{ route('instructor.course.promote', $course) }}" method="POST">
+                        @csrf
+                        <div class="mb-6">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="confirmPromotion" class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-300 focus:ring focus:ring-green-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-700">
+                                    I understand that this action is permanent and will complete the course for all enrolled students.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex gap-3">
+                            <button type="button" onclick="closePromoteModal()"
+                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-lg transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit" id="promoteButton" disabled
+                                    class="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-all">
+                                Promote Students
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal JavaScript -->
     <script>
@@ -820,6 +915,32 @@
                     // Clear the pending close
                     window.pendingModalClose = null;
                 });
+            }
+        });
+
+        // Promote modal functions
+        function openPromoteModal() {
+            document.getElementById('promoteModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePromoteModal() {
+            document.getElementById('promoteModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('confirmPromotion').checked = false;
+            document.getElementById('promoteButton').disabled = true;
+        }
+
+        // Enable/disable promote button based on confirmation checkbox
+        document.getElementById('confirmPromotion').addEventListener('change', function() {
+            document.getElementById('promoteButton').disabled = !this.checked;
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('promoteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePromoteModal();
             }
         });
     </script>

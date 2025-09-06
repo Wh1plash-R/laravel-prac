@@ -28,10 +28,10 @@ class DashboardController extends Controller
             return redirect()->route('instructor.index');
         }
 
-        // Eager load courses and assignments for accurate progress computation
-        $learner = Learner::with(['courses.assignments'])->firstWhere('user_id', $user->id); // firstWhere() = where()->first()
+        // Eager load enrolled courses and assignments for accurate progress computation
+        $learner = Learner::with(['enrolledCourses.assignments'])->firstWhere('user_id', $user->id); // firstWhere() = where()->first()
         $courses = Course::all();
-        $learner_courses = $learner?->courses; // This is called "null safe" operator just like "$learner? learner -> course: null"
+        $learner_courses = $learner?->enrolledCourses; // Only get enrolled courses, not completed ones
         $course = $learner_courses?->first(); // what's the point of this?
 
         // --- Dynamic Stats ---
@@ -167,9 +167,10 @@ class DashboardController extends Controller
         $user = auth()->user();
         $learner = Learner::where('user_id', $user->id)->firstOrFail();
 
-        $isEnrolled = $learner->courses()->where('course_id', $course->id)->exists();
+        // Check if student is enrolled OR has completed this course
+        $hasAccess = $learner->courses()->where('course_id', $course->id)->exists();
 
-        if (!$isEnrolled) {
+        if (!$hasAccess) {
             return redirect()->route('dashboard')->with('error', 'You are not enrolled in this course.');
         }
 

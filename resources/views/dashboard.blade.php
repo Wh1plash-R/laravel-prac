@@ -109,6 +109,13 @@
                     <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Enroll in Courses</span>
                 </a>
 
+                <a href="#" id="nav-grades" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award-icon lucide-award">
+                        <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+                    </svg>
+                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">My Grades</span>
+                </a>
+
                 <a href="#" id="nav-profile" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -296,14 +303,20 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         @foreach ($courses as $course)
                         @php
+                            $learner = \App\Models\Learner::where('user_id', Auth::id())->first();
                             $isEnrolled = $learner_courses && $learner_courses->contains('id', $course->id);
+                            $isCompleted = $learner && $learner->completedCourses()->where('course_id', $course->id)->exists();
                         @endphp
-                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden flex flex-col h-full {{ $isEnrolled ? 'opacity-75' : '' }}">
+                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden flex flex-col h-full {{ $isEnrolled || $isCompleted ? 'opacity-75' : '' }}">
                             <div class="p-6 flex flex-col h-full">
-                                <div class="w-12 h-12 {{ $isEnrolled ? 'bg-green-100' : 'bg-blue-100' }} rounded-lg flex items-center justify-center mb-4 flex-shrink-0">
+                                <div class="w-12 h-12 {{ $isEnrolled ? 'bg-green-100' : ($isCompleted ? 'bg-yellow-100' : 'bg-blue-100') }} rounded-lg flex items-center justify-center mb-4 flex-shrink-0">
                                     @if($isEnrolled)
                                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                    @elseif($isCompleted)
+                                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                                         </svg>
                                     @else
                                         <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -326,6 +339,11 @@
                                         <button type="button" disabled
                                                 class="w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
                                             Already Enrolled
+                                        </button>
+                                    @elseif($isCompleted)
+                                        <button type="button" disabled
+                                                class="w-full bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
+                                            You already completed this course
                                         </button>
                                     @else
                                         <form method="POST"
@@ -358,6 +376,66 @@
                             </div>
                         </div>
                         @endforeach
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grades Section - Full Width -->
+            <div id="grades-section" class="hidden h-full">
+                <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2">My Grades</h3>
+                        <p class="text-[#333]/90">View your completed course grades and achievements</p>
+                    </div>
+                    <div>
+                        <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
+                    </div>
+                </div>
+
+                <div class="pt-8">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        @php
+                            $learner = \App\Models\Learner::where('user_id', Auth::id())->first();
+                            $completedCourses = $learner ? $learner->completedCourses()->get() : collect();
+                        @endphp
+
+                        @if($completedCourses && $completedCourses->count() > 0)
+                            <div class="space-y-4">
+                                <h4 class="text-xl font-semibold text-gray-900 mb-4">Completed Courses</h4>
+                                @foreach($completedCourses as $course)
+                                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1">
+                                                <h5 class="font-semibold text-gray-900">{{ $course->title }}</h5>
+                                                <p class="text-gray-600 text-sm">{{ $course->description }}</p>
+                                                <p class="text-gray-500 text-xs mt-1">Completed on {{ $course->pivot->updated_at->format('M j, Y') }}</p>
+                                            </div>
+                                            <div class="text-right">
+                                                @if($course->pivot->final_grade !== null)
+                                                    <div class="text-2xl font-bold text-green-600">{{ $course->pivot->final_grade }}%</div>
+                                                    <div class="text-sm text-gray-500">Final Grade</div>
+                                                @else
+                                                    <div class="text-lg text-gray-500">No Grade</div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-12">
+                                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                    </svg>
+                                </div>
+                                <h4 class="text-xl font-semibold text-gray-900 mb-2">No Completed Courses</h4>
+                                <p class="text-gray-500 mb-6">Complete courses to see your grades here</p>
+                                <a href="#" onclick="setActiveNav(document.getElementById('nav-enroll')); showSection(document.getElementById('enroll-section'));" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                                    Browse Available Courses
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -524,11 +602,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Navigation
     const navMyCourses = document.getElementById('nav-my-courses');
     const navEnroll = document.getElementById('nav-enroll');
+    const navGrades = document.getElementById('nav-grades');
     const navProfile = document.getElementById('nav-profile');
 
     // Sections
     const myCoursesSection = document.getElementById('my-courses-section');
     const enrollSection = document.getElementById('enroll-section');
+    const gradesSection = document.getElementById('grades-section');
     const profileSection = document.getElementById('profile-section');
 
     let sidebarOpen = true;
@@ -591,7 +671,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Section navigation
     function setActiveNav(activeNav) {
-        const navItems = [navMyCourses, navEnroll, navProfile];
+        const navItems = [navMyCourses, navEnroll, navGrades, navProfile];
         navItems.forEach(nav => {
             nav.classList.remove('bg-[#fdd666]', 'text-[#333]', 'active');
             nav.classList.add('text-gray-700');
@@ -603,12 +683,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function showSection(targetSection) {
         myCoursesSection.classList.add('hidden');
         enrollSection.classList.add('hidden');
+        gradesSection.classList.add('hidden');
         profileSection.classList.add('hidden');
         targetSection.classList.remove('hidden');
     }
 
     navMyCourses.addEventListener('click', e => { e.preventDefault(); setActiveNav(navMyCourses); showSection(myCoursesSection); });
     navEnroll.addEventListener('click', e => { e.preventDefault(); setActiveNav(navEnroll); showSection(enrollSection); });
+    navGrades.addEventListener('click', e => { e.preventDefault(); setActiveNav(navGrades); showSection(gradesSection); });
     navProfile.addEventListener('click', e => { e.preventDefault(); setActiveNav(navProfile); showSection(profileSection); });
 });
 </script>
