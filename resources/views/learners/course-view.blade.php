@@ -111,8 +111,49 @@
 
                     <!-- Course Actions -->
                     <div class="ml-8 flex flex-col space-y-3">
+                        <!-- Actions Menu (3 dots) -->
+                        <div x-data="{ open: false }" class="relative inline-block text-left">
+                            <button @click="open = !open"
+                                class="text-white/80 hover:text-white p-2 absolute right-0 rounded-full hover:bg-white/10 transition">
+                                <!-- Proper 3 Dots Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="5" cy="12" r="2" />
+                                    <circle cx="12" cy="12" r="2" />
+                                    <circle cx="19" cy="12" r="2" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown -->
+                            <div x-show="open" @click.outside="open = false"
+                                class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-50">
+                                <form method="POST"
+                                    action="{{ route('dashboard.update', $user->id) }}"
+                                    id="unenroll-form-{{ $course->id }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="unenroll" value="1">
+                                    <input type="hidden" name="course_id" value="{{ $course->id }}">
+
+                                    <x-confirm-dialog
+                                        title="Please confirm"
+                                        message="Are you sure you want to unenroll from {{ $course->title }}? You will lose all progress and access to course materials."
+                                        confirmText="Unenroll"
+                                        cancelText="Cancel"
+                                        loadingMessage="Unenrolling from course..."
+                                        :formId="'unenroll-form-' . $course->id">
+                                        <x-slot:trigger>
+                                            <button type="button"
+                                                    class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 font-medium">
+                                                Unenroll from Course
+                                            </button>
+                                        </x-slot:trigger>
+                                    </x-confirm-dialog>
+                                </form>
+                            </div>
+                        </div>
+
                         <!-- Progress Card -->
-                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[200px]">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[200px] !mt-14">
                             <div class="flex justify-between text-sm text-white/90 mb-2">
                                 <span>Progress</span>
                                 <span>{{ $completionPercentage }}%</span>
@@ -121,30 +162,6 @@
                                 <div class="bg-white h-2 rounded-full" style="width: {{ $completionPercentage }}%"></div>
                             </div>
                         </div>
-
-                        <!-- Unenroll Button -->
-                        <form method="POST"
-                              action="{{ route('dashboard.update', $user->id) }}"
-                              id="unenroll-form-{{ $course->id }}">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="unenroll" value="1">
-                            <input type="hidden" name="course_id" value="{{ $course->id }}">
-                            <x-confirm-dialog
-                                title="Please confirm"
-                                message="Are you sure you want to unenroll from {{ $course->title }}? You will lose all progress and access to course materials."
-                                confirmText="Unenroll"
-                                cancelText="Cancel"
-                                loadingMessage="Unenrolling from course..."
-                                :formId="'unenroll-form-' . $course->id">
-                                <x-slot:trigger>
-                                    <button type="button"
-                                            class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors border border-red-700 shadow">
-                                        Unenroll from Course
-                                    </button>
-                                </x-slot:trigger>
-                            </x-confirm-dialog>
-                        </form>
                     </div>
                 </div>
             </div>

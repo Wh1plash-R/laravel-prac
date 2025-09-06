@@ -164,20 +164,64 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
 
                                     @foreach ($learner_courses as $course)
-                                    <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden">
+                                    <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden h-full flex flex-col">
                                         <div class="p-8">
-                                            <div
-                                                class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center mb-4">
-                                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                                    </path>
-                                                </svg>
+                                            <div class="flex items-center justify-between  mb-4">
+                                                <div
+                                                    class="w-12 h-12 gradient-bg rounded-lg flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                                        </path>
+                                                    </svg>
+                                                </div>
+
+                                                <!-- Actions Menu (3 dots) -->
+                                                <div x-data="{ open: false }" class="relative inline-block text-left">
+                                                    <button @click="open = !open"
+                                                        class="text-black/80 hover:text-black p-2 rounded-full hover:bg-black/10 transition">
+                                                        <!-- Proper 3 Dots Icon -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                                            <circle cx="5" cy="12" r="2" />
+                                                            <circle cx="12" cy="12" r="2" />
+                                                            <circle cx="19" cy="12" r="2" />
+                                                        </svg>
+                                                    </button>
+
+                                                    <!-- Dropdown -->
+                                                    <div x-show="open" @click.outside="open = false"
+                                                        class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg overflow-hidden z-50">
+                                                        <form method="POST"
+                                                            action="{{ route('dashboard.update', $user->id) }}"
+                                                            id="unenroll-form-{{ $course->id }}">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <input type="hidden" name="unenroll" value="1">
+                                                            <input type="hidden" name="course_id" value="{{ $course->id }}">
+
+                                                            <x-confirm-dialog
+                                                                title="Please confirm"
+                                                                message="Are you sure you want to unenroll from {{ $course->title }}? You will lose all progress and access to course materials."
+                                                                confirmText="Unenroll"
+                                                                cancelText="Cancel"
+                                                                loadingMessage="Unenrolling from course..."
+                                                                :formId="'unenroll-form-' . $course->id">
+                                                                <x-slot:trigger>
+                                                                    <button type="button"
+                                                                            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-100 font-medium">
+                                                                        Unenroll from Course
+                                                                    </button>
+                                                                </x-slot:trigger>
+                                                            </x-confirm-dialog>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            {{-- Course Title and Description --}}
 
                                             <h4 class="font-bold text-lg text-gray-900 mb-2 course-title">{{$course->title}}</h4>
-                                            <p class="text-gray-600 text-sm mb-3 line-clamp-3">{{$course->description}}</p>
+                                            <p class="text-gray-600 text-sm mb-3 line-clamp-2 min-h-[2.5rem]">{{$course->description}}</p>
 
                                             <div
                                                 class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-4">
