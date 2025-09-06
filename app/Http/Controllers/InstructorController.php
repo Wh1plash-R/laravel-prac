@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Models\CourseCompletion;
 use App\Models\Learner;
 use App\Models\Instructor;
 use App\Models\Assignment;
@@ -449,6 +450,85 @@ class InstructorController extends Controller
         $assignment->update(['status' => 'active']);
 
         return redirect()->back()->with('success', 'Assignment has been unlocked. Students can now submit work.');
+    }
+
+    /**
+     * Promote students - finalize grades and complete the course
+     */
+    public function promoteStudents(Course $course)
+    {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        if (!$instructor || $course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this course.');
+        }
+
+        // Get all enrolled learners
+        $enrolledLearners = $course->learners;
+
+        if ($enrolledLearners->count() === 0) {
+            return redirect()->back()->with('error', 'No students are enrolled in this course.');
+        }
+
+        // Get all assignments for this course
+        $assignments = $course->assignments;
+        $totalAssignments = $assignments->count();
+        $totalPoints = $assignments->sum('points');
+
+        if ($totalAssignments === 0) {
+            return redirect()->back()->with('error', 'Cannot promote students without any assignments.');
+        }
+
+        $promotedCount = 0;
+
+        // Process each enrolled learner
+        foreach ($enrolledLearners as $learner) {
+            // Get all submissions for this learner in this course
+            $submissions = Submission::where('learner_id', $learner->id)
+                ->whereIn('assignment_id', $assignments->pluck('id'))
+                ->where('status', 'graded')
+                ->get();
+
+            // Calculate grades
+            $totalPointsEarned = $submissions->sum('grade');
+            $assignmentsCompleted = $submissions->count();
+
+            // Calculate final grade as percentage
+            $finalGrade = $totalPoints > 0 ? ($totalPointsEarned / $totalPoints) * 100 : 0;
+
+            // Create course completion record
+            CourseCompletion::create([
+                'course_id' => $course->id,
+                'learner_id' => $learner->id,
+                'final_grade' => round($finalGrade, 2),
+                'total_points_earned' => $totalPointsEarned,
+                'total_points_possible' => $totalPoints,
+                'assignments_completed' => $assignmentsCompleted,
+                'total_assignments' => $totalAssignments,
+                'completed_at' => now(),
+            ]);
+
+            $promotedCount++;
+        }
+
+        // Remove all learners from the course (they're now completed)
+        $course->learners()->detach();
+
+        // Delete all announcements for this course
+        $course->announcements()->delete();
+
+        // Delete all assignments and their submissions for this course
+        foreach ($assignments as $assignment) {
+            // Delete submissions first (due to foreign key constraints)
+            $assignment->submissions()->delete();
+            // Then delete the assignment
+            $assignment->delete();
+        }
+
+        return redirect()->back()->with('success',
+            "Successfully promoted {$promotedCount} students. Course has been reset for the next batch.");
     }
 
 }

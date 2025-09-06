@@ -26,4 +26,16 @@ class Learner extends Model
     {
         return $this->hasMany(Submission::class);
     }
+
+    public function courseCompletions()
+    {
+        return $this->hasMany(CourseCompletion::class);
+    }
+
+    public function completedCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_completions')
+                    ->withPivot('final_grade', 'total_points_earned', 'total_points_possible', 'assignments_completed', 'total_assignments', 'completed_at')
+                    ->withTimestamps();
+    }
 }

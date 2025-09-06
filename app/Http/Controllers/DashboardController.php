@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\CourseCompletion;
 use App\Models\Learner;
 use App\Models\Submission;
 use App\Models\User;
@@ -33,6 +34,15 @@ class DashboardController extends Controller
         $courses = Course::all();
         $learner_courses = $learner?->courses; // This is called "null safe" operator just like "$learner? learner -> course: null"
         $course = $learner_courses?->first(); // what's the point of this?
+
+        // Get course completions for grades tab
+        $course_completions = null;
+        if ($learner) {
+            $course_completions = CourseCompletion::with(['course.instructor'])
+                ->where('learner_id', $learner->id)
+                ->orderBy('completed_at', 'desc')
+                ->get();
+        }
 
         // --- Dynamic Stats ---
         $coursesEnrolled = $learner_courses?->count() ?? 0;
@@ -157,7 +167,8 @@ class DashboardController extends Controller
             'averageProgress',
             'hoursLearned',
             'courseProgress',
-            'achievementsEarned'
+            'achievementsEarned',
+            'course_completions'
         ));
         // Compact() = $user => the current value of user etc.
     }
@@ -216,6 +227,19 @@ class DashboardController extends Controller
                 'course_ids' => 'array',
                 'course_ids.*' => 'integer|exists:courses,id',
             ]);
+
+            // Check for completed courses
+            $completedCourseIds = CourseCompletion::where('learner_id', $learner->id)
+                ->whereIn('course_id', $request->input('course_ids'))
+                ->pluck('course_id')
+                ->toArray();
+
+            if (!empty($completedCourseIds)) {
+                $completedCourses = Course::whereIn('id', $completedCourseIds)->pluck('title')->toArray();
+                return redirect()->route('dashboard')->with('error',
+                    'Cannot re-enroll in completed courses: ' . implode(', ', $completedCourses));
+            }
+
             $learner->courses()->syncWithoutDetaching($request->input('course_ids'));
             return redirect()->route('dashboard')->with('success', 'Courses enrolled successfully.');
         }
@@ -225,6 +249,18 @@ class DashboardController extends Controller
             $request->validate([
                 'course_id' => 'required|exists:courses,id',
             ]);
+
+            // Check if course is already completed
+            $isCompleted = CourseCompletion::where('learner_id', $learner->id)
+                ->where('course_id', $request->input('course_id'))
+                ->exists();
+
+            if ($isCompleted) {
+                $course = Course::find($request->input('course_id'));
+                return redirect()->route('dashboard')->with('error',
+                    'Cannot re-enroll in completed course: ' . $course->title);
+            }
+
             $learner->courses()->syncWithoutDetaching([$request->input('course_id')]);
             return redirect()->route('dashboard')->with('success', 'Course enrolled successfully.');
         }

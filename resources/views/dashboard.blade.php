@@ -109,6 +109,13 @@
                     <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">Enroll in Courses</span>
                 </a>
 
+                <a href="#" id="nav-grades" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award-icon lucide-award">
+                        <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+                    </svg>
+                    <span class="font-semibold nav-label ml-3 transition-all duration-300 whitespace-nowrap overflow-hidden block">My Grades</span>
+                </a>
+
                 <a href="#" id="nav-profile" class="nav-item flex items-center justify-start p-3 rounded-lg text-gray-700 transition-colors group">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -297,11 +304,16 @@
                         @foreach ($courses as $course)
                         @php
                             $isEnrolled = $learner_courses && $learner_courses->contains('id', $course->id);
+                            $isCompleted = $course_completions && $course_completions->contains('course_id', $course->id);
                         @endphp
-                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden flex flex-col h-full {{ $isEnrolled ? 'opacity-75' : '' }}">
+                        <div class="card-gradient rounded-xl shadow-lg hover-subtle border border-gray-100 overflow-hidden flex flex-col h-full {{ ($isEnrolled || $isCompleted) ? 'opacity-75' : '' }}">
                             <div class="p-6 flex flex-col h-full">
-                                <div class="w-12 h-12 {{ $isEnrolled ? 'bg-green-100' : 'bg-blue-100' }} rounded-lg flex items-center justify-center mb-4 flex-shrink-0">
-                                    @if($isEnrolled)
+                                <div class="w-12 h-12 {{ $isCompleted ? 'bg-purple-100' : ($isEnrolled ? 'bg-green-100' : 'bg-blue-100') }} rounded-lg flex items-center justify-center mb-4 flex-shrink-0">
+                                    @if($isCompleted)
+                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                        </svg>
+                                    @elseif($isEnrolled)
                                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                         </svg>
@@ -322,7 +334,12 @@
 
                                 <!-- Action Button -->
                                 <div class="mt-auto flex-shrink-0">
-                                    @if($isEnrolled)
+                                    @if($isCompleted)
+                                        <button type="button" disabled
+                                                class="w-full bg-purple-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
+                                            Course Completed
+                                        </button>
+                                    @elseif($isEnrolled)
                                         <button type="button" disabled
                                                 class="w-full bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed">
                                             Already Enrolled
@@ -359,6 +376,155 @@
                         </div>
                         @endforeach
                     </div>
+                </div>
+            </div>
+
+            <!-- Grades Section - Full Width -->
+            <div id="grades-section" class="hidden h-full">
+                <div class="relative gradient-bg p-8 text-[#333] rounded-lg flex justify-between w-full">
+                    <div>
+                        <h3 class="text-3xl font-bold mb-2">My Grades</h3>
+                        <p class="text-[#333]/90">View your academic performance and completed courses</p>
+                    </div>
+                    <div>
+                        <img src="{{ asset('images/texture.png') }}" alt="Logo" class="w-24 scale-150">
+                    </div>
+                </div>
+
+                <div class="pt-8">
+                    @if($course_completions && $course_completions->count() > 0)
+                        <!-- Academic Performance Overview -->
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
+                            <h3 class="text-xl font-bold text-gray-900 mb-4">Academic Performance Overview</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-green-600">{{ $course_completions->count() }}</div>
+                                    <div class="text-sm text-gray-600">Completed Courses</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-blue-600">{{ number_format($course_completions->avg('final_grade'), 1) }}%</div>
+                                    <div class="text-sm text-gray-600">Overall GPA</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-3xl font-bold text-purple-600">{{ $course_completions->sum('assignments_completed') }}</div>
+                                    <div class="text-sm text-gray-600">Total Assignments Completed</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Completed Courses -->
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                            <h3 class="text-xl font-bold text-gray-900 mb-6">Completed Courses</h3>
+                            <div class="space-y-4">
+                                @foreach($course_completions as $completion)
+                                    <div class="border border-gray-200 rounded-lg p-6 hover:bg-gray-50 transition-colors">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex-1">
+                                                <h4 class="text-lg font-semibold text-gray-900">{{ $completion->course->title }}</h4>
+                                                <p class="text-sm text-gray-600">{{ $completion->course->department }}</p>
+                                                <p class="text-sm text-gray-500 mt-1">Completed {{ $completion->completed_at->format('M j, Y') }}</p>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="text-center">
+                                                        @php
+                                                            $gradeTextClass = match($completion->grade_color) {
+                                                                'green' => 'text-green-600',
+                                                                'blue' => 'text-blue-600',
+                                                                'yellow' => 'text-yellow-600',
+                                                                'orange' => 'text-orange-600',
+                                                                'red' => 'text-red-600',
+                                                                default => 'text-gray-600'
+                                                            };
+                                                        @endphp
+                                                        <div class="text-2xl font-bold {{ $gradeTextClass }}">
+                                                            {{ number_format($completion->final_grade, 1) }}%
+                                                        </div>
+                                                        <div class="text-sm font-medium {{ $gradeTextClass }}">
+                                                            {{ $completion->grade_letter }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Grade Breakdown -->
+                                        <div class="bg-gray-50 rounded-lg p-4">
+                                            <h5 class="font-medium text-gray-900 mb-3">Grade Breakdown</h5>
+                                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                                <div>
+                                                    <span class="text-gray-600">Points Earned:</span>
+                                                    <div class="font-semibold">{{ $completion->total_points_earned }}/{{ $completion->total_points_possible }}</div>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-600">Assignments:</span>
+                                                    <div class="font-semibold">{{ $completion->assignments_completed }}/{{ $completion->total_assignments }}</div>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-600">Completion Rate:</span>
+                                                    <div class="font-semibold">{{ number_format(($completion->assignments_completed / $completion->total_assignments) * 100, 1) }}%</div>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-600">Instructor:</span>
+                                                    <div class="font-semibold">{{ $completion->course->instructor->name ?? 'N/A' }}</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Progress Bar -->
+                                            <div class="mt-4">
+                                                <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                                    <span>Grade Progress</span>
+                                                    <span>{{ number_format($completion->final_grade, 1) }}%</span>
+                                                </div>
+                                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                                    @php
+                                                        $progressBarClass = match($completion->grade_color) {
+                                                            'green' => 'bg-green-600',
+                                                            'blue' => 'bg-blue-600',
+                                                            'yellow' => 'bg-yellow-600',
+                                                            'orange' => 'bg-orange-600',
+                                                            'red' => 'bg-red-600',
+                                                            default => 'bg-gray-600'
+                                                        };
+                                                    @endphp
+                                                    <div class="{{ $progressBarClass }} h-2 rounded-full transition-all duration-300"
+                                                         style="width: {{ min($completion->final_grade, 100) }}%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <!-- Empty State -->
+                        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 text-center">
+                            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                            </svg>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Completed Courses Yet</h3>
+                            <p class="text-gray-600 mb-4">
+                                Your grades will appear here once you complete your first course.
+                                Grades are finalized when your instructor promotes the class.
+                            </p>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                                <div class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <div class="text-sm">
+                                        <p class="font-medium text-blue-800 mb-1">How Grades Work</p>
+                                        <ul class="text-blue-700 space-y-1">
+                                            <li>• Complete assignments and activities in your enrolled courses</li>
+                                            <li>• Your instructor will grade your submissions</li>
+                                            <li>• Final grades are calculated when the instructor promotes the class</li>
+                                            <li>• Your completed courses and grades will then appear here</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -524,11 +690,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Navigation
     const navMyCourses = document.getElementById('nav-my-courses');
     const navEnroll = document.getElementById('nav-enroll');
+    const navGrades = document.getElementById('nav-grades');
     const navProfile = document.getElementById('nav-profile');
 
     // Sections
     const myCoursesSection = document.getElementById('my-courses-section');
     const enrollSection = document.getElementById('enroll-section');
+    const gradesSection = document.getElementById('grades-section');
     const profileSection = document.getElementById('profile-section');
 
     let sidebarOpen = true;
@@ -591,7 +759,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Section navigation
     function setActiveNav(activeNav) {
-        const navItems = [navMyCourses, navEnroll, navProfile];
+        const navItems = [navMyCourses, navEnroll, navGrades, navProfile];
         navItems.forEach(nav => {
             nav.classList.remove('bg-[#fdd666]', 'text-[#333]', 'active');
             nav.classList.add('text-gray-700');
@@ -603,12 +771,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function showSection(targetSection) {
         myCoursesSection.classList.add('hidden');
         enrollSection.classList.add('hidden');
+        gradesSection.classList.add('hidden');
         profileSection.classList.add('hidden');
         targetSection.classList.remove('hidden');
     }
 
     navMyCourses.addEventListener('click', e => { e.preventDefault(); setActiveNav(navMyCourses); showSection(myCoursesSection); });
     navEnroll.addEventListener('click', e => { e.preventDefault(); setActiveNav(navEnroll); showSection(enrollSection); });
+    navGrades.addEventListener('click', e => { e.preventDefault(); setActiveNav(navGrades); showSection(gradesSection); });
     navProfile.addEventListener('click', e => { e.preventDefault(); setActiveNav(navProfile); showSection(profileSection); });
 });
 </script>
