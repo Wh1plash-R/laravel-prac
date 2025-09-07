@@ -8,8 +8,11 @@ use App\Models\Learner;
 use App\Models\Submission;
 use App\Models\User;
 use App\Models\UserAchievement;
+use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends Controller
 {
@@ -341,6 +344,73 @@ class DashboardController extends Controller
                 'earned_at' => $achievement['earned_at'],
             ];
         }, $earnedAchievements);
+    }
+
+    /**
+     * View announcement file
+     */
+    public function viewAnnouncementFile(Announcement $announcement)
+    {
+        $user = Auth::user();
+
+        // Check if user has access to this announcement
+        if (!$this->userCanAccessAnnouncement($user, $announcement)) {
+            abort(403, 'Unauthorized access to this file.');
+        }
+
+        if (!$announcement->hasFile()) {
+            abort(404, 'File not found.');
+        }
+
+        if (!Storage::disk('public')->exists($announcement->file_path)) {
+            abort(404, 'File not found on server.');
+        }
+
+        return response()->file(storage_path('app/public/' . $announcement->file_path));
+    }
+
+    /**
+     * Download announcement file
+     */
+    public function downloadAnnouncementFile(Announcement $announcement)
+    {
+        $user = Auth::user();
+
+        // Check if user has access to this announcement
+        if (!$this->userCanAccessAnnouncement($user, $announcement)) {
+            abort(403, 'Unauthorized access to this file.');
+        }
+
+        if (!$announcement->hasFile()) {
+            abort(404, 'File not found.');
+        }
+
+        if (!Storage::disk('public')->exists($announcement->file_path)) {
+            abort(404, 'File not found on server.');
+        }
+
+        return response()->download(storage_path('app/public/' . $announcement->file_path), $announcement->file_name);
+    }
+
+    /**
+     * Check if user can access an announcement
+     */
+    private function userCanAccessAnnouncement(User $user, Announcement $announcement)
+    {
+        // Load the course relationship
+        $announcement->load('course');
+
+        // If user is instructor of the course
+        if ($user->instructor && $announcement->course->instructor_id === $user->instructor->id) {
+            return true;
+        }
+
+        // If user is a learner enrolled in the course
+        if ($user->learner && $user->learner->courses()->where('course_id', $announcement->course_id)->exists()) {
+            return true;
+        }
+
+        return false;
     }
 
 }

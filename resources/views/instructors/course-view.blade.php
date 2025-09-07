@@ -489,8 +489,8 @@
                     </button>
                 </div>
 
-                <form id="announcementForm" action="" method="POST" class="space-y-4"
-                        x-data="{ hasChanges: false }"
+                <form id="announcementForm" action="" method="POST" enctype="multipart/form-data" class="space-y-4"
+                        x-data="{ hasChanges: false, selectedFile: null, currentFile: null }"
                         x-init="
                             $watch('hasChanges', value => {
                                 if (value) window.announcementFormChanged = true;
@@ -525,6 +525,66 @@
                             <option value="success">Success</option>
                             <option value="important">Important</option>
                         </select>
+                    </div>
+
+                    <!-- File Upload Section -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Attach File (Optional)
+                            <span class="text-gray-500 text-xs">- Course resources, documents, etc.</span>
+                        </label>
+
+                        <!-- Current File Display (Edit Mode) -->
+                        <div x-show="currentFile" class="mb-3 p-3 bg-gray-50 border border-gray-200 rounded-md">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <span class="text-sm text-gray-700" x-text="currentFile?.name"></span>
+                                    <span class="text-xs text-gray-500 ml-2" x-text="currentFile?.size"></span>
+                                </div>
+                                <button type="button" @click="currentFile = null; hasChanges = true"
+                                        class="text-red-500 hover:text-red-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <input type="hidden" name="remove_file" x-model="currentFile === null ? '1' : '0'">
+                        </div>
+
+                        <!-- File Upload Area -->
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-gray-400 transition-colors">
+                            <div class="space-y-1 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="announcement_file" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                        <span>Upload a file</span>
+                                        <input id="announcement_file" name="file" type="file" class="sr-only"
+                                               @change="selectedFile = $event.target.files[0]; hasChanges = true"
+                                               accept=".pdf,.doc,.docx,.txt,.zip,.rar,.jpg,.jpeg,.png,.gif,.mp4,.mp3,.ppt,.pptx,.xls,.xlsx">
+                                    </label>
+                                    <p class="pl-1">or drag and drop</p>
+                                </div>
+                                <p class="text-xs text-gray-500">
+                                    PDF, DOC, TXT, ZIP, Images, Videos up to 10MB
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Selected File Preview -->
+                        <div x-show="selectedFile" class="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-blue-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span class="text-sm text-gray-700" x-text="selectedFile?.name"></span>
+                                <span class="text-xs text-gray-500 ml-2" x-text="selectedFile ? Math.round(selectedFile.size / 1024) + ' KB' : ''"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex justify-end space-x-3 pt-4">
@@ -645,8 +705,12 @@
             const submitBtn = form.querySelector('button[type="submit"]');
             const methodInput = document.getElementById('announcementMethod');
 
-            // Reset form
+            // Reset form and Alpine data
             form.reset();
+            Alpine.store('announcementForm', {
+                selectedFile: null,
+                currentFile: null
+            });
 
             if (announcementId) {
                 // Edit mode
@@ -664,6 +728,20 @@
                     document.getElementById('announcement_title').value = announcementData.title;
                     document.getElementById('announcement_description').value = announcementData.description;
                     document.getElementById('announcement_type').value = announcementData.type;
+
+                    // Handle file data for edit mode
+                    if (announcementData.file_name) {
+                        // Set current file data via Alpine.js
+                        setTimeout(() => {
+                            const formComponent = form._x_dataStack && form._x_dataStack[0];
+                            if (formComponent) {
+                                formComponent.currentFile = {
+                                    name: announcementData.file_name,
+                                    size: announcementData.file_size_formatted || 'Unknown size'
+                                };
+                            }
+                        }, 10);
+                    }
                 }
             } else {
                 // Add mode

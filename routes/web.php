@@ -26,6 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/assignment/{assignment}/submission', [LearnerController::class, 'removeSubmission'])->name('assignment.remove');
     Route::patch('/assignment/{assignment}/finalize', [LearnerController::class, 'finalizeSubmission'])->name('assignment.finalize');
     Route::get('/assignment/{assignment}/download', [LearnerController::class, 'downloadSubmission'])->name('assignment.download');
+
+    // Announcement file routes
+    Route::get('/announcement/{announcement}/file/view', [DashboardController::class, 'viewAnnouncementFile'])->name('announcement.file.view');
+    Route::get('/announcement/{announcement}/file/download', [DashboardController::class, 'downloadAnnouncementFile'])->name('announcement.file.download');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {

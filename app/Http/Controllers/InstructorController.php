@@ -11,6 +11,7 @@ use App\Models\Instructor;
 use App\Models\Assignment;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class InstructorController extends Controller
 {
@@ -112,7 +113,41 @@ class InstructorController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'type' => 'required|in:info,warning,success,important',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,txt,zip,rar,jpg,jpeg,png,gif,mp4,mp3,ppt,pptx,xls,xlsx|max:10240', // 10MB max
+            'remove_file' => 'nullable|string',
         ]);
+
+        // Handle file removal
+        if ($request->input('remove_file') === '1') {
+            // Delete old file if exists
+            if ($announcement->file_path && Storage::disk('public')->exists($announcement->file_path)) {
+                Storage::disk('public')->delete($announcement->file_path);
+            }
+
+            $validated['file_path'] = null;
+            $validated['file_name'] = null;
+            $validated['file_type'] = null;
+            $validated['file_size'] = null;
+        }
+        // Handle new file upload
+        elseif ($request->hasFile('file')) {
+            // Delete old file if exists
+            if ($announcement->file_path && Storage::disk('public')->exists($announcement->file_path)) {
+                Storage::disk('public')->delete($announcement->file_path);
+            }
+
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('announcements', $fileName, 'public');
+
+            $validated['file_path'] = $filePath;
+            $validated['file_name'] = $file->getClientOriginalName();
+            $validated['file_type'] = $file->getMimeType();
+            $validated['file_size'] = $file->getSize();
+        }
+
+        // Remove the remove_file field from validated data
+        unset($validated['remove_file']);
 
         $announcement->update($validated);
 
@@ -139,6 +174,11 @@ class InstructorController extends Controller
         // Store course reference before deletion
         $course = $announcement->course;
 
+        // Delete associated file if exists
+        if ($announcement->file_path && Storage::disk('public')->exists($announcement->file_path)) {
+            Storage::disk('public')->delete($announcement->file_path);
+        }
+
         // Delete the announcement
         $announcement->delete();
 
@@ -151,12 +191,33 @@ class InstructorController extends Controller
      */
     public function storeAnnouncement(Request $request, Course $course)
     {
+        // Ensure the authenticated user is an instructor for this course
+        $user = Auth::user();
+        $instructor = $user->instructor;
+
+        if (!$instructor || $course->instructor_id !== $instructor->id) {
+            abort(403, 'Unauthorized access to this course.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'type' => 'required|in:info,warning,success,important',
-            'course_id' => 'required|exists:courses,id'
+            'course_id' => 'required|exists:courses,id',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,txt,zip,rar,jpg,jpeg,png,gif,mp4,mp3,ppt,pptx,xls,xlsx|max:10240', // 10MB max
         ]);
+
+        // Handle file upload if provided
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('announcements', $fileName, 'public');
+
+            $validated['file_path'] = $filePath;
+            $validated['file_name'] = $file->getClientOriginalName();
+            $validated['file_type'] = $file->getMimeType();
+            $validated['file_size'] = $file->getSize();
+        }
 
         Announcement::create($validated);
         return redirect()->route('instructor.course.view', $course)

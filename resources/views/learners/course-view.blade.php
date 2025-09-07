@@ -203,14 +203,128 @@
                         </div>
                         <div class="space-y-4">
                             @forelse($course->announcements()->orderBy('created_at', 'desc')->get() as $announcement)
-                                <div class="bg-{{ $announcement->type_color }}-50 border-l-4 border-{{ $announcement->type_color }}-400 p-4 rounded-r-lg">
+                                <div class="p-4 rounded-r-lg border-l-4
+                                    @if($announcement->type === 'info') bg-blue-50 border-blue-400
+                                    @elseif($announcement->type === 'warning') bg-yellow-50 border-yellow-400
+                                    @elseif($announcement->type === 'success') bg-green-50 border-green-400
+                                    @elseif($announcement->type === 'important') bg-red-50 border-red-400
+                                    @else bg-blue-50 border-blue-400
+                                    @endif">
                                     <div class="flex items-start">
                                         <div class="flex-1">
-                                            <h4 class="font-semibold text-{{ $announcement->type_color }}-900">{{ $announcement->title }}</h4>
-                                            <p class="text-{{ $announcement->type_color }}-800 text-sm mt-1">
+                                            <h4 class="font-semibold
+                                                @if($announcement->type === 'info') text-blue-900
+                                                @elseif($announcement->type === 'warning') text-yellow-900
+                                                @elseif($announcement->type === 'success') text-green-900
+                                                @elseif($announcement->type === 'important') text-red-900
+                                                @else text-blue-900
+                                                @endif">{{ $announcement->title }}</h4>
+                                            <p class="text-sm mt-1
+                                                @if($announcement->type === 'info') text-blue-800
+                                                @elseif($announcement->type === 'warning') text-yellow-800
+                                                @elseif($announcement->type === 'success') text-green-800
+                                                @elseif($announcement->type === 'important') text-red-800
+                                                @else text-blue-800
+                                                @endif">
                                                 {{ $announcement->description }}
                                             </p>
-                                            <p class="text-{{ $announcement->type_color }}-600 text-xs mt-2">
+
+                                            @if($announcement->hasFile())
+                                                <div class="mt-3 p-3 bg-white/50 rounded-lg border
+                                                    @if($announcement->type === 'info') border-blue-200
+                                                    @elseif($announcement->type === 'warning') border-yellow-200
+                                                    @elseif($announcement->type === 'success') border-green-200
+                                                    @elseif($announcement->type === 'important') border-red-200
+                                                    @else border-blue-200
+                                                    @endif">
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="flex items-center">
+                                                            <div class="flex items-center mr-3">
+                                                                <svg class="w-5 h-5 mr-2
+                                                                    @if($announcement->type === 'info') text-blue-600
+                                                                    @elseif($announcement->type === 'warning') text-yellow-600
+                                                                    @elseif($announcement->type === 'success') text-green-600
+                                                                    @elseif($announcement->type === 'important') text-red-600
+                                                                    @else text-blue-600
+                                                                    @endif" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                                                </svg>
+                                                                <span class="text-sm font-medium
+                                                                    @if($announcement->type === 'info') text-blue-900
+                                                                    @elseif($announcement->type === 'warning') text-yellow-900
+                                                                    @elseif($announcement->type === 'success') text-green-900
+                                                                    @elseif($announcement->type === 'important') text-red-900
+                                                                    @else text-blue-900
+                                                                    @endif">Course Resource</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center justify-between mt-2">
+                                                        <div class="flex items-center">
+                                                            <svg class="w-4 h-4 mr-2
+                                                                @if($announcement->type === 'info') text-blue-600
+                                                                @elseif($announcement->type === 'warning') text-yellow-600
+                                                                @elseif($announcement->type === 'success') text-green-600
+                                                                @elseif($announcement->type === 'important') text-red-600
+                                                                @else text-blue-600
+                                                                @endif" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                            </svg>
+                                                            <span class="text-sm
+                                                                @if($announcement->type === 'info') text-blue-800
+                                                                @elseif($announcement->type === 'warning') text-yellow-800
+                                                                @elseif($announcement->type === 'success') text-green-800
+                                                                @elseif($announcement->type === 'important') text-red-800
+                                                                @else text-blue-800
+                                                                @endif">{{ $announcement->file_name }}</span>
+                                                            <span class="text-xs ml-2
+                                                                @if($announcement->type === 'info') text-blue-600
+                                                                @elseif($announcement->type === 'warning') text-yellow-600
+                                                                @elseif($announcement->type === 'success') text-green-600
+                                                                @elseif($announcement->type === 'important') text-red-600
+                                                                @else text-blue-600
+                                                                @endif">({{ $announcement->file_size_formatted }})</span>
+                                                        </div>
+                                                        <div class="flex space-x-2">
+                                                            <a href="{{ route('announcement.file.view', $announcement) }}" target="_blank"
+                                                               class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full transition-colors
+                                                                @if($announcement->type === 'info') text-blue-700 bg-blue-100 hover:bg-blue-200
+                                                                @elseif($announcement->type === 'warning') text-yellow-700 bg-yellow-100 hover:bg-yellow-200
+                                                                @elseif($announcement->type === 'success') text-green-700 bg-green-100 hover:bg-green-200
+                                                                @elseif($announcement->type === 'important') text-red-700 bg-red-100 hover:bg-red-200
+                                                                @else text-blue-700 bg-blue-100 hover:bg-blue-200
+                                                                @endif">
+                                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                                </svg>
+                                                                View
+                                                            </a>
+                                                            <a href="{{ route('announcement.file.download', $announcement) }}"
+                                                               class="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full transition-colors
+                                                                @if($announcement->type === 'info') text-blue-700 bg-blue-100 hover:bg-blue-200
+                                                                @elseif($announcement->type === 'warning') text-yellow-700 bg-yellow-100 hover:bg-yellow-200
+                                                                @elseif($announcement->type === 'success') text-green-700 bg-green-100 hover:bg-green-200
+                                                                @elseif($announcement->type === 'important') text-red-700 bg-red-100 hover:bg-red-200
+                                                                @else text-blue-700 bg-blue-100 hover:bg-blue-200
+                                                                @endif">
+                                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                                </svg>
+                                                                Download
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                            <p class="text-xs mt-2
+                                                @if($announcement->type === 'info') text-blue-600
+                                                @elseif($announcement->type === 'warning') text-yellow-600
+                                                @elseif($announcement->type === 'success') text-green-600
+                                                @elseif($announcement->type === 'important') text-red-600
+                                                @else text-blue-600
+                                                @endif">
                                                 Posted {{ $announcement->created_at->diffForHumans() }}
                                             </p>
                                         </div>
@@ -448,7 +562,13 @@
                         <div class="space-y-3 text-sm">
                             @forelse($course->announcements()->orderBy('created_at', 'desc')->limit(3)->get() as $announcement)
                                 <div class="flex items-start">
-                                    <div class="w-2 h-2 bg-{{ $announcement->type_color }}-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                                    <div class="w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0
+                                        @if($announcement->type === 'info') bg-blue-500
+                                        @elseif($announcement->type === 'warning') bg-yellow-500
+                                        @elseif($announcement->type === 'success') bg-green-500
+                                        @elseif($announcement->type === 'important') bg-red-500
+                                        @else bg-blue-500
+                                        @endif"></div>
                                     <div class="flex-1">
                                         <p class="text-gray-700 font-medium">{{ Str::limit($announcement->title, 30) }}</p>
                                         <p class="text-gray-500 text-xs">{{ $announcement->created_at->diffForHumans() }}</p>
