@@ -17,7 +17,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role): Response
     {
         if(!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()->route('welcome');
         }
         $user = Auth::user();
 

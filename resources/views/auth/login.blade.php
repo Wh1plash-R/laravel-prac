@@ -24,10 +24,10 @@
                 <button type="button" @click="show = !show" aria-label="Toggle password visibility"
                         class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700">
                     <span x-show="!show">
-                        <x-heroicon-m-eye class="w-5 h-5" />
+                        {{-- <x-heroicon-m-eye class="w-5 h-5" /> --}}
                     </span>
                     <span x-show="show" x-cloak>
-                        <x-heroicon-m-eye-slash class="w-5 h-5" />
+                        {{-- <x-heroicon-m-eye-slash class="w-5 h-5" /> --}}
                     </span>
                 </button>
             </div>

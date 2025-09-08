@@ -18,6 +18,18 @@
                     <p class="text-left text-gray-600 text-sm">Simplify your workflow and boost your productivity with <b>BeeCourse's</b> learning app. Get started for free.</p>
                 </div>
 
+                <!-- Success Message for Password Reset -->
+                @if (session('status'))
+                    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-2xl">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <p class="text-green-700 text-sm font-medium">{{ session('status') }}</p>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- Login Form -->
                 <form method="POST" action="{{ route('login') }}" class="space-y-4" x-data="{ loading: false }" @submit="loading = true">
                     @csrf
