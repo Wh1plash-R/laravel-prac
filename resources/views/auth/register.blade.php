@@ -49,36 +49,55 @@
 
                     <!-- Password Field -->
                     <div class="relative">
-                        <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            placeholder="Password"
-                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12"
-                            required
-                            autocomplete="new-password"
-                        >
-                        <button type="button" id="togglePassword" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-                        </button>
+                        <div class="relative">
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                placeholder="Password"
+                                class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12"
+                                required
+                                autocomplete="new-password"
+                            >
+                            <button type="button" id="togglePassword" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
                         @error('password')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            <p id="password-server-error" class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Confirm Password Field -->
                     <div class="relative">
-                        <input
-                            type="password"
-                            name="password_confirmation"
-                            id="password_confirmation"
-                            placeholder="Confirm Password"
-                            class="w-full px-4 py-4 bg-gray-50 border {{ $errors->has('password_confirmation') ? 'border-red-500' : 'border-gray-200' }} rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12"
-                            required
-                            autocomplete="new-password"
-                        >
+                        <div class="relative">
+                            <input
+                                type="password"
+                                name="password_confirmation"
+                                id="password_confirmation"
+                                placeholder="Confirm Password"
+                                class="w-full px-4 py-4 bg-gray-50 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12"
+                                required
+                                autocomplete="new-password"
+                            >
+                            <!-- Password match indicator -->
+                            <div id="password-match-indicator" class="absolute right-4 top-1/2 transform -translate-y-1/2 hidden z-10">
+                                <!-- Success checkmark -->
+                                <svg id="password-match-success" class="w-6 h-6 text-green-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <!-- Error X -->
+                                <svg id="password-match-error" class="w-6 h-6 text-red-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <!-- Password match status message -->
+                        <div id="password-match-message" class="text-xs mt-1 hidden">
+                            <p id="password-match-text" class="transition-colors duration-200"></p>
+                        </div>
                         @error('password_confirmation')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            <p id="password-confirmation-server-error" class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -116,11 +135,18 @@
     </div>
 
     <script>
-        // Password visibility toggle for Register
+        // Password visibility toggle and password confirmation validation
         document.addEventListener('DOMContentLoaded', function() {
             const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('password_confirmation');
             const toggleButton = document.getElementById('togglePassword');
+            const matchIndicator = document.getElementById('password-match-indicator');
+            const matchSuccess = document.getElementById('password-match-success');
+            const matchError = document.getElementById('password-match-error');
+            const matchMessage = document.getElementById('password-match-message');
+            const matchText = document.getElementById('password-match-text');
 
+            // Password visibility toggle
             if (toggleButton && passwordInput) {
                 toggleButton.addEventListener('click', function() {
                     if (passwordInput.type === 'password') {
@@ -131,6 +157,89 @@
                         toggleButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
                     }
                 });
+            }
+
+            // Clear server validation errors
+            function clearServerErrors() {
+                const passwordServerError = document.getElementById('password-server-error');
+                const confirmPasswordServerError = document.getElementById('password-confirmation-server-error');
+
+                if (passwordServerError) {
+                    passwordServerError.style.display = 'none';
+                    // Reset password field border to default
+                    passwordInput.className = 'w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12';
+                }
+                if (confirmPasswordServerError) {
+                    confirmPasswordServerError.style.display = 'none';
+                    // Reset confirm password field border to default (only if no client-side validation is showing)
+                    if (matchIndicator.classList.contains('hidden')) {
+                        confirmPasswordInput.className = 'w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12';
+                    }
+                }
+            }
+
+            // Password confirmation validation
+            function validatePasswordMatch() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                // Only show validation if confirm password field has content
+                if (confirmPassword.length === 0) {
+                    hidePasswordMatchIndicator();
+                    return;
+                }
+
+                if (password === confirmPassword && password.length > 0) {
+                    showPasswordMatch(true);
+                } else {
+                    showPasswordMatch(false);
+                }
+            }
+
+            function showPasswordMatch(isMatch) {
+                matchIndicator.classList.remove('hidden');
+                matchMessage.classList.remove('hidden');
+
+                if (isMatch) {
+                    // Show success state
+                    matchSuccess.classList.remove('hidden');
+                    matchError.classList.add('hidden');
+                    matchText.textContent = 'Passwords match';
+                    matchText.className = 'text-green-600 transition-colors duration-200';
+                    confirmPasswordInput.className = 'w-full px-4 py-4 bg-gray-50 border border-green-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 pr-12';
+                } else {
+                    // Show error state
+                    matchSuccess.classList.add('hidden');
+                    matchError.classList.remove('hidden');
+                    matchText.textContent = 'Passwords do not match';
+                    matchText.className = 'text-red-600 transition-colors duration-200';
+                    confirmPasswordInput.className = 'w-full px-4 py-4 bg-gray-50 border border-red-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 pr-12';
+                }
+            }
+
+            function hidePasswordMatchIndicator() {
+                matchIndicator.classList.add('hidden');
+                matchMessage.classList.add('hidden');
+                matchSuccess.classList.add('hidden');
+                matchError.classList.add('hidden');
+                // Reset to default styling
+                confirmPasswordInput.className = 'w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:border-transparent transition-all duration-200 pr-12';
+            }
+
+            // Add event listeners for real-time validation
+            if (passwordInput && confirmPasswordInput) {
+                passwordInput.addEventListener('input', function() {
+                    clearServerErrors();
+                    validatePasswordMatch();
+                });
+
+                confirmPasswordInput.addEventListener('input', function() {
+                    clearServerErrors();
+                    validatePasswordMatch();
+                });
+
+                // Also validate on blur for better UX
+                confirmPasswordInput.addEventListener('blur', validatePasswordMatch);
             }
         });
     </script>
