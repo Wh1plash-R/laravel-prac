@@ -47,12 +47,14 @@
 
                             <!-- Menu Items -->
                             <div class="py-1">
+                                @if(!(auth()->user()->isInstructor()))
                                 <x-dropdown-link :href="route('profile.edit')" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
                                     {{ __('Edit profile') }}
                                 </x-dropdown-link>
+                                @endif
 
                                 <!-- Updated Logout with Confirmation Dialog -->
                                 <form method="POST" action="{{ route('logout') }}" id="logout-form">

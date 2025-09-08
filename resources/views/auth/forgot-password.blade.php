@@ -73,7 +73,7 @@
 
         <!-- Right Panel - Image -->
         <div class="hidden lg:flex w-[65%] items-center justify-center">
-            <img src="{{ asset('images/welcomeImage2.png') }}" alt="Forgot Password" class="scale-100">
+            <img src="{{ asset('images/welcomeImage.png') }}" alt="Forgot Password" class="scale-100">
         </div>
     </div>
 </x-layout>
