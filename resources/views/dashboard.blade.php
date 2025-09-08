@@ -656,9 +656,9 @@
                                     @if(!empty($achievementsEarned) && count($achievementsEarned) > 0)
                                         @foreach($achievementsEarned as $ach)
                                             <div class="text-center p-4 sm:p-5 lg:p-6 bg-gradient-to-br {{ $ach['bg'] }} rounded-xl border {{ $ach['border'] }}">
-                                                <div class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br {{ $ach['iconBg'] }} rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                                <div class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
                                                     <svg class="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $ach['iconPath'] }}"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="{{ $ach['iconPath'] }}"></path>
                                                     </svg>
                                                 </div>
                                                 <h4 class="font-bold text-sm sm:text-base lg:text-lg text-gray-900 mb-1 sm:mb-2 leading-tight">
