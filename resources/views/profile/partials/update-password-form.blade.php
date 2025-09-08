@@ -50,7 +50,7 @@
                     autocomplete="new-password"
                     placeholder="Enter your new password" />
             </div>
-            <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-1" />
+            <x-input-error id="update-password-server-error" :messages="$errors->updatePassword->get('password')" class="mt-1" />
 
             <!-- Password Requirements -->
             <div class="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -83,7 +83,7 @@
             <x-input-label for="update_password_password_confirmation" :value="__('Confirm New Password')" class="text-gray-700 font-semibold" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="update-password-confirm-icon" class="h-5 w-5 text-gray-400 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
@@ -92,7 +92,7 @@
                     autocomplete="new-password"
                     placeholder="Confirm your new password" />
             </div>
-            <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-1" />
+            <x-input-error id="update-password-confirmation-server-error" :messages="$errors->updatePassword->get('password_confirmation')" class="mt-1" />
         </div>
 
         <!-- Action Buttons -->
@@ -126,3 +126,85 @@
         </div>
     </form>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newPasswordInput = document.getElementById('update_password_password');
+    const confirmPasswordInput = document.getElementById('update_password_password_confirmation');
+    const confirmIcon = document.getElementById('update-password-confirm-icon');
+
+    // Clear server validation errors
+    function clearServerErrors() {
+        const passwordServerError = document.getElementById('update-password-server-error');
+        const confirmPasswordServerError = document.getElementById('update-password-confirmation-server-error');
+
+        if (passwordServerError && passwordServerError.children.length > 0) {
+            passwordServerError.style.display = 'none';
+            // Reset new password field border to default
+            newPasswordInput.className = 'pl-10 w-full border-gray-300 focus:border-[#35b5ac] focus:ring-[#35b5ac] rounded-lg shadow-sm transition-colors';
+        }
+        if (confirmPasswordServerError && confirmPasswordServerError.children.length > 0) {
+            confirmPasswordServerError.style.display = 'none';
+            // Reset confirm password field border to default (only if no client-side validation is showing)
+            if (confirmIcon.classList.contains('text-gray-400')) {
+                confirmPasswordInput.className = 'pl-10 w-full border-gray-300 focus:border-[#35b5ac] focus:ring-[#35b5ac] rounded-lg shadow-sm transition-colors';
+            }
+        }
+    }
+
+    // Password confirmation validation
+    function validatePasswordMatch() {
+        const newPassword = newPasswordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        // Only show validation if confirm password field has content
+        if (confirmPassword.length === 0) {
+            resetPasswordMatchIndicator();
+            return;
+        }
+
+        if (newPassword === confirmPassword && newPassword.length > 0) {
+            showPasswordMatch(true);
+        } else {
+            showPasswordMatch(false);
+        }
+    }
+
+    function showPasswordMatch(isMatch) {
+        if (isMatch) {
+            // Show success state - green icon and border
+            confirmIcon.classList.remove('text-gray-400', 'text-red-500');
+            confirmIcon.classList.add('text-green-500');
+            confirmPasswordInput.className = 'pl-10 w-full border-green-300 focus:border-green-500 focus:ring-green-500 rounded-lg shadow-sm transition-colors';
+        } else {
+            // Show error state - red icon and border
+            confirmIcon.classList.remove('text-gray-400', 'text-green-500');
+            confirmIcon.classList.add('text-red-500');
+            confirmPasswordInput.className = 'pl-10 w-full border-red-300 focus:border-red-500 focus:ring-red-500 rounded-lg shadow-sm transition-colors';
+        }
+    }
+
+    function resetPasswordMatchIndicator() {
+        // Reset to default styling - gray icon and border
+        confirmIcon.classList.remove('text-green-500', 'text-red-500');
+        confirmIcon.classList.add('text-gray-400');
+        confirmPasswordInput.className = 'pl-10 w-full border-gray-300 focus:border-[#35b5ac] focus:ring-[#35b5ac] rounded-lg shadow-sm transition-colors';
+    }
+
+    // Add event listeners for real-time validation
+    if (newPasswordInput && confirmPasswordInput) {
+        newPasswordInput.addEventListener('input', function() {
+            clearServerErrors();
+            validatePasswordMatch();
+        });
+
+        confirmPasswordInput.addEventListener('input', function() {
+            clearServerErrors();
+            validatePasswordMatch();
+        });
+
+        // Also validate on blur for better UX
+        confirmPasswordInput.addEventListener('blur', validatePasswordMatch);
+    }
+});
+</script>

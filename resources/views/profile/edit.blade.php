@@ -7,6 +7,11 @@
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <!-- Global hidden delete form for profile picture -->
+            <form id="delete-profile-form-global" method="POST" action="{{ route('dashboard.delete-profile-picture', auth()->user()->id) }}" class="hidden">
+                @csrf
+                @method('DELETE')
+            </form>
             <a href="{{ route('dashboard') }}"
                 class="inline-flex items-center sm:m-0 m-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold rounded-lg transition-all border border-gray-300 hover:border-gray-400 group">
                 <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
