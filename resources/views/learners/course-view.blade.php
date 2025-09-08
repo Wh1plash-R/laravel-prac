@@ -366,9 +366,34 @@
 
                                     // Determine learner-specific status
                                     if ($assignment->status === 'locked') {
-                                        $learnerStatus = 'locked';
-                                        $statusColor = 'gray';
-                                        $statusText = 'Locked';
+                                        // If assignment is locked but learner has a submission, show their grade/status
+                                        if ($submission) {
+                                            switch ($submission->status) {
+                                                case 'graded':
+                                                    $learnerStatus = 'graded_locked';
+                                                    $statusColor = 'green';
+                                                    $statusText = 'Graded (' . $submission->grade . '/' . $assignment->points . ') - Locked';
+                                                    break;
+                                                case 'submitted':
+                                                    $learnerStatus = 'submitted_locked';
+                                                    $statusColor = 'blue';
+                                                    $statusText = 'Submitted - Locked';
+                                                    break;
+                                                case 'draft':
+                                                    $learnerStatus = 'draft_locked';
+                                                    $statusColor = 'yellow';
+                                                    $statusText = 'Draft - Locked';
+                                                    break;
+                                                default:
+                                                    $learnerStatus = 'locked';
+                                                    $statusColor = 'gray';
+                                                    $statusText = 'Locked';
+                                            }
+                                        } else {
+                                            $learnerStatus = 'locked';
+                                            $statusColor = 'gray';
+                                            $statusText = 'Locked';
+                                        }
                                     } elseif ($submission) {
                                         switch ($submission->status) {
                                             case 'graded':
@@ -397,8 +422,9 @@
                                         $statusText = 'Not Started';
                                     }
 
-                                    $isClickable = $assignment->status === 'active';
-                                    $isOverdue = $assignment->due_date < now() && !in_array($learnerStatus, ['submitted', 'graded']);
+                                    // Allow access if assignment is active OR if it's locked but learner has a submission
+                                    $isClickable = $assignment->status === 'active' || ($assignment->status === 'locked' && $submission);
+                                    $isOverdue = $assignment->due_date < now() && !in_array($learnerStatus, ['submitted', 'graded', 'graded_locked', 'submitted_locked']);
                                 @endphp
 
                                 @if($isClickable)

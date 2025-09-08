@@ -115,7 +115,21 @@
                     <div class="ml-8 flex flex-col space-y-3">
                         <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[220px]">
                             <div class="text-center">
-                                @if($submission)
+                                @if($assignment->status === 'locked')
+                                    @if($submission && $submission->isGraded())
+                                        <div class="text-2xl font-bold text-white mb-1">{{ $submission->grade }}/{{ $assignment->points }}</div>
+                                        <div class="text-white/80 text-sm">Grade Received - Locked</div>
+                                    @elseif($submission && $submission->isSubmitted())
+                                        <div class="text-2xl font-bold text-white mb-1">Submitted</div>
+                                        <div class="text-white/80 text-sm">Awaiting Grade - Locked</div>
+                                    @elseif($submission)
+                                        <div class="text-2xl font-bold text-white mb-1">Draft</div>
+                                        <div class="text-white/80 text-sm">Assignment Locked</div>
+                                    @else
+                                        <div class="text-2xl font-bold text-white mb-1">Locked</div>
+                                        <div class="text-white/80 text-sm">No Submission</div>
+                                    @endif
+                                @elseif($submission)
                                     <div class="text-2xl font-bold text-white mb-1">
                                         @if($submission->isGraded())
                                             {{ $submission->grade }}/{{ $assignment->points }}
@@ -240,7 +254,82 @@
                                     </div>
                                 @endif
                             </div>
-                                                @else
+                        @elseif($assignment->status === 'locked')
+                            <!-- Locked Assignment - Read Only View -->
+                            <div class="space-y-4">
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                        </svg>
+                                        <div>
+                                            <h4 class="font-semibold text-yellow-900">Assignment Locked</h4>
+                                            <p class="text-sm text-yellow-800 mt-1">This assignment has been locked by your instructor. You can view your existing work but cannot make any changes.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if($submission && $submission->file_path)
+                                    <div class="bg-gray-50 rounded-lg p-4">
+                                        <h4 class="font-semibold text-gray-900 mb-3">Your Submitted Work:</h4>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <svg class="w-8 h-8 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                <div>
+                                                    <p class="font-semibold text-gray-900">{{ $submission->file_name }}</p>
+                                                    <p class="text-sm text-gray-500">{{ $submission->file_size_formatted }}</p>
+                                                </div>
+                                            </div>
+                                            <a href="{{ route('assignment.download', $assignment) }}" target="_blank"
+                                               class="text-blue-600 hover:text-blue-800 font-medium">
+                                                Download
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if($submission && $submission->comments)
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 mb-2">Your Comments:</h4>
+                                        <p class="text-gray-700 bg-gray-50 rounded-lg p-3">{{ $submission->comments }}</p>
+                                    </div>
+                                @endif
+
+                                @if($submission && $submission->submitted_at)
+                                    <div class="text-sm text-gray-500">
+                                        @if($submission->isSubmitted())
+                                            Submitted on {{ $submission->submitted_at->format('M j, Y \a\t g:i A') }}
+                                        @else
+                                            Last saved on {{ $submission->updated_at->format('M j, Y \a\t g:i A') }}
+                                        @endif
+                                    </div>
+                                @endif
+
+                                @if($submission && $submission->isGraded())
+                                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                        <h4 class="font-semibold text-green-900 mb-2">Grade: {{ $submission->grade }}/{{ $assignment->points }}</h4>
+                                        @if($submission->feedback)
+                                            <h5 class="font-medium text-green-800 mb-1">Instructor Feedback:</h5>
+                                            <p class="text-green-700">{{ $submission->feedback }}</p>
+                                        @endif
+                                        <p class="text-sm text-green-600 mt-2">
+                                            Graded on {{ $submission->graded_at->format('M j, Y \a\t g:i A') }}
+                                        </p>
+                                    </div>
+                                @endif
+
+                                @if(!$submission)
+                                    <div class="text-center py-8">
+                                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                        </svg>
+                                        <p class="text-gray-500">No submission found for this assignment.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @else
                             <!-- Submission Form -->
                             <form action="{{ route('assignment.submit', $assignment) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                                 @csrf

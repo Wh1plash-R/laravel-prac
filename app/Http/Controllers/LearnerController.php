@@ -90,6 +90,11 @@ class LearnerController extends Controller
             ->where('learner_id', $learner->id)
             ->first();
 
+        // Check if assignment is locked and learner has no submission - deny access
+        if ($assignment->status === 'locked' && !$submission) {
+            abort(403, 'This assignment is locked and you have no existing submission to view.');
+        }
+
         return view('learners.assignment-view', [
             'assignment' => $assignment,
             'submission' => $submission,
@@ -113,6 +118,11 @@ class LearnerController extends Controller
         // Check if learner is enrolled in the course
         if (!$learner->courses()->where('course_id', $assignment->course_id)->exists()) {
             abort(403, 'You are not enrolled in this course.');
+        }
+
+        // Check if assignment is locked - prevent any modifications
+        if ($assignment->status === 'locked') {
+            return redirect()->back()->with('error', 'This assignment is locked and cannot be modified.');
         }
 
         // Get or create submission
@@ -174,6 +184,11 @@ class LearnerController extends Controller
             abort(403, 'Access denied. Learner profile not found.');
         }
 
+        // Check if assignment is locked - prevent any modifications
+        if ($assignment->status === 'locked') {
+            return redirect()->back()->with('error', 'This assignment is locked and cannot be modified.');
+        }
+
         $submission = Submission::where('assignment_id', $assignment->id)
             ->where('learner_id', $learner->id)
             ->first();
@@ -213,6 +228,11 @@ class LearnerController extends Controller
 
         if (!$learner) {
             abort(403, 'Access denied. Learner profile not found.');
+        }
+
+        // Check if assignment is locked - prevent any modifications
+        if ($assignment->status === 'locked') {
+            return redirect()->back()->with('error', 'This assignment is locked and cannot be modified.');
         }
 
         $submission = Submission::where('assignment_id', $assignment->id)
