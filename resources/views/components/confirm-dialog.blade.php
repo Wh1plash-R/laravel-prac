@@ -70,6 +70,11 @@
                             class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 border border-blue-700 shadow transition">
                             {{ $confirmText }}
                         </button>
+                    @elseif ($confirmText === 'Log Out')
+                    <button type="button" @click="confirm()"
+                        class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-500 border shadow transition">
+                        {{ $confirmText }}
+                    </button>
                     @else
                         <button type="button" @click="confirm()"
                             class="px-4 py-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700 border border-gray-700 shadow transition">

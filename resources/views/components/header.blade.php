@@ -1,3 +1,4 @@
+<!-- Updated header section with logout confirmation -->
 <header class="bg-white/90 backdrop-blur shadow-md sticky top-0 z-10 border-b border-gray-200">
     <nav class="mx-auto flex items-center justify-between py-4 px-6" x-data="{ open: false }">
         <div class="flex items-center gap-3">
@@ -52,17 +53,28 @@
                                     </svg>
                                     {{ __('Edit profile') }}
                                 </x-dropdown-link>
-                                <form method="POST" action="{{ route('logout') }}">
+
+                                <!-- Updated Logout with Confirmation Dialog -->
+                                <form method="POST" action="{{ route('logout') }}" id="logout-form">
                                     @csrf
-                                    <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault(); this.closest('form').submit();"
-                                        class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                        </svg>
-                                        {{ __('Log Out') }}
-                                    </x-dropdown-link>
                                 </form>
+
+                                <x-confirm-dialog
+                                    title="Confirm Logout"
+                                    message="Are you sure you want to log out of your account?"
+                                    confirmText="Log Out"
+                                    cancelText="Stay Logged In"
+                                    loadingMessage="Logging out..."
+                                    formId="logout-form">
+                                    <x-slot:trigger>
+                                        <button type="button" class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-700 hover:bg-gray-100 text-left">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                            </svg>
+                                            {{ __('Log Out') }}
+                                        </button>
+                                    </x-slot:trigger>
+                                </x-confirm-dialog>
                             </div>
                         </x-slot>
                     </x-dropdown>
