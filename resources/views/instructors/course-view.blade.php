@@ -424,37 +424,7 @@
                         </div>
                     </div>
 
-                    <!-- Recent Activity -->
-                    <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h3>
-                        <div class="space-y-3 text-sm">
-                            <div class="flex items-start">
-                                <div class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-gray-700">New learner enrolled</p>
-                                    <p class="text-gray-500 text-xs">2 hours ago</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-gray-700">Assignment submitted</p>
-                                    <p class="text-gray-500 text-xs">1 day ago</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <div>
-                                    <p class="text-gray-700">New announcement posted</p>
-                                    <p class="text-gray-500 text-xs">2 days ago</p>
-                                </div>
-                            </div>
-                            <div class="text-center py-2">
-                                <p class="text-gray-500 text-xs">More activity will appear here</p>
-                            </div>
-                        </div>
-                    </div>
-
+                 
                     <!-- Quick Actions -->
                     <div class="card-gradient rounded-xl shadow-lg border border-gray-100 p-6 hover-subtle">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>

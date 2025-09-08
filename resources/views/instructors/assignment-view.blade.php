@@ -314,7 +314,7 @@
                         <div class="space-y-4">
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Course</span>
-                                <span class="font-semibold text-gray-900">{{ $assignment->course->title }}</span>
+                                <span class="font-semibold text-gray-900 text-right break-words" title="{{ $assignment->course->title }}">{{ Str::limit($assignment->course->title, 20) }}</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600">Max Points</span>

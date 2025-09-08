@@ -556,107 +556,123 @@
                         </div>
 
                         <!-- Profile Section -->
-                        <div class="p-8 -mt-16 relative">
-                            <div class="flex flex-col lg:flex-row items-start gap-8 mb-8">
+                        <div class="p-4 sm:p-6 lg:p-8 -mt-8 sm:-mt-12 lg:-mt-16 relative">
+                            <div class="flex flex-col lg:flex-row items-start gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
                                 <!-- Profile Picture - Left Side -->
-                                <div class="relative flex-shrink-0">
+                                <div class="relative flex-shrink-0 mx-auto lg:mx-0">
                                     @if($user->hasProfilePicture())
-                                        <div class="w-36 h-36 lg:w-56 lg:h-56 rounded-2xl overflow-hidden border-4 border-white shadow-xl ring-4 ring-blue-100">
+                                        <div class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 rounded-2xl overflow-hidden border-4 border-white shadow-xl ring-2 sm:ring-4 ring-blue-100">
                                             <img src="data:image/jpeg;base64,{{ $user->getProfilePictureBase64() }}"
                                                 alt="Profile picture"
                                                 class="w-full h-full object-cover">
                                         </div>
                                     @else
-                                        <div class="w-32 h-32 lg:w-40 lg:h-40 gradient-bg rounded-2xl flex items-center justify-center text-white text-4xl lg:text-5xl font-bold shadow-xl ring-4 ring-yellow-100">
+                                        <div class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 xl:w-56 xl:h-56 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold shadow-xl ring-2 sm:ring-4 ring-yellow-100">
                                             {{ substr(auth()->user()->name ?? 'U', 0, 1) }}
                                         </div>
                                     @endif
                                     <!-- Online Status Indicator -->
-                                    <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                    <div class="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 w-6 h-6 sm:w-8 sm:h-8 bg-green-500 rounded-full border-2 sm:border-4 border-white shadow-lg flex items-center justify-center">
+                                        <div class="w-2 h-2 sm:w-3 sm:h-3 bg-green-400 rounded-full animate-pulse"></div>
                                     </div>
                                 </div>
 
                                 <!-- Profile Info - Right Side (LinkedIn Style) -->
-                                <div class="flex-1">
+                                <div class="flex-1 text-center lg:text-left w-full">
                                     <!-- Name & Email -->
-                                    <div class="mb-4">
-                                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">{{ Auth::user()->name }}</h2>
-                                        <p class="text-lg text-gray-600">{{ Auth::user()->email }}</p>
+                                    <div class="mb-3 sm:mb-4">
+                                        <h2 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-1 leading-tight">
+                                            {{ Auth::user()->name }}
+                                        </h2>
+                                        <p class="text-sm sm:text-base lg:text-lg text-gray-600 break-all sm:break-normal">
+                                            {{ Auth::user()->email }}
+                                        </p>
                                     </div>
 
                                     <!-- Skills -->
-                                    <div class="mb-4">
+                                    <div class="mb-3 sm:mb-4">
                                         @if(isset($learner->skill) && $learner->skill !== 'None')
-                                            <div class="flex flex-wrap gap-2">
+                                            <div class="flex flex-wrap gap-1 sm:gap-2 justify-center lg:justify-start">
                                                 @foreach(explode(',', $learner->skill) as $skill)
-                                                    <span class="px-3 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 text-sm font-medium rounded-full border border-blue-100">
+                                                    <span class="px-2 sm:px-3 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 text-xs sm:text-sm font-medium rounded-full border border-blue-100 whitespace-nowrap">
                                                         {{ trim($skill) }}
                                                     </span>
                                                 @endforeach
                                             </div>
                                         @else
-                                            <div class="text-gray-500 text-sm italic">No skills added</div>
+                                            <div class="text-gray-500 text-xs sm:text-sm italic">No skills added</div>
                                         @endif
                                     </div>
 
                                     <!-- Bio -->
-                                    <div class="mb-6">
+                                    <div class="mb-4 sm:mb-6">
                                         @if(isset($learner->bio) && $learner->bio !== 'None')
-                                            <p class="text-gray-700 leading-relaxed">{{ $learner->bio }}</p>
+                                            <p class="text-sm sm:text-base text-gray-700 leading-relaxed px-2 sm:px-0">
+                                                {{ $learner->bio }}
+                                            </p>
                                         @else
-                                            <p class="text-gray-500 text-sm italic">No bio added</p>
+                                            <p class="text-gray-500 text-xs sm:text-sm italic">No bio added</p>
                                         @endif
                                     </div>
 
                                     <!-- Status & Stats -->
-                                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                        <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full text-sm font-medium">
-                                            <div class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 items-center sm:items-start lg:items-center justify-center lg:justify-start">
+                                        <div class="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap">
+                                            <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full mr-1.5 sm:mr-2 animate-pulse"></div>
                                             Active Learner
                                         </div>
 
-                                        <div class="flex items-center gap-6 text-sm text-gray-600">
-                                            <span><strong class="text-gray-900">{{ $coursesEnrolled ?? (isset($learner_courses) ? count($learner_courses) : 0) }}</strong> Courses</span>
-                                            <span><strong class="text-gray-900">{{ $hoursLearned ?? 0 }}</strong> Hours</span>
-                                            <span><strong class="text-gray-900">{{ isset($averageProgress) ? $averageProgress . '%' : '0%' }}</strong> Avg Progress</span>
+                                        <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 sm:gap-4 lg:gap-6 text-xs sm:text-sm text-gray-600">
+                                            <span class="whitespace-nowrap">
+                                                <strong class="text-gray-900">{{ $coursesEnrolled ?? (isset($learner_courses) ? count($learner_courses) : 0) }}</strong> Courses
+                                            </span>
+                                            <span class="whitespace-nowrap">
+                                                <strong class="text-gray-900">{{ $hoursLearned ?? 0 }}</strong> Hours
+                                            </span>
+                                            <span class="whitespace-nowrap">
+                                                <strong class="text-gray-900">{{ isset($averageProgress) ? $averageProgress . '%' : '0%' }}</strong> Avg Progress
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Divider -->
-                            <div class="border-t border-gray-200 my-8"></div>
+                            <div class="border-t border-gray-200 my-6 sm:my-8"></div>
 
                             <!-- Achievement Section -->
                             <div>
-                                <div class="flex items-center mb-6">
-                                    <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mr-4">
-                                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="flex items-center mb-4 sm:mb-6 justify-center lg:justify-start">
+                                    <div class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
                                         </svg>
                                     </div>
-                                    <h3 class="text-xl font-bold text-gray-900">Achievements</h3>
+                                    <h3 class="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">Achievements</h3>
                                 </div>
 
                                 {{-- You can add achievements on DashboardController.php --}}
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                                     @if(!empty($achievementsEarned) && count($achievementsEarned) > 0)
                                         @foreach($achievementsEarned as $ach)
-                                            <div class="text-center p-6 bg-gradient-to-br {{ $ach['bg'] }} rounded-xl border {{ $ach['border'] }}">
-                                                <div class="w-12 h-12 bg-gradient-to-br {{ $ach['iconBg'] }} rounded-xl flex items-center justify-center mx-auto mb-4">
-                                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <div class="text-center p-4 sm:p-5 lg:p-6 bg-gradient-to-br {{ $ach['bg'] }} rounded-xl border {{ $ach['border'] }}">
+                                                <div class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gradient-to-br {{ $ach['iconBg'] }} rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                                                    <svg class="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $ach['iconPath'] }}"></path>
                                                     </svg>
                                                 </div>
-                                                <h4 class="font-bold text-lg text-gray-900 mb-2">{{ $ach['title'] }}</h4>
-                                                <p class="text-sm text-gray-600">{{ $ach['description'] }}</p>
+                                                <h4 class="font-bold text-sm sm:text-base lg:text-lg text-gray-900 mb-1 sm:mb-2 leading-tight">
+                                                    {{ $ach['title'] }}
+                                                </h4>
+                                                <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                                                    {{ $ach['description'] }}
+                                                </p>
                                             </div>
                                         @endforeach
                                     @else
-                                        <div class="col-span-1 md:col-span-3 text-center p-6 bg-white rounded-xl border border-gray-100">
-                                            <h4 class="font-semibold text-gray-900 mb-1">No achievements yet</h4>
-                                            <p class="text-sm text-gray-600">Keep learning to unlock achievements!</p>
+                                        <div class="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4 2xl:col-span-3 text-center p-4 sm:p-6 bg-white rounded-xl border border-gray-100">
+                                            <h4 class="font-semibold text-sm sm:text-base text-gray-900 mb-1">No achievements yet</h4>
+                                            <p class="text-xs sm:text-sm text-gray-600">Keep learning to unlock achievements!</p>
                                         </div>
                                     @endif
                                 </div>
