@@ -3,28 +3,34 @@
 <div class="space-y-4">
     <label for="{{ $name }}" class="block text-gray-700 font-semibold mb-2">{{ $label }}</label>
 
-    <!-- Current Profile Picture Display -->
-    @if($currentImage)
-    <div class="mb-4 flex items-end gap-10">
+    <!-- Side-by-side Current and Preview -->
+    <div class="mb-4 flex items-start gap-10">
         <div>
-            <p class="text-sm text-gray-600 mb-2">Current Profile Picture:</p>
+            <p class="text-sm text-gray-600 mb-2">Current:</p>
+            @if($currentImage)
+                <div class="w-40 h-40 rounded-full overflow-hidden border-2 border-gray-200">
+                    <img src="data:image/jpeg;base64,{{ base64_encode($currentImage) }}"
+                         alt="Current profile picture"
+                         class="w-full h-full object-cover">
+                </div>
+            @else
+                <div class="w-40 h-40 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
+                    <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </div>
+            @endif
+        </div>
+
+        <div id="preview-container-{{ $name }}" class="hidden">
+            <p class="text-sm text-gray-600 mb-2">Preview:</p>
             <div class="w-40 h-40 rounded-full overflow-hidden border-2 border-gray-200">
-                <img src="data:image/jpeg;base64,{{ base64_encode($currentImage) }}"
-                    alt="Current profile picture"
-                    class="w-full h-full object-cover">
+                <img id="preview-{{ $name }}"
+                     alt="Preview"
+                     class="w-full h-full object-cover">
             </div>
         </div>
     </div>
-    @else
-    <div class="mb-4">
-        <p class="text-sm text-gray-600 mb-2">No profile picture set</p>
-        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200 bg-gray-100 flex items-center justify-center">
-            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-            </svg>
-        </div>
-    </div>
-    @endif
 
     <!-- File Input -->
     <div class="relative">
@@ -67,18 +73,6 @@
 
     </div>
 
-    <!-- Hidden Delete Form removed to avoid nested forms -->
-
-     <!-- Preview Container -->
-    <div id="preview-container-{{ $name }}" class="hidden">
-        <p class="text-sm text-gray-600 mb-2">Preview:</p>
-        <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-gray-200">
-            <img id="preview-{{ $name }}"
-                 alt="Preview"
-                 class="w-full h-full object-cover">
-        </div>
-    </div>
-
     <!-- File Info -->
     <div id="file-info-{{ $name }}" class="hidden">
         <p class="text-sm text-gray-600">
@@ -103,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fileName.textContent = file.name;
             fileInfo.classList.remove('hidden');
 
-            // Show preview
+            // Show preview next to current
             const reader = new FileReader();
             reader.onload = function(e) {
                 preview.src = e.target.result;

@@ -19,7 +19,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('dashboard.update', $user->id) }}" class="space-y-6" enctype="multipart/form-data">
+    <form id="update-profile-form" method="post" action="{{ route('dashboard.update', $user->id) }}" class="space-y-6" enctype="multipart/form-data" x-data="{ dirty: false }" x-init="window.profileFormDirty = false" x-effect="window.profileFormDirty = dirty" x-on:submit="dirty = false">
         @csrf
         @method('patch')
 
@@ -28,7 +28,7 @@
             <x-profile-picture-upload
                 name="profile_picture"
                 :currentImage="$user->profile_picture"
-                label="Profile Picture" />
+                label="Profile Picture" x-on:change="dirty = true" />
         </div>
 
         <!-- Name Field -->
@@ -40,7 +40,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
                 </div>
-                <x-text-input id="name" name="name" type="text"
+                <x-text-input id="name" name="name" type="text" x-on:input="dirty = true"
                     class="pl-10 w-full border-gray-300 focus:border-[#faa125] focus:ring-[#faa125] rounded-lg shadow-sm transition-colors"
                     :value="old('name', $user->name)" required autofocus autocomplete="name"
                     placeholder="Enter your full name" />
@@ -60,7 +60,7 @@
                 <x-text-input id="email" name="email" type="email"
                     class="pl-10 w-full border-gray-200 rounded-lg shadow-sm bg-gray-50 text-gray-600 cursor-not-allowed opacity-75"
                     :value="old('email', $user->email)" autocomplete="username"
-                    placeholder="Enter your email address" 
+                    placeholder="Enter your email address"
                     disabled />
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@
             @endif
         </div>
 
-        
+
 
         <!-- Skill Field -->
         <div class="space-y-2">
@@ -114,7 +114,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
                 </div>
-                <x-text-input id="skill" name="skill" type="text"
+                <x-text-input id="skill" name="skill" type="text" x-on:input="dirty = true"
                     class="pl-10 w-full border-gray-300 focus:border-[#faa125] focus:ring-[#faa125] rounded-lg shadow-sm transition-colors"
                     :value="old('skill', Auth::user()->learner->skill)"
                     placeholder="e.g., Web Development, Data Science, Design" />
@@ -126,7 +126,7 @@
         <div class="space-y-2">
             <x-input-label for="bio" :value="__('Bio')" class="text-gray-700 font-semibold" />
             <div class="relative">
-                <textarea id="bio" name="bio" rows="4"
+                <textarea id="bio" name="bio" rows="4" x-on:input="dirty = true"
                     class="w-full border-gray-300 focus:border-[#faa125] focus:ring-[#faa125] rounded-lg shadow-sm transition-colors resize-none"
                     placeholder="Tell us about yourself, your interests, and what you're passionate about...">{{ old('bio', Auth::user()->learner->bio) }}</textarea>
             </div>
@@ -135,13 +135,29 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-4 pt-4 border-t border-gray-200">
-            <button type="submit"
+            <button type="button" @click="dirty ? window.dispatchEvent(new Event('open-save-confirm')) : window.dispatchEvent(new Event('open-nochanges-info'))"
                 class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#faa125] to-[#fc662f] border border-transparent rounded-lg font-semibold text-sm text-white uppercase tracking-wider hover:from-[#fc662f] hover:to-[#faa125] focus:outline-none focus:ring-2 focus:ring-[#faa125] focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
                 {{ __('Save Changes') }}
             </button>
+
+            <x-confirm-dialog
+                :title="__('Save changes?')"
+                :message="__('Do you want to save your profile changes now?')"
+                confirmText="Save Changes"
+                :formId="'update-profile-form'"
+                event="open-save-confirm"
+            />
+
+            <x-confirm-dialog
+                :title="__('No changes detected')"
+                :message="__('You have not made any changes to your profile.')"
+                confirmText="OK"
+                event="open-nochanges-info"
+            />
+
 
             @if (session('status') === 'profile-updated')
                 <div
