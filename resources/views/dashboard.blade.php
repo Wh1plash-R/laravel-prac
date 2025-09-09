@@ -392,6 +392,94 @@
                 </div>
 
                 <div class="pt-8">
+                    <!-- Grading System Chart -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold text-gray-900">Grading System</h3>
+                            <div class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                                </svg>
+                                D is Passing Grade
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                            <!-- A+ Grade -->
+                            <div class="text-center p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 hover-subtle">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-white font-bold text-lg">A+</span>
+                                </div>
+                                <div class="text-sm font-semibold text-green-800 mb-1">97-100%</div>
+                                <div class="text-xs text-green-600">Excellent</div>
+                            </div>
+
+                            <!-- A Grade -->
+                            <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200 hover-subtle">
+                                <div class="w-12 h-12 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-white font-bold text-lg">A</span>
+                                </div>
+                                <div class="text-sm font-semibold text-green-800 mb-1">90-96%</div>
+                                <div class="text-xs text-green-600">Outstanding</div>
+                            </div>
+
+                            <!-- B Grade -->
+                            <div class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200 hover-subtle">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-white font-bold text-lg">B</span>
+                                </div>
+                                <div class="text-sm font-semibold text-blue-800 mb-1">80-89%</div>
+                                <div class="text-xs text-blue-600">Good</div>
+                            </div>
+
+                            <!-- C Grade -->
+                            <div class="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200 hover-subtle">
+                                <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-white font-bold text-lg">C</span>
+                                </div>
+                                <div class="text-sm font-semibold text-yellow-800 mb-1">70-79%</div>
+                                <div class="text-xs text-yellow-600">Satisfactory</div>
+                            </div>
+
+                            <!-- D Grade (Passing) -->
+                            <div class="text-center p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl border border-orange-200 hover-subtle ring-2 ring-green-300">
+                                <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-white font-bold text-lg">D</span>
+                                </div>
+                                <div class="text-sm font-semibold text-orange-800 mb-1">65-69%</div>
+                                <div class="text-xs text-orange-600">Minimum Pass</div>
+                                <div class="mt-2 text-xs text-green-700 font-medium">✓ Passing</div>
+                            </div>
+
+                            <!-- F Grade (Failing) -->
+                            <div class="text-center p-4 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border border-red-200 hover-subtle">
+                                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <span class="text-white font-bold text-lg">F</span>
+                                </div>
+                                <div class="text-sm font-semibold text-red-800 mb-1">0-64%</div>
+                                <div class="text-xs text-red-600">Failing</div>
+                                <div class="mt-2 text-xs text-red-700 font-medium">✗ Failed</div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Information -->
+                        <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div class="text-sm">
+                                    <p class="font-medium text-blue-800 mb-1">Grade Information</p>
+                                    <ul class="text-blue-700 space-y-1">
+                                        <li>• <strong>D (65-69%)</strong> is the minimum passing grade</li>
+                                        <li>• Grades below 65% result in course failure (F)</li>
+                                        <li>• Final grades are calculated based on all completed assignments</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     @if($course_completions && $course_completions->count() > 0)
                         <!-- Academic Performance Overview -->
                         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 mb-6">
