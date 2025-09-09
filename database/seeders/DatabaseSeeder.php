@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             InstructorSeeder::class,
             CourseSeeder::class,
-            LearnerSeeder::class,
+            // LearnerSeeder::class,
             // AnnouncementSeeder::class,
             // AssignmentSeeder::class,
         ]);
