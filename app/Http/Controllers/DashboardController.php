@@ -34,6 +34,7 @@ class DashboardController extends Controller
         }
 
         // Eager load courses and assignments for accurate progress computation
+        // Eager loading ay pag-load agad ng data ng courses at assignments na related sa learners
         $learner = Learner::with(['courses.assignments'])->firstWhere('user_id', $user->id); // firstWhere() = where()->first()
         $courses = Course::all();
         $learner_courses = $learner?->courses; // This is called "null safe" operator just like "$learner? learner -> course: null"
@@ -71,18 +72,15 @@ class DashboardController extends Controller
         $averageProgress = $totalAssignments > 0
             ? round(($completedSubmissions / $totalAssignments) * 100)
             : 0;
-
-        // Hours learned proxy: assume 1 hour per completed submission (simple proxy until time-tracking is added)
+        // Hours learned = kung ilang activities/assignments ang na-submit ng learner
         $hoursLearned = $completedSubmissions;
 
         // Per-course progress map: [course_id => percent]
         $courseProgress = [];
         if ($learner_courses && $learner_courses->count() > 0) {
-            // Fetch all submissions for this learner once
             $learnerSubmissionQuery = Submission::where('learner_id', $learner?->id)
                 ->whereIn('status', ['submitted', 'graded']);
 
-            // For each course, compute progress based on its assignments
             foreach ($learner_courses as $lc) {
                 $courseAssignmentIds = $lc->assignments->pluck('id');
                 $courseTotalAssignments = $courseAssignmentIds->count();
@@ -132,6 +130,11 @@ class DashboardController extends Controller
     public function showCourse(Course $course)
     {
         $user = auth()->user();
+
+        if ($user->isInstructor()) {
+            return redirect()->route('instructor.index');
+        }
+
         $learner = Learner::where('user_id', $user->id)->firstOrFail();
 
         $isEnrolled = $learner->courses()->where('course_id', $course->id)->exists();
@@ -184,7 +187,6 @@ class DashboardController extends Controller
                 'course_ids.*' => 'integer|exists:courses,id',
             ]);
 
-            // Check for completed courses
             $completedCourseIds = CourseCompletion::where('learner_id', $learner->id)
                 ->whereIn('course_id', $request->input('course_ids'))
                 ->pluck('course_id')
@@ -206,7 +208,6 @@ class DashboardController extends Controller
                 'course_id' => 'required|exists:courses,id',
             ]);
 
-            // Check if course is already completed
             $isCompleted = CourseCompletion::where('learner_id', $learner->id)
                 ->where('course_id', $request->input('course_id'))
                 ->exists();
@@ -247,12 +248,10 @@ class DashboardController extends Controller
 
     public function deleteProfilePicture(User $user)
     {
-        // Ensure the authenticated user can only delete their own profile picture
         if (auth()->user()->id !== $user->id) {
             return redirect()->route('dashboard')->with('error', 'Unauthorized action.');
         }
-
-        // Remove the profile picture by setting it to null
+        // Removes the picture by setting it to null
         $user->update(['profile_picture' => null]);
 
         return redirect()->route('dashboard')->with('success', 'Profile picture removed successfully.');
@@ -353,7 +352,6 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user has access to this announcement
         if (!$this->userCanAccessAnnouncement($user, $announcement)) {
             abort(403, 'Unauthorized access to this file.');
         }
@@ -376,7 +374,6 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user has access to this announcement
         if (!$this->userCanAccessAnnouncement($user, $announcement)) {
             abort(403, 'Unauthorized access to this file.');
         }
@@ -397,15 +394,13 @@ class DashboardController extends Controller
      */
     private function userCanAccessAnnouncement(User $user, Announcement $announcement)
     {
-        // Load the course relationship
         $announcement->load('course');
 
-        // If user is instructor of the course
         if ($user->instructor && $announcement->course->instructor_id === $user->instructor->id) {
             return true;
         }
 
-        // If user is a learner enrolled in the course
+        // Kung learner ba si user na enrolled sa course
         if ($user->learner && $user->learner->courses()->where('course_id', $announcement->course_id)->exists()) {
             return true;
         }

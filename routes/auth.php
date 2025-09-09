@@ -1,4 +1,5 @@
 <?php
+//most things that are related to authentication are in this file
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;

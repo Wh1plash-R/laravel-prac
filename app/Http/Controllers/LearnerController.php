@@ -79,18 +79,15 @@ class LearnerController extends Controller
             abort(403, 'Access denied. Learner profile not found.');
         }
 
-        // Check if learner is enrolled in the course
         if (!$learner->courses()->where('course_id', $assignment->course_id)->exists()) {
             abort(403, 'You are not enrolled in this course.');
         }
 
-        // Load assignment with course and existing submission
         $assignment->load('course');
         $submission = Submission::where('assignment_id', $assignment->id)
             ->where('learner_id', $learner->id)
             ->first();
 
-        // Check if assignment is locked and learner has no submission - deny access
         if ($assignment->status === 'locked' && !$submission) {
             abort(403, 'This assignment is locked and you have no existing submission to view.');
         }
@@ -115,17 +112,14 @@ class LearnerController extends Controller
             abort(403, 'Access denied. Learner profile not found.');
         }
 
-        // Check if learner is enrolled in the course
         if (!$learner->courses()->where('course_id', $assignment->course_id)->exists()) {
             abort(403, 'You are not enrolled in this course.');
         }
 
-        // Check if assignment is locked - prevent any modifications
         if ($assignment->status === 'locked') {
             return redirect()->back()->with('error', 'This assignment is locked and cannot be modified.');
         }
 
-        // Get or create submission
         $submission = Submission::firstOrCreate(
             [
                 'assignment_id' => $assignment->id,
@@ -134,7 +128,6 @@ class LearnerController extends Controller
             ['status' => 'draft']
         );
 
-        // Check if submission can be edited
         if (!$submission->canBeEdited()) {
             return redirect()->back()->with('error', 'This submission has already been finalized and cannot be edited.');
         }
@@ -144,9 +137,7 @@ class LearnerController extends Controller
             'comments' => 'nullable|string|max:1000',
         ]);
 
-        // Handle file upload if provided
         if ($request->hasFile('file')) {
-            // Delete old file if exists
             if ($submission->file_path && Storage::disk('public')->exists($submission->file_path)) {
                 Storage::disk('public')->delete($submission->file_path);
             }
@@ -163,7 +154,6 @@ class LearnerController extends Controller
                 'comments' => $validated['comments'] ?? $submission->comments,
             ]);
         } else {
-            // Update comments only
             $submission->update([
                 'comments' => $validated['comments'] ?? $submission->comments,
             ]);
@@ -184,7 +174,6 @@ class LearnerController extends Controller
             abort(403, 'Access denied. Learner profile not found.');
         }
 
-        // Check if assignment is locked - prevent any modifications
         if ($assignment->status === 'locked') {
             return redirect()->back()->with('error', 'This assignment is locked and cannot be modified.');
         }
@@ -197,7 +186,6 @@ class LearnerController extends Controller
             return redirect()->back()->with('error', 'No submission found.');
         }
 
-        // Check if submission can be edited
         if (!$submission->canBeEdited()) {
             return redirect()->back()->with('error', 'This submission has already been finalized and cannot be edited.');
         }
@@ -207,7 +195,6 @@ class LearnerController extends Controller
             Storage::disk('public')->delete($submission->file_path);
         }
 
-        // Clear file-related fields
         $submission->update([
             'file_path' => null,
             'file_name' => null,
@@ -230,7 +217,6 @@ class LearnerController extends Controller
             abort(403, 'Access denied. Learner profile not found.');
         }
 
-        // Check if assignment is locked - prevent any modifications
         if ($assignment->status === 'locked') {
             return redirect()->back()->with('error', 'This assignment is locked and cannot be modified.');
         }
@@ -243,17 +229,14 @@ class LearnerController extends Controller
             return redirect()->back()->with('error', 'No submission found. Please upload a file first.');
         }
 
-        // Check if submission can be edited
         if (!$submission->canBeEdited()) {
             return redirect()->back()->with('error', 'This submission has already been finalized.');
         }
 
-        // Check if there's a file uploaded
         if (!$submission->file_path) {
             return redirect()->back()->with('error', 'Please upload a file before submitting.');
         }
 
-        // Finalize submission
         $submission->update([
             'status' => 'submitted',
             'submitted_at' => now(),

@@ -20,7 +20,6 @@ class InstructorController extends Controller
      */
     public function courseView(Course $course)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
@@ -73,7 +72,6 @@ class InstructorController extends Controller
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $announcement->load('course');
 
         if (!$instructor || $announcement->course->instructor_id !== $instructor->id) {
@@ -98,11 +96,9 @@ class InstructorController extends Controller
      */
     public function updateAnnouncement(Request $request, Announcement $announcement)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $announcement->load('course');
 
         if (!$instructor || $announcement->course->instructor_id !== $instructor->id) {
@@ -117,9 +113,7 @@ class InstructorController extends Controller
             'remove_file' => 'nullable|string',
         ]);
 
-        // Handle file removal
         if ($request->input('remove_file') === '1') {
-            // Delete old file if exists
             if ($announcement->file_path && Storage::disk('public')->exists($announcement->file_path)) {
                 Storage::disk('public')->delete($announcement->file_path);
             }
@@ -129,9 +123,7 @@ class InstructorController extends Controller
             $validated['file_type'] = null;
             $validated['file_size'] = null;
         }
-        // Handle new file upload
         elseif ($request->hasFile('file')) {
-            // Delete old file if exists
             if ($announcement->file_path && Storage::disk('public')->exists($announcement->file_path)) {
                 Storage::disk('public')->delete($announcement->file_path);
             }
@@ -146,7 +138,6 @@ class InstructorController extends Controller
             $validated['file_size'] = $file->getSize();
         }
 
-        // Remove the remove_file field from validated data
         unset($validated['remove_file']);
 
         $announcement->update($validated);
@@ -160,26 +151,21 @@ class InstructorController extends Controller
      */
     public function destroyAnnouncement(Announcement $announcement)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $announcement->load('course');
 
         if (!$instructor || $announcement->course->instructor_id !== $instructor->id) {
             abort(403, 'Unauthorized access to this announcement.');
         }
 
-        // Store course reference before deletion
         $course = $announcement->course;
 
-        // Delete associated file if exists
         if ($announcement->file_path && Storage::disk('public')->exists($announcement->file_path)) {
             Storage::disk('public')->delete($announcement->file_path);
         }
 
-        // Delete the announcement
         $announcement->delete();
 
         return redirect()->route('instructor.course.view', $course)
@@ -191,7 +177,6 @@ class InstructorController extends Controller
      */
     public function storeAnnouncement(Request $request, Course $course)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
@@ -207,7 +192,6 @@ class InstructorController extends Controller
             'file' => 'nullable|file|mimes:pdf,doc,docx,txt,zip,rar,jpg,jpeg,png,gif,mp4,mp3,ppt,pptx,xls,xlsx|max:10240', // 10MB max
         ]);
 
-        // Handle file upload if provided
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
@@ -248,11 +232,9 @@ class InstructorController extends Controller
      */
     public function editAssignment(Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
@@ -277,11 +259,9 @@ class InstructorController extends Controller
      */
     public function updateAssignment(Request $request, Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
@@ -300,7 +280,7 @@ class InstructorController extends Controller
         // Check if the request came from assignment view or course view
         $referer = request()->header('referer');
         if ($referer && str_contains($referer, '/instructor/assignment/')) {
-            // Came from assignment view, redirect back to assignment view
+
             return redirect()->route('instructor.assignment.view', $assignment)
                 ->with('success', 'Assignment updated successfully!');
         }
@@ -315,21 +295,17 @@ class InstructorController extends Controller
      */
     public function destroyAssignment(Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
             abort(403, 'Unauthorized access to this assignment.');
         }
 
-        // Store course reference before deletion
         $course = $assignment->course;
 
-        // Delete the assignment
         $assignment->delete();
 
         return redirect()->route('instructor.course.view', $course)
@@ -341,27 +317,22 @@ class InstructorController extends Controller
      */
     public function viewAssignment(Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
             abort(403, 'Unauthorized access to this assignment.');
         }
 
-        // Load assignment with course, submissions, and related learners
         $assignment->load([
             'course.learners.user',
             'submissions.learner.user'
         ]);
 
-        // Get all enrolled learners for this course
         $enrolledLearners = $assignment->course->learners;
-
-        // Create a collection of learners with their submission status
+        // This block creates a collection of learners with their submission status
         $learnersWithSubmissions = $enrolledLearners->map(function ($learner) use ($assignment) {
             $submission = $assignment->submissions->where('learner_id', $learner->id)->first();
 
@@ -376,7 +347,6 @@ class InstructorController extends Controller
             ];
         });
 
-        // Debug submission counts
         $submittedCount = $learnersWithSubmissions->where('has_submitted', true)->count();
         $gradedCount = $learnersWithSubmissions->where('is_graded', true)->count();
 
@@ -396,11 +366,9 @@ class InstructorController extends Controller
      */
     public function gradeSubmission(Request $request, Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
@@ -413,7 +381,6 @@ class InstructorController extends Controller
             'feedback' => 'nullable|string|max:1000',
         ]);
 
-        // Find the submission
         $submission = Submission::where('assignment_id', $assignment->id)
             ->where('learner_id', $validated['learner_id'])
             ->first();
@@ -422,12 +389,10 @@ class InstructorController extends Controller
             return redirect()->back()->with('error', 'No submission found for this learner.');
         }
 
-        // Check if submission has been submitted (not just draft)
         if (!$submission->isSubmitted() && $submission->status !== 'graded') {
             return redirect()->back()->with('error', 'Cannot grade a submission that has not been submitted yet.');
         }
 
-        // Update the submission with grade and feedback
         $submission->update([
             'grade' => $validated['grade'],
             'feedback' => $validated['feedback'],
@@ -443,11 +408,9 @@ class InstructorController extends Controller
      */
     public function downloadSubmission(Assignment $assignment, Learner $learner)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
@@ -476,11 +439,9 @@ class InstructorController extends Controller
      */
     public function lockAssignment(Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
@@ -497,11 +458,9 @@ class InstructorController extends Controller
      */
     public function unlockAssignment(Assignment $assignment)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
-        // Load the course relationship
         $assignment->load('course');
 
         if (!$instructor || $assignment->course->instructor_id !== $instructor->id) {
@@ -518,7 +477,6 @@ class InstructorController extends Controller
      */
     public function promoteStudents(Course $course)
     {
-        // Ensure the authenticated user is an instructor for this course
         $user = Auth::user();
         $instructor = $user->instructor;
 
@@ -526,7 +484,6 @@ class InstructorController extends Controller
             abort(403, 'Unauthorized access to this course.');
         }
 
-        // Get all enrolled learners
         $enrolledLearners = $course->learners;
 
         if ($enrolledLearners->count() === 0) {
@@ -544,22 +501,19 @@ class InstructorController extends Controller
 
         $promotedCount = 0;
 
-        // Process each enrolled learner
+        // Gets all submissions for this learner in this course
         foreach ($enrolledLearners as $learner) {
-            // Get all submissions for this learner in this course
             $submissions = Submission::where('learner_id', $learner->id)
                 ->whereIn('assignment_id', $assignments->pluck('id'))
                 ->where('status', 'graded')
                 ->get();
 
-            // Calculate grades
+            // Grade Calculation
             $totalPointsEarned = $submissions->sum('grade');
             $assignmentsCompleted = $submissions->count();
 
-            // Calculate final grade as percentage
             $finalGrade = $totalPoints > 0 ? ($totalPointsEarned / $totalPoints) * 100 : 0;
 
-            // Create course completion record
             CourseCompletion::create([
                 'course_id' => $course->id,
                 'learner_id' => $learner->id,
@@ -574,17 +528,14 @@ class InstructorController extends Controller
             $promotedCount++;
         }
 
-        // Remove all learners from the course (they're now completed)
+        // Reset Course Section
+        // Pampa-graduate sa learners
         $course->learners()->detach();
 
-        // Delete all announcements for this course
         $course->announcements()->delete();
 
-        // Delete all assignments and their submissions for this course
         foreach ($assignments as $assignment) {
-            // Delete submissions first (due to foreign key constraints)
             $assignment->submissions()->delete();
-            // Then delete the assignment
             $assignment->delete();
         }
 
